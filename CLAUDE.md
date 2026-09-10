@@ -1,10 +1,10 @@
-# Codex Handoff · Raum & Zeit
+# Cloud Code Handoff · Raum & Zeit
 
 ## Objective
 
-Validate and deploy the already implemented Raum und Zeit website. Do not redesign it and do not invent a new architecture.
+Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it and do not invent a new architecture.
 
-The current `main` implements the agreed Editorial Green Practice design, the FRAME Navigation Home, the real practice logo and the multi page structure.
+The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the real practice logo and the multi page structure.
 
 ## Read first
 
@@ -17,7 +17,7 @@ The current `main` implements the agreed Editorial Green Practice design, the FR
 
 ## Binding experience to preserve
 
-The first visible homepage area is green and combines brief positioning with visitor state navigation.
+The first homepage composition has a white positioning field and a green Navigation Home card.
 
 First choices are:
 
@@ -26,9 +26,11 @@ First choices are:
 3. Ich möchte eine Behandlung besser verstehen.
 4. Ich möchte bei Raum und Zeit arbeiten.
 
-After selection, reveal only relevant next routes. Keep the classic multi page navigation available. Do not turn this back into a category list or one pager.
+Each choice is an inline accordion row. Its relevant routes must open directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one. Do not move the revealed routes into a detached panel below the full choice list.
 
-The real logo at `assets/logo-raum-und-zeit.png` is an accent, not the main visual device.
+Keep the classic multi page navigation available. Do not turn this back into a category list or one pager.
+
+The real logo at `assets/logo-raum-und-zeit.png` is an accent, not the main visual device. It is used in the site brand and as a restrained visual accent in the homepage Arbeitsweise section.
 
 ## Intelligence boundary
 
@@ -36,8 +38,10 @@ The current site prepares only non clinical navigation signals through:
 
 - `rz:navigation-intent-selected`
 - `rz:navigation-route-selected`
-- ephemeral `sessionStorage` for the first selected state
+- ephemeral `sessionStorage` for first and current visitor state
 - optional `window.rzTrack` adapter hook
+
+The first selected state should remain stable for the session. The current state should reflect the currently open accordion and may be cleared when that accordion is closed.
 
 No external analytics service should be introduced during deployment unless an explicitly approved integration already exists. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data.
 
@@ -45,25 +49,22 @@ No external analytics service should be introduced during deployment unless an e
 
 Avoid Gedankenstriche as a stylistic device and avoid artificial AI style hyphen constructions. Do not damage correct URLs, code, established abbreviations or genuinely necessary German compounds through mechanical replacement.
 
-## Validation
+## Deployment and smoke test
 
-Serve locally with:
+Do not perform another design or product iteration.
 
-```bash
-python3 -m http.server 8000
-```
-
-Validate at minimum at about 1440, 900 and 390 pixels.
+After deployment, smoke test at minimum at about 1440, 900 and 390 pixels.
 
 Check:
 
 - all seven pages and all internal links
-- first screen visual hierarchy
+- white first homepage field and green Navigation Home card
 - all four visitor state controls
-- correct reveal and hiding of intent panels
-- `aria-pressed` state and keyboard access
-- focus behavior after selection
-- real logo rendering
+- routes open directly below the selected row
+- clicking the active row closes it
+- opening another row closes the previous row
+- `aria-expanded`, `aria-pressed` and keyboard access
+- real logo rendering in header and homepage Arbeitsweise accent
 - mobile menu including Escape
 - therapy details controls
 - deep links such as `praxis.html#termin` and therapy hashes
@@ -74,11 +75,9 @@ Check:
 - reduced motion behavior
 - `noindex,nofollow`
 - custom navigation events fire as intended
-- no external analytics or unintended network transmission is introduced
+- no external analytics transmission is introduced
 
-Run a public copy audit for en dash and em dash punctuation. Repair only genuine public copy violations. Do not rewrite established technical strings or medically established abbreviations merely because they contain a hyphen.
-
-Fix implementation defects only and keep fixes narrow.
+Fix only a genuine implementation defect and keep any fix narrow. If no defect exists, do not change the website.
 
 ## Content that remains unresolved
 
@@ -94,18 +93,26 @@ If it is not available, do not choose Cloudflare, Vercel, Netlify, a new CMS or 
 
 Keep `noindex,nofollow` until explicit public launch approval.
 
+Before production, replace or self host the current Google Fonts delivery through a privacy reviewed path approved for Tilmann’s environment.
+
 ## Completion report
 
 Return only:
 
-VALIDATION STATUS
+DEPLOYMENT STATUS
+
+CURRENT MAIN SHA
+
+PREVIEW OR TARGET URL
+
+SMOKE TEST STATUS
 
 ISSUES FOUND / FIXED
 
-DEPLOYMENT / HANDOFF TARGET
+NOINDEX STATUS
 
-PREVIEW URL
+EXTERNAL TRACKING STATUS
 
-UNRESOLVED CONTENT
+PRODUCTION HANDOFF STATUS
 
 NEXT REQUIRED HUMAN DECISION
