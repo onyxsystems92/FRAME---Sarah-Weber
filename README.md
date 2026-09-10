@@ -27,17 +27,20 @@ The homepage starts from visitor state rather than website taxonomy:
 
 The first composition uses a white positioning field and a green Navigation Home card. Each visitor state opens its relevant next routes directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one.
 
-Immediately below that orientation layer, the homepage makes the multi page structure explicit through five clickable page cards:
+Immediately below that orientation layer, the homepage makes the multi page structure explicit through six clickable page cards:
 
 1. Arbeitsweise
 2. Therapie
 3. Team
 4. Praxisbesuch
 5. Karriere
+6. Aktuelles
 
 These cards replace the former passive differentiator cards and the separate homepage Arbeitsweise feature. The previous `Was uns prägt` and `Verstehen, bevor behandelt wird.` sections are now one compact navigation section. The differentiators Zeit, funktionelles Kontextdenken, fachliche Tiefe and persönliche Kontinuität remain in the supporting copy.
 
-Each page card turns green on pointer hover and keyboard focus, and the whole card opens the corresponding subpage. The treatment context preview remains below this section and continues to route visitors into deeper therapy anchors.
+Each page card turns green on pointer hover and keyboard focus, and the whole card opens the corresponding subpage. The six cards use a balanced three by two desktop grid, two columns on intermediate widths and one column on mobile.
+
+The treatment context preview remains below this section and continues to route visitors into deeper therapy anchors.
 
 FRAME translation:
 
@@ -45,11 +48,32 @@ FRAME translation:
 
 This is deterministic orientation. It is not medical AI, diagnosis or triage.
 
+## Aktuelles content contract
+
+Sarah explicitly needs ordinary practice news and notices to be maintainable without developer dependency.
+
+The prototype therefore includes:
+
+- `content/aktuelles.json`: bounded semantic source for current notices
+- `aktuelles.html`: all active published notices
+- a conditional homepage notice surface that appears only when an active item is marked `showOnHomepage: true`
+- a permanent `Aktuelles` page card on the homepage even when no notice is currently published
+
+The repository starts with no fictional news items. The public Aktuelles page shows a calm empty state until a real notice is approved.
+
+See `CONTENT.md` for the content schema and the future FRAME editing boundary.
+
+The intended future flow is:
+
+`Sarah input → FRAME structure and preview → Sarah approval → authoritative website content source → publish or deploy → FRAME sync`
+
+This does not make FRAME a second CMS or state authority. The final production write target remains gated by Tilmann’s content maintenance and Plesk decision.
+
 ## Design direction
 
 Selected synthesis: **Professional editorial structure + botanical warmth.**
 
-The green Navigation Home card is the main interactive accent inside a white first section. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the merged homepage navigation section. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
+The green Navigation Home card is the main interactive accent inside a white first section. It uses a near square editorial geometry rather than rounded app card styling. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the merged homepage navigation section. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
 
 See `DESIGN.md` for the binding design and copy contract.
 
@@ -64,7 +88,7 @@ Implemented browser signals:
 
 The first selected visitor state remains available for the browser session. The currently open visitor state can change as people compare routes and is cleared when the active row is closed. Intent events expose the original first state and the current state where relevant. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
 
-No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer.
+No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer or through Aktuelles content.
 
 ## Contact and Google Maps
 
@@ -88,13 +112,14 @@ No build command or dependency installation is required.
 
 ## Production boundary
 
-Do not treat the current static structure as a final CMS or framework decision.
+Do not treat the current static structure, JSON notice source or renderer as a final CMS or framework decision.
 
 The production architecture remains gated by Tilmann’s answer on:
 
 - Plesk compatible deployment path
 - update and handoff workflow
 - Sarah’s protected content editing surface
+- authoritative production content source
 - hosting, security and operational continuity
 
 Do not move production to an alternative host merely because this prototype can run there.
@@ -113,9 +138,10 @@ Verify with Sarah and Tilmann:
 - current opening and contact information
 - legal imprint and privacy content
 - production safe font delivery
+- final production content maintenance path for Sarah
 
 All pages stay `noindex,nofollow` until explicit launch approval.
 
 ## Implementation handoff
 
-`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction, homepage page hierarchy and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience.
+`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction, homepage page hierarchy, Aktuelles content contract and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience or build a speculative CMS.
