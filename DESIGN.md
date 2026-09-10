@@ -73,17 +73,20 @@ The classic navigation remains available for people who prefer direct browsing.
 
 The homepage must also make the multi page depth visually explicit. Immediately after Navigation Home, the previous `Was uns prägt` and `Verstehen, bevor behandelt wird.` sections are one combined section. The differentiators Zeit, funktionelles Kontextdenken, fachliche Tiefe and persönliche Kontinuität remain in the explanatory copy instead of appearing as passive cards.
 
-That combined section exposes five full clickable page cards:
+That combined section exposes six full clickable page cards:
 
 1. Arbeitsweise
 2. Therapie
 3. Team
 4. Praxisbesuch
 5. Karriere
+6. Aktuelles
 
-The whole card is the link. On pointer hover and keyboard focus the card turns green and keeps sufficient contrast. Clicking opens the corresponding real subpage. This section exists to make the site feel and behave like a genuine multi page practice website rather than a long one page presentation.
+The whole card is the link. On pointer hover and keyboard focus the card turns green and keeps sufficient contrast. Clicking opens the corresponding real subpage. The six cards form a balanced three by two desktop composition, two columns on intermediate widths and one column on mobile. This section exists to make the site feel and behave like a genuine multi page practice website rather than a long one page presentation.
 
-The treatment context preview remains below this page navigation section and continues to route into deeper anchors on `therapie.html`.
+`Aktuelles` is a permanent sixth destination. Current notices themselves are conditional. If an active notice is explicitly marked for the homepage, a compact `Aktuelles` section appears between the multi page navigation and the therapy orientation. If there is no such notice, that section remains hidden so empty content does not create visual noise.
+
+The treatment context preview remains below this page navigation and optional notice section and continues to route into deeper anchors on `therapie.html`.
 
 ## FRAME translation
 
@@ -93,10 +96,10 @@ The structural model remains:
 
 On this website:
 
-- INPUT means visitor state
-- RELEVANCE means the small set of next routes that match that state
-- STRUCTURE means concise information on the relevant subpage with progressive depth
-- DECISION means a useful next action such as understanding the practice, reaching appointment information, contacting the practice or exploring a role
+- INPUT means visitor state or an approved practice content change
+- RELEVANCE means the small set of next routes or public information that matters now
+- STRUCTURE means concise information on the relevant subpage or a bounded current notice
+- DECISION means a useful next action or Sarah’s reviewed publication decision
 
 Do not introduce a chatbot, symptom triage, diagnosis, patient account or clinical decision system.
 
@@ -111,6 +114,20 @@ The first selected visitor state and the currently open visitor state may be hel
 
 Any later analytics integration must preserve data minimization and must not collect symptoms, diagnoses, patient names or medical free text through the Navigation Home.
 
+## Aktuelles and content autonomy
+
+Sarah must be able to maintain ordinary notices without needing a developer for each update.
+
+The current prototype uses `content/aktuelles.json` as a small portable semantic content source. It is not a final CMS decision. `aktuelles.html` renders all active published items. The homepage renders only active items explicitly marked for homepage visibility and shows at most two.
+
+Do not add fictional preview news. An empty content source is a valid state.
+
+The future product direction is that authenticated FRAME may provide a bounded `Website / Aktuelles` editing surface that lets Sarah structure, preview and approve a notice. After approval, an adapter writes to the authoritative production website content source and FRAME re reads or syncs the resulting state.
+
+FRAME must not become a second website state store. The final production content owner and write path remain subject to Tilmann’s Plesk compatible content maintenance decision. Do not build a generic CMS or authentication layer from this prototype alone.
+
+See `CONTENT.md` for the bounded schema and responsibility contract.
+
 ## Multi page rule
 
 Every subpage answers one concrete need.
@@ -120,9 +137,9 @@ Every subpage answers one concrete need.
 - `Team`: people, continuity and professional depth
 - `Praxisbesuch`: self service orientation, contact and appointment
 - `Karriere`: recruiting and employer context
-- `Aktuelles`: only genuinely current practice information
+- `Aktuelles`: genuinely current practice information only
 
-The homepage page cards must remain direct links to the first five core subpages. They are navigation previews, not substitute content for those pages.
+The homepage page cards must remain direct links to all six core subpages. They are navigation previews, not substitute content for those pages.
 
 Do not collapse this structure back into a one pager.
 
@@ -148,10 +165,12 @@ Use restrained transitions. No scroll jacking and no parallax dependency. Preser
 
 The inline visitor state accordions must expose their open state through accessible attributes and remain operable without moving focus away from the selected control unexpectedly.
 
-The five homepage page cards must expose the same visual emphasis on keyboard focus that pointer users receive on hover.
+The six homepage page cards must expose the same visual emphasis on keyboard focus that pointer users receive on hover.
+
+Current notices must remain readable and useful without decorative motion. If notice data cannot be loaded, the homepage notice surface stays hidden and `aktuelles.html` retains its public empty state.
 
 ## Technical boundary
 
 This design contract is independent from the eventual production framework.
 
-Tilmann retains authority over hosting, security, Plesk deployment and technical continuity. Sarah retains professional truth and ordinary content autonomy. Franklyn owns positioning, information architecture, visitor logic, UX, visual direction and the Visibility Intelligence concept.
+Tilmann retains authority over hosting, security, Plesk deployment, the authoritative content storage path and technical continuity. Sarah retains professional truth and ordinary content autonomy. Franklyn owns positioning, information architecture, visitor logic, UX, visual direction and the Visibility Intelligence concept.
