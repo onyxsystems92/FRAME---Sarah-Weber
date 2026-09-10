@@ -50,7 +50,7 @@ Implemented browser signals:
 - `rz:navigation-intent-selected`
 - `rz:navigation-route-selected`
 
-The first selected visitor state is held only in `sessionStorage` for the current browser session. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
+The first selected visitor state and the current selected visitor state are held only in `sessionStorage` for the current browser session. Intent events expose both where relevant, so a later approved adapter can distinguish the original entry choice from a changed choice before routing. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
 
 No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer.
 
