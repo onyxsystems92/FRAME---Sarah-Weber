@@ -11,6 +11,8 @@ document.querySelectorAll('.brand .brand-mark').forEach(mark=>{
   const logo=document.createElement('img');
   logo.src='assets/logo-raum-und-zeit.png';
   logo.alt='';
+  logo.width=32;
+  logo.height=32;
   logo.className='brand-logo';
   mark.replaceWith(logo);
 });
