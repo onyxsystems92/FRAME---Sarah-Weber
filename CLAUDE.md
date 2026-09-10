@@ -19,6 +19,8 @@ The current `main` is expected to contain the agreed Editorial Green Practice de
 
 The first homepage composition has a white positioning field and a green Navigation Home card.
 
+The green Navigation Home card must read as an editorial rectangle, not as a soft rounded app card. Preserve its near square outer corners, fine border, restrained shadow and flat visitor state rows. Do not restore large border radii, capsule styling or separate rounded mini cards inside the green surface.
+
 First choices are:
 
 1. Ich bin neu hier.
@@ -85,6 +87,8 @@ Check:
 
 - all seven pages and all internal links
 - white first homepage field and green Navigation Home card
+- green Navigation Home uses near square editorial geometry, not soft rounded app card styling
+- visitor state rows remain flat and rectilinear with fine separators
 - all four visitor state controls
 - routes open directly below the selected row
 - clicking the active row closes it
@@ -140,6 +144,8 @@ CURRENT MAIN SHA
 PREVIEW OR TARGET URL
 
 SMOKE TEST STATUS
+
+NAVIGATION HOME VISUAL STATUS
 
 HOMEPAGE SUBPAGE NAVIGATION STATUS
 
