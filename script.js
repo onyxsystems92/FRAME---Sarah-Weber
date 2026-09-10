@@ -1,3 +1,4 @@
+if(location.hash){const hashTarget=document.querySelector(location.hash);if(hashTarget&&hashTarget.tagName==='DETAILS')hashTarget.open=true;}
 const menuToggle=document.querySelector('[data-menu-toggle]');
 if(menuToggle){menuToggle.addEventListener('click',()=>{const open=document.body.classList.toggle('menu-open');menuToggle.setAttribute('aria-expanded',String(open));});}
 document.querySelectorAll('.nav a').forEach(link=>{link.addEventListener('click',()=>{document.body.classList.remove('menu-open');if(menuToggle)menuToggle.setAttribute('aria-expanded','false');});});
