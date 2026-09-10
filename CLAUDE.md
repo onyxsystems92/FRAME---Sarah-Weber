@@ -1,10 +1,10 @@
-# Cloud Code Handoff · Raum & Zeit
+# Claude Code Handoff · Raum & Zeit
 
 ## Objective
 
 Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it and do not invent a new architecture.
 
-The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the real practice logo and the multi page structure.
+The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the real practice logo, the Google Maps contact route and the multi page structure.
 
 ## Read first
 
@@ -45,6 +45,16 @@ The first selected state should remain stable for the session. The current state
 
 No external analytics service should be introduced during deployment unless an explicitly approved integration already exists. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data.
 
+## Google Maps contact route
+
+`praxis.html` contains a direct `Auf Google Maps öffnen` link for the practice location.
+
+This is intentionally a click through rather than an embedded Maps iframe. The page must not contact Google Maps merely because the visitor opens the contact section. Google Maps may load only after the visitor actively follows the external link.
+
+Smoke test that the link resolves to the intended Raum und Zeit Physiotherapie location at Düsseldorfer Str. 101 in Düsseldorf. Do not infer or rewrite the disputed postcode from the Maps destination. Postcode remains a separate launch verification item.
+
+Do not replace this with an iframe, Maps SDK, API key or new consent management implementation during this deployment pass.
+
 ## Public copy rule
 
 Avoid Gedankenstriche as a stylistic device and avoid artificial AI style hyphen constructions. Do not damage correct URLs, code, established abbreviations or genuinely necessary German compounds through mechanical replacement.
@@ -65,6 +75,9 @@ Check:
 - opening another row closes the previous row
 - `aria-expanded`, `aria-pressed` and keyboard access
 - real logo rendering in header and homepage Arbeitsweise accent
+- Google Maps link in the contact and address section
+- no Google Maps request before active click
+- external Maps link opens the intended practice location
 - mobile menu including Escape
 - therapy details controls
 - deep links such as `praxis.html#termin` and therapy hashes
@@ -81,7 +94,7 @@ Fix only a genuine implementation defect and keep any fix narrow. If no defect e
 
 ## Content that remains unresolved
 
-Do not invent postcode, public email, appointment URL, Maps destination, current team roster, final methods, news, opening hours, legal copy or final photography.
+Do not invent postcode, public email, appointment URL, current team roster, final methods, news, opening hours, legal copy or final photography.
 
 ## Deployment boundary
 
@@ -106,6 +119,8 @@ CURRENT MAIN SHA
 PREVIEW OR TARGET URL
 
 SMOKE TEST STATUS
+
+GOOGLE MAPS STATUS
 
 ISSUES FOUND / FIXED
 

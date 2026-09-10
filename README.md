@@ -54,6 +54,12 @@ The first selected visitor state remains available for the browser session. The 
 
 No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer.
 
+## Contact and Google Maps
+
+The practice contact section in `praxis.html` includes a direct external link that opens the exact Raum und Zeit location in Google Maps. Google Maps is not embedded and no Maps iframe is loaded on page view. Google is contacted only after the visitor actively follows the link.
+
+The Maps route is for orientation only. The disputed postcode remains a separate launch verification item and is deliberately not required to construct the Maps destination.
+
 ## Copy rule
 
 Public website copy avoids Gedankenstriche as a stylistic device and avoids artificial AI style hyphen constructions. Use natural German sentences instead. Correct technical syntax, URLs, established abbreviations and genuinely required compounds are not to be damaged by mechanical replacement.
@@ -88,7 +94,6 @@ Verify with Sarah and Tilmann:
 - correct postcode
 - final public email address
 - final online appointment URL
-- Google Maps destination or embed
 - current team roster, roles and approved short bios
 - final qualifications and method inventory
 - first real `Aktuelles` entry
