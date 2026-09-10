@@ -1,131 +1,157 @@
-# Raum & Zeit — Design Implementation Reference
+# Raum & Zeit — Design Contract
 
-Source reference: Refero `2.AG — Style Reference` supplied by Franklyn on 2026-08-19.
+## Decision
 
-## Translation rule
+The current direction combines the best of two design families:
 
-Use the 2.AG reference for **design grammar**, not brand copying.
+1. **Professional / Editorial**
+   - premium but not luxury-coded
+   - strong typographic hierarchy
+   - generous whitespace
+   - fine rules instead of card-shadow UI
+   - clear multi-page navigation
 
-Preserve from the reference:
-- high-contrast editorial website character
-- 50/50 or asymmetric split layouts
-- Inter Tight / Inter-like typography
-- generous vertical rhythm
-- hairline borders instead of heavy shadows
-- 12–20px card radii
-- pill actions used sparingly
-- layered, product-like information presentation
-- clear navigation and strong interaction states
-- alternating light/dark structural surfaces
+2. **Botanical / Human**
+   - Sarah’s green identity remains recognizable
+   - warm paper tones instead of clinical white
+   - organic geometry used sparingly
+   - calm, personal and tactile rather than spa-like
 
-Do not copy:
-- 2.AG branding or content
-- pharmaceutical/product imagery
-- teal/mint identity as the dominant palette
-- testimonial or dosage components
-- science claims/stat blocks that do not fit Raum & Zeit
+The result is called **Editorial Green Practice** inside this repository.
 
-## Raum & Zeit identity translation
+## Brand principle
 
-Sarah explicitly wants the existing CI to remain recognizable, but only **accent-wise**. The current website is too colorful; this rebuild should feel quieter and more mature.
+**Preserve → Refine → Reduce**
 
-Principle: **Preserve → refine → reduce.**
+Do not import Franklyn’s own visual identity. Do not clone a reference site. Use Raum & Zeit’s existing green identity and hourglass / “Z” symbolism as source material.
 
-### Foundation
-- `--paper: #f6f3ed` warm ivory
-- `--paper-2: #ede9e1` warm stone
-- `--ink: #161817` near-black
-- `--graphite: #555a57`
-- `--line: rgba(22,24,23,.18)`
-- `--dark: #202724` deep charcoal-botanical
+## Visual foundation
 
-### CI accents
-Use only in small, intentional moments. These are muted implementation accents, not a new brand declaration:
-- `--ci-coral: #d8796f`
-- `--ci-gold: #d5ad5f`
-- `--ci-sage: #7f9a86`
-- `--ci-blue: #7897a7`
+```css
+--paper: #f4f0e7;
+--paper-2: #ebe5d9;
+--ink: #18221d;
+--forest: #21372f;
+--forest-2: #2c473c;
+--sage: #809787;
+--sage-soft: #d9e1da;
+--sand: #b5976d;
+```
 
-The accents should collectively occupy roughly 10–15% of the visual system. Never place all four as large surfaces. Prefer one active accent at a time.
-
-Recommended usage:
-- hourglass mark: multi-accent or selected single accent
-- active navigation marker
-- selected orientation item
-- tiny section labels / rules / dots
-- hover feedback
-- news metadata
+Green is the dominant identity color, but large areas alternate between warm paper and deep forest instead of saturating every section.
 
 ## Typography
 
-Primary: `Inter Tight`, fallback `Inter, Arial, sans-serif`.
+Preview:
+- Display: `Newsreader`
+- Body: `Manrope`
 
-- Display: 58–72px desktop, 42–52px tablet, 36–44px mobile; weight 500; tracking -0.04em; line-height .96–1.02
-- H2: 36–48px; weight 500; tracking -0.03em
-- H3: 20–28px; weight 500
-- Body: 16–18px; line-height 1.5–1.65
-- Meta / labels: 10–12px uppercase; tracking .10em
+Before production, prefer self-hosted font files or a privacy-reviewed delivery path.
 
-## Layout
+Typography should communicate professional depth, not fashion/editorial affectation:
+- large serif display hierarchy
+- restrained weights
+- readable 15–18px body
+- compact uppercase metadata
+- short line lengths for explanatory text
 
-- max-width: 1280px
-- gutters: 24px mobile / 36px tablet / 56px desktop
-- major section spacing: 72–112px
-- hero: strong asymmetric split with a dark structural field and a light/interactive field
-- avoid long single-column brochure flow
-- keep total page to approximately 5 meaningful visual moments
+## Shape / composition
 
-## Shape / elevation
+- max width around 1240px
+- generous vertical rhythm
+- asymmetric editorial splits
+- hairline borders
+- 14–22px radius only where useful
+- minimal shadow
+- organic line geometry only as a secondary device
+- abstract hourglass rather than antique illustration
+- “Z” may appear as a spatial / geometric cue
 
-- hairline borders define depth
-- avoid heavy shadows
-- radii: 14–22px on cards, 999px on primary pills
-- use overlap and tonal steps for layering
+## Homepage role
 
-## Signature device: abstract hourglass
+The homepage is a **Navigation Home**, not a one-page brochure.
 
-The hourglass should not be antique or illustrative.
+Primary routes:
+1. How does Raum & Zeit work?
+2. Which treatment contexts do they support?
+3. Who will treat me?
+4. How does a visit / appointment work?
+5. I want to work at Raum & Zeit.
 
-Use two opposing geometric chambers narrowing to a center point. It may be built from:
-- two rounded trapezoids / clipped planes
-- two triangular forms
-- two mirrored curved paths
+The visitor should be able to make one useful orientation decision without scrolling through the entire practice.
 
-It should function as:
-- brand mark
-- favicon
-- navigation icon
-- subtle transition/loading motif
-- spatial composition principle
+## Multi-page rule
 
-The mark may carry Sarah's CI accents more visibly than the rest of the page.
+Every subpage answers one concrete need:
 
-## Motion
+- `Arbeitsweise`: positioning and therapeutic logic
+- `Therapie`: understandable contexts first, methods deeper
+- `Team`: people, continuity, professional depth
+- `Praxisbesuch`: self-service orientation, contact, appointment
+- `Karriere`: recruiting and employer context
+- `Aktuelles`: only genuinely current practice information
 
-Restrained only:
-- 180–420ms transitions
-- selected orientation panel reveal
-- navigation underline / dot movement
-- subtle hourglass transformation
-- image/placeholder parallax maximum 4–8px
-- respect `prefers-reduced-motion`
+Do not collapse this structure back into a one-pager.
 
-## Website behavior principle
+## FRAME translation
 
-The site should not dump information.
+FRAME logic is structural, not visible software branding:
 
-`visitor intention → concise relevant practice information → next useful action → human decision`
+`INPUT → RELEVANCE → STRUCTURE → DECISION`
 
-For V1 this is deterministic progressive disclosure, not medical AI.
+On this website:
+- INPUT = visitor intent
+- RELEVANCE = select the right page / content layer
+- STRUCTURE = concise information with progressive depth
+- DECISION = appointment, call, learn more, apply, or no action
 
-## Don'ts
+No chatbot, diagnosis, symptom triage, patient account, or clinical decision system.
 
-- no generic medical blue
-- no wellness-spa beige-only aesthetic
-- no gradients as decoration
-- no cliché physiotherapy stock photography
-- no icon-card wall
-- no large rainbow CI sections
-- no chatbot box
-- no symptom diagnosis/triage
-- no invented testimonials or medical claims
+## Copy rules
+
+Prioritize:
+- time
+- functional relationships
+- professional depth
+- individual treatment
+- personal continuity
+
+Avoid using generic “ganzheitlich” as the primary differentiator.
+
+Avoid:
+- guarantees of healing
+- unsupported outcome claims
+- invented reviews
+- invented current staff / openings / news
+- language that implies automated medical advice
+
+## Photography
+
+Use real practice and team photography.
+
+Direction:
+- natural daylight
+- quiet, observational
+- rooms, hands, movement, conversation, real materials
+- no exaggerated treatment poses
+- no generic medical stock
+- no wellness-spa imagery
+- avoid overly polished corporate team grids
+
+Until approved photography exists, geometric placeholders remain intentional.
+
+## Motion / accessibility
+
+- restrained 180–320ms transitions
+- no scroll-jacking or parallax dependency
+- full keyboard navigation
+- visible focus behavior through native browser + high contrast
+- semantic headings / details
+- `prefers-reduced-motion` respected
+- responsive at ~390 / 900 / 1440px
+
+## Technical boundary
+
+This design contract is independent from the eventual production framework.
+
+Tilmann retains authority over hosting, security, Plesk deployment and technical continuity. Sarah retains content/professional truth and ordinary content autonomy. Franklyn owns positioning, information architecture, UX, visual direction and the Visibility Intelligence concept.
