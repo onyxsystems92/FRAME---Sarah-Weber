@@ -4,7 +4,7 @@
 
 Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it and do not invent a new architecture.
 
-The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the real practice logo, the Google Maps contact route and the multi page structure.
+The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the visible homepage subpage cards, the real practice logo, the Google Maps contact route and the multi page structure.
 
 ## Read first
 
@@ -30,7 +30,23 @@ Each choice is an inline accordion row. Its relevant routes must open directly u
 
 Keep the classic multi page navigation available. Do not turn this back into a category list or one pager.
 
-The real logo at `assets/logo-raum-und-zeit.png` is an accent, not the main visual device. It is used in the site brand and as a restrained visual accent in the homepage Arbeitsweise section.
+Immediately below Navigation Home, the homepage contains one merged section with the eyebrow `Was uns prägt` and the heading `Verstehen, bevor behandelt wird.`
+
+This section must show five full clickable subpage cards:
+
+1. Arbeitsweise
+2. Therapie
+3. Team
+4. Praxisbesuch
+5. Karriere
+
+The former passive cards for Zeit, Zusammenhänge, fachliche Tiefe and Kontinuität must not return as separate cards. Those ideas remain in the explanatory copy.
+
+The former standalone homepage Arbeitsweise feature must not return. It has been integrated into the merged section.
+
+Each of the five page cards must turn green on pointer hover and on keyboard focus. The whole card is clickable and must open its corresponding real subpage. The treatment context section remains directly below and still links to deep therapy anchors.
+
+The real logo at `assets/logo-raum-und-zeit.png` remains a restrained accent in the site brand and the merged `Was uns prägt` section.
 
 ## Intelligence boundary
 
@@ -74,7 +90,12 @@ Check:
 - clicking the active row closes it
 - opening another row closes the previous row
 - `aria-expanded`, `aria-pressed` and keyboard access
-- real logo rendering in header and homepage Arbeitsweise accent
+- merged `Was uns prägt` and `Verstehen, bevor behandelt wird.` section
+- exactly five homepage subpage cards
+- each page card opens the correct subpage
+- each page card turns green on pointer hover and keyboard focus
+- treatment context section remains below the page cards
+- real logo rendering in header and merged homepage section
 - Google Maps link in the contact and address section
 - no Google Maps request before active click
 - external Maps link opens the intended practice location
@@ -119,6 +140,10 @@ CURRENT MAIN SHA
 PREVIEW OR TARGET URL
 
 SMOKE TEST STATUS
+
+HOMEPAGE SUBPAGE NAVIGATION STATUS
+
+FRAME ACCORDION STATUS
 
 GOOGLE MAPS STATUS
 
