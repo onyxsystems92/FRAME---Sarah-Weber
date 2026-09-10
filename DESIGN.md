@@ -20,6 +20,8 @@ The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained a
 
 The first homepage composition uses a white positioning field and a clearly contrasting green Navigation Home card. The green card is the primary interactive orientation surface.
 
+The Navigation Home card uses a rectilinear editorial geometry with near square outer corners, fine borders and restrained shadow. Avoid soft capsule styling, large rounded app card geometry or a floating SaaS dashboard look. The visitor state rows inside the green surface are flat editorial rows separated by fine rules rather than separate rounded cards.
+
 ## Visual foundation
 
 ```css
@@ -62,6 +64,8 @@ Binding first choices:
 4. Ich möchte bei Raum und Zeit arbeiten.
 
 Each choice behaves like an inline accordion row. Its relevant next routes expand directly underneath that same row, not in a detached panel below the full choice list. Clicking the open choice again collapses it. Opening another choice closes the previous one. This interaction must remain visually obvious on desktop and mobile.
+
+The accordion rows themselves stay visually flat and rectilinear. Hover, active and focus states may use subtle sage fill and a fine left inset accent, but should not reintroduce rounded mini cards inside the green Navigation Home surface.
 
 Only after a visitor state is opened should the interface reveal the relevant next routes. The visitor should not have to understand the site architecture before knowing where to go.
 
