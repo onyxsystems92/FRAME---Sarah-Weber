@@ -16,7 +16,9 @@ The repository calls the synthesis **Editorial Green Practice**.
 
 Do not import Franklyn’s visual identity and do not clone a reference site. Use Raum und Zeit’s existing green identity as the foundation.
 
-The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained accent. It should not dominate the composition. The first visible Navigation Home area remains green.
+The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained accent. It should not dominate the composition. It appears in the site brand and may reappear selectively as an editorial accent, including the homepage Arbeitsweise section.
+
+The first homepage composition uses a white positioning field and a clearly contrasting green Navigation Home card. The green card is the primary interactive orientation surface.
 
 ## Visual foundation
 
@@ -31,7 +33,7 @@ The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained a
 --sand: #b5976d;
 ```
 
-Use warm paper and green surfaces in a controlled rhythm. Avoid generic clinical white and avoid wellness styling.
+Use white, warm paper and green surfaces in a controlled rhythm. Avoid generic clinical coldness and avoid wellness styling.
 
 ## Typography
 
@@ -50,7 +52,7 @@ The homepage is the patient facing **FRAME Navigation Home**. It is not a one pa
 The first visible screen must do two things at once:
 
 1. establish Raum und Zeit briefly
-2. ask for the visitor’s current state
+2. ask for the visitor’s current state inside the green Navigation Home card
 
 Binding first choices:
 
@@ -59,7 +61,9 @@ Binding first choices:
 3. Ich möchte eine Behandlung besser verstehen.
 4. Ich möchte bei Raum und Zeit arbeiten.
 
-Only after that choice should the interface reveal the relevant next routes. The visitor should not have to understand the site architecture before knowing where to go.
+Each choice behaves like an inline accordion row. Its relevant next routes expand directly underneath that same row, not in a detached panel below the full choice list. Clicking the open choice again collapses it. Opening another choice closes the previous one. This interaction must remain visually obvious on desktop and mobile.
+
+Only after a visitor state is opened should the interface reveal the relevant next routes. The visitor should not have to understand the site architecture before knowing where to go.
 
 The classic navigation remains available for people who prefer direct browsing.
 
@@ -85,7 +89,7 @@ The prototype prepares only bounded non clinical navigation signals.
 - selected visitor state
 - selected next route
 
-The current implementation emits local browser events and may hold the first state in session storage. No external analytics service is active by default.
+The first selected visitor state and the currently open visitor state may be held in session storage for the current browser session. Closing the active accordion may clear the current state while preserving the original first state. No external analytics service is active by default.
 
 Any later analytics integration must preserve data minimization and must not collect symptoms, diagnoses, patient names or medical free text through the Navigation Home.
 
@@ -121,6 +125,8 @@ Until approved photography exists, restrained geometric placeholders are intenti
 ## Motion and accessibility
 
 Use restrained transitions. No scroll jacking and no parallax dependency. Preserve keyboard navigation, visible focus, semantic headings, reduced motion support and responsive integrity at roughly 390, 900 and 1440 pixels.
+
+The inline visitor state accordions must expose their open state through accessible attributes and remain operable without moving focus away from the selected control unexpectedly.
 
 ## Technical boundary
 

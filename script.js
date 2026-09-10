@@ -15,6 +15,10 @@ const readSessionValue=key=>{
   try{return sessionStorage.getItem(key);}catch(error){return null;}
 };
 
+const clearSessionValue=key=>{
+  try{sessionStorage.removeItem(key);}catch(error){}
+};
+
 const writeIntentState=intent=>{
   let firstIntent=readSessionValue('rz:first-intent');
   try{
@@ -29,12 +33,25 @@ const intentPanels=[...document.querySelectorAll('[data-intent-panel]')];
 intentButtons.forEach(button=>{
   button.addEventListener('click',()=>{
     const intent=button.dataset.intentButton;
+    const isOpen=button.getAttribute('aria-expanded')==='true';
+
+    intentButtons.forEach(item=>{
+      item.setAttribute('aria-pressed','false');
+      item.setAttribute('aria-expanded','false');
+    });
+    intentPanels.forEach(panel=>{panel.hidden=true;});
+
+    if(isOpen){
+      clearSessionValue('rz:current-intent');
+      return;
+    }
+
     const firstIntent=writeIntentState(intent);
-    intentButtons.forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
-    intentPanels.forEach(panel=>panel.hidden=panel.dataset.intentPanel!==intent);
-    emitNavigationSignal('navigation-intent-selected',{intent,firstIntent});
+    button.setAttribute('aria-pressed','true');
+    button.setAttribute('aria-expanded','true');
     const activePanel=intentPanels.find(panel=>panel.dataset.intentPanel===intent);
-    if(activePanel)activePanel.querySelector('a')?.focus({preventScroll:true});
+    if(activePanel)activePanel.hidden=false;
+    emitNavigationSignal('navigation-intent-selected',{intent,firstIntent});
   });
 });
 

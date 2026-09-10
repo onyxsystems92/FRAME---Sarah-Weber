@@ -25,7 +25,7 @@ The homepage starts from visitor state rather than website taxonomy:
 3. Ich möchte eine Behandlung besser verstehen.
 4. Ich möchte bei Raum und Zeit arbeiten.
 
-After the first choice, only relevant next routes are shown. The multi page structure remains available through the normal navigation.
+The first composition uses a white positioning field and a green Navigation Home card. Each visitor state opens its relevant next routes directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one. The multi page structure remains available through the normal navigation.
 
 FRAME translation:
 
@@ -37,7 +37,7 @@ This is deterministic orientation. It is not medical AI, diagnosis or triage.
 
 Selected synthesis: **Professional editorial structure + botanical warmth.**
 
-The first visible homepage area remains deep green. The uploaded Raum und Zeit logo is used as a restrained accent, not as the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
+The green Navigation Home card is the main interactive accent inside a white first section. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the homepage Arbeitsweise composition. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
 
 See `DESIGN.md` for the binding design and copy contract.
 
@@ -50,7 +50,7 @@ Implemented browser signals:
 - `rz:navigation-intent-selected`
 - `rz:navigation-route-selected`
 
-The first selected visitor state and the current selected visitor state are held only in `sessionStorage` for the current browser session. Intent events expose both where relevant, so a later approved adapter can distinguish the original entry choice from a changed choice before routing. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
+The first selected visitor state remains available for the browser session. The currently open visitor state can change as people compare routes and is cleared when the active row is closed. Intent events expose the original first state and the current state where relevant. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
 
 No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer.
 
@@ -101,4 +101,4 @@ All pages stay `noindex,nofollow` until explicit launch approval.
 
 ## Implementation handoff
 
-`CLAUDE.md` is the operational validation and deployment contract. The website strategy, visitor logic and design direction are already decided. Validation may repair defects, but must not redesign the experience.
+`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience.
