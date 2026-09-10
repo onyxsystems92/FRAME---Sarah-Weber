@@ -10,7 +10,7 @@ The current revision supersedes the August one page concept and the first catego
 
 ## Information architecture
 
-- `index.html`: Navigation Home
+- `index.html`: Navigation Home and visible subpage entry surface
 - `arbeitsweise.html`: how Raum und Zeit works
 - `therapie.html`: treatment contexts and deeper professional methods
 - `team.html`: Sarah and team structure
@@ -25,7 +25,19 @@ The homepage starts from visitor state rather than website taxonomy:
 3. Ich möchte eine Behandlung besser verstehen.
 4. Ich möchte bei Raum und Zeit arbeiten.
 
-The first composition uses a white positioning field and a green Navigation Home card. Each visitor state opens its relevant next routes directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one. The multi page structure remains available through the normal navigation.
+The first composition uses a white positioning field and a green Navigation Home card. Each visitor state opens its relevant next routes directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one.
+
+Immediately below that orientation layer, the homepage makes the multi page structure explicit through five clickable page cards:
+
+1. Arbeitsweise
+2. Therapie
+3. Team
+4. Praxisbesuch
+5. Karriere
+
+These cards replace the former passive differentiator cards and the separate homepage Arbeitsweise feature. The previous `Was uns prägt` and `Verstehen, bevor behandelt wird.` sections are now one compact navigation section. The differentiators Zeit, funktionelles Kontextdenken, fachliche Tiefe and persönliche Kontinuität remain in the supporting copy.
+
+Each page card turns green on pointer hover and keyboard focus, and the whole card opens the corresponding subpage. The treatment context preview remains below this section and continues to route visitors into deeper therapy anchors.
 
 FRAME translation:
 
@@ -37,7 +49,7 @@ This is deterministic orientation. It is not medical AI, diagnosis or triage.
 
 Selected synthesis: **Professional editorial structure + botanical warmth.**
 
-The green Navigation Home card is the main interactive accent inside a white first section. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the homepage Arbeitsweise composition. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
+The green Navigation Home card is the main interactive accent inside a white first section. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the merged homepage navigation section. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
 
 See `DESIGN.md` for the binding design and copy contract.
 
@@ -106,4 +118,4 @@ All pages stay `noindex,nofollow` until explicit launch approval.
 
 ## Implementation handoff
 
-`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience.
+`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction, homepage page hierarchy and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience.

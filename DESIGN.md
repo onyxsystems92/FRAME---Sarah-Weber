@@ -16,7 +16,7 @@ The repository calls the synthesis **Editorial Green Practice**.
 
 Do not import Franklyn’s visual identity and do not clone a reference site. Use Raum und Zeit’s existing green identity as the foundation.
 
-The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained accent. It should not dominate the composition. It appears in the site brand and may reappear selectively as an editorial accent, including the homepage Arbeitsweise section.
+The real Raum und Zeit logo in `assets/logo-raum-und-zeit.png` is a restrained accent. It should not dominate the composition. It appears in the site brand and may reappear selectively as an editorial accent, including the merged homepage section `Was uns prägt`.
 
 The first homepage composition uses a white positioning field and a clearly contrasting green Navigation Home card. The green card is the primary interactive orientation surface.
 
@@ -67,6 +67,20 @@ Only after a visitor state is opened should the interface reveal the relevant ne
 
 The classic navigation remains available for people who prefer direct browsing.
 
+The homepage must also make the multi page depth visually explicit. Immediately after Navigation Home, the previous `Was uns prägt` and `Verstehen, bevor behandelt wird.` sections are one combined section. The differentiators Zeit, funktionelles Kontextdenken, fachliche Tiefe and persönliche Kontinuität remain in the explanatory copy instead of appearing as passive cards.
+
+That combined section exposes five full clickable page cards:
+
+1. Arbeitsweise
+2. Therapie
+3. Team
+4. Praxisbesuch
+5. Karriere
+
+The whole card is the link. On pointer hover and keyboard focus the card turns green and keeps sufficient contrast. Clicking opens the corresponding real subpage. This section exists to make the site feel and behave like a genuine multi page practice website rather than a long one page presentation.
+
+The treatment context preview remains below this page navigation section and continues to route into deeper anchors on `therapie.html`.
+
 ## FRAME translation
 
 The structural model remains:
@@ -104,6 +118,8 @@ Every subpage answers one concrete need.
 - `Karriere`: recruiting and employer context
 - `Aktuelles`: only genuinely current practice information
 
+The homepage page cards must remain direct links to the first five core subpages. They are navigation previews, not substitute content for those pages.
+
 Do not collapse this structure back into a one pager.
 
 ## Copy rules
@@ -127,6 +143,8 @@ Until approved photography exists, restrained geometric placeholders are intenti
 Use restrained transitions. No scroll jacking and no parallax dependency. Preserve keyboard navigation, visible focus, semantic headings, reduced motion support and responsive integrity at roughly 390, 900 and 1440 pixels.
 
 The inline visitor state accordions must expose their open state through accessible attributes and remain operable without moving focus away from the selected control unexpectedly.
+
+The five homepage page cards must expose the same visual emphasis on keyboard focus that pointer users receive on hover.
 
 ## Technical boundary
 
