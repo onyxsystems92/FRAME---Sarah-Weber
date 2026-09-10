@@ -1,44 +1,62 @@
 # Raum & Zeit Website
 
-Multi-page first-draft website for **Raum und Zeit Physiotherapie · Sarah Weber · Düsseldorf-Oberkassel**.
+Multi page concept website for **Raum und Zeit Physiotherapie · Sarah Weber · Düsseldorf Oberkassel**.
 
 ## Status
 
-**Design / content prototype — not production.**
+**Experience prototype. Not production.**
 
-This revision supersedes the August one-page concept. It translates the validated practice direction into a real multi-page information architecture while keeping the implementation intentionally static and dependency-free until Tilmann confirms the production handoff for the existing Plesk environment.
+The current revision supersedes the August one page concept and the first category based Navigation Home draft. It implements the agreed patient facing FRAME Navigation Layer while keeping the site static and portable until Tilmann confirms the production handoff for the existing Plesk environment.
 
 ## Information architecture
 
-- `index.html` — Navigation Home
-- `arbeitsweise.html` — how Raum & Zeit works
-- `therapie.html` — treatment contexts + deeper professional methods
-- `team.html` — Sarah + team structure
-- `praxis.html` — visit, contact, appointment path
-- `karriere.html` — employer / recruiting surface
-- `aktuelles.html` — maintainable news / practice updates
+- `index.html`: Navigation Home
+- `arbeitsweise.html`: how Raum und Zeit works
+- `therapie.html`: treatment contexts and deeper professional methods
+- `team.html`: Sarah and team structure
+- `praxis.html`: visit, contact and appointment path
+- `karriere.html`: employer and recruiting surface
+- `aktuelles.html`: maintainable practice updates
 
-The homepage follows:
+The homepage starts from visitor state rather than website taxonomy:
 
-`visitor intent → relevant page → concise practice information → useful next action`
+1. Ich bin neu hier.
+2. Ich bin bereits Patient:in.
+3. Ich möchte eine Behandlung besser verstehen.
+4. Ich möchte bei Raum und Zeit arbeiten.
 
-This is deterministic information architecture, not medical AI or triage.
+After the first choice, only relevant next routes are shown. The multi page structure remains available through the normal navigation.
+
+FRAME translation:
+
+`visitor state → relevance → useful route → next action`
+
+This is deterministic orientation. It is not medical AI, diagnosis or triage.
 
 ## Design direction
 
 Selected synthesis: **Professional editorial structure + botanical warmth.**
 
-The site keeps the green identity but makes it darker, calmer and more mature:
-- deep forest green
-- warm ivory / stone
-- muted sage
-- one restrained warm sand accent
-- editorial serif display type + highly readable sans-serif body
-- hairline borders, generous whitespace, almost no shadows
-- abstract hourglass / “Z” as the signature device
-- practice/team photography should replace the abstract placeholders before launch
+The first visible homepage area remains deep green. The uploaded Raum und Zeit logo is used as a restrained accent, not as the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
 
-See `DESIGN.md` for the design contract.
+See `DESIGN.md` for the binding design and copy contract.
+
+## Navigation intelligence boundary
+
+Phase 1 prepares privacy minimal navigation signals only.
+
+Implemented browser signals:
+
+- `rz:navigation-intent-selected`
+- `rz:navigation-route-selected`
+
+The first selected visitor state is held only in `sessionStorage` for the current browser session. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
+
+No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer.
+
+## Copy rule
+
+Public website copy avoids Gedankenstriche as a stylistic device and avoids artificial AI style hyphen constructions. Use natural German sentences instead. Correct technical syntax, URLs, established abbreviations and genuinely required compounds are not to be damaged by mechanical replacement.
 
 ## Run locally
 
@@ -52,39 +70,35 @@ No build command or dependency installation is required.
 
 ## Production boundary
 
-Do **not** treat the current static structure as a final CMS/framework decision.
+Do not treat the current static structure as a final CMS or framework decision.
 
 The production architecture remains gated by Tilmann’s answer on:
-- Plesk-compatible deployment path
-- update / handoff workflow
-- Sarah’s protected content-editing surface
-- hosting / security / operational continuity
 
-The static files are deliberately portable so the final technical choice can wrap or absorb them without redesigning the experience.
+- Plesk compatible deployment path
+- update and handoff workflow
+- Sarah’s protected content editing surface
+- hosting, security and operational continuity
+
+Do not move production to an alternative host merely because this prototype can run there.
 
 ## Unresolved content before public launch
 
-Verify with Sarah / Tilmann:
-- correct postcode (owned website and external listings currently conflict)
+Verify with Sarah and Tilmann:
+
+- correct postcode
 - final public email address
 - final online appointment URL
-- real Google Maps / route destination
+- Google Maps destination or embed
 - current team roster, roles and approved short bios
-- final qualifications / method inventory
+- final qualifications and method inventory
 - first real `Aktuelles` entry
-- final practice / team photography
-- current opening / contact information
+- final practice and team photography
+- current opening and contact information
 - legal imprint and privacy content
-- production-safe font delivery (prefer self-hosting rather than Google Fonts)
+- production safe font delivery
 
-All pages stay `noindex,nofollow` in this prototype.
+All pages stay `noindex,nofollow` until explicit launch approval.
 
-## Data / intelligence boundary
+## Implementation handoff
 
-No analytics, patient data, symptoms, medical free text, diagnosis or autonomous routing are implemented.
-
-Future privacy-minimal navigation signals may be added only after technical/privacy review. Existing practice systems remain the operational/clinical source of truth.
-
-## Claude Code
-
-`CLAUDE.md` is intentionally reduced to final validation and deployment/handoff work.
+`CLAUDE.md` is the operational validation and deployment contract. The website strategy, visitor logic and design direction are already decided. Validation may repair defects, but must not redesign the experience.
