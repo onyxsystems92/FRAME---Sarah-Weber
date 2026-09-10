@@ -2,132 +2,132 @@
 
 ## Objective
 
-Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it and do not invent a new architecture.
+Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it, reopen product decisions or invent a new architecture.
 
-The current `main` is expected to contain the agreed Editorial Green Practice design, the FRAME Navigation Home, the visible homepage subpage cards, the real practice logo, the Google Maps contact route and the multi page structure.
+The current `main` is expected to contain the agreed Editorial Green Practice design, FRAME Navigation Home, six visible homepage subpage cards, the bounded Aktuelles content contract, the real practice logo, Google Maps contact route and the full multi page structure.
 
 ## Read first
 
 1. `README.md`
 2. `DESIGN.md`
-3. all HTML pages
-4. `styles.css`
-5. `frame-navigation.css`
-6. `script.js`
+3. `CONTENT.md`
+4. all HTML pages
+5. `styles.css`
+6. `frame-navigation.css`
+7. `aktuelles.css`
+8. `script.js`
+9. `content/aktuelles.json`
 
-## Binding experience to preserve
+## Preserve the accepted experience
 
-The first homepage composition has a white positioning field and a green Navigation Home card.
+The homepage begins with a white positioning field and a green FRAME Navigation Home card.
 
-The green Navigation Home card must read as an editorial rectangle, not as a soft rounded app card. Preserve its near square outer corners, fine border, restrained shadow and flat visitor state rows. Do not restore large border radii, capsule styling or separate rounded mini cards inside the green surface.
+The green card is a near square editorial rectangle with fine border, restrained shadow and flat visitor state rows. Do not restore rounded app card geometry.
 
-First choices are:
+First choices remain:
 
 1. Ich bin neu hier.
 2. Ich bin bereits Patient:in.
 3. Ich möchte eine Behandlung besser verstehen.
 4. Ich möchte bei Raum und Zeit arbeiten.
 
-Each choice is an inline accordion row. Its relevant routes must open directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one. Do not move the revealed routes into a detached panel below the full choice list.
+Each choice is an inline accordion. Relevant routes open directly beneath the selected row. Clicking the open row closes it. Opening another row closes the previous one.
 
-Keep the classic multi page navigation available. Do not turn this back into a category list or one pager.
-
-Immediately below Navigation Home, the homepage contains one merged section with the eyebrow `Was uns prägt` and the heading `Verstehen, bevor behandelt wird.`
-
-This section must show five full clickable subpage cards:
+Immediately below, the merged `Was uns prägt` / `Verstehen, bevor behandelt wird.` section contains exactly six full page cards:
 
 1. Arbeitsweise
 2. Therapie
 3. Team
 4. Praxisbesuch
 5. Karriere
+6. Aktuelles
 
-The former passive cards for Zeit, Zusammenhänge, fachliche Tiefe and Kontinuität must not return as separate cards. Those ideas remain in the explanatory copy.
+The whole card is clickable. Pointer hover and keyboard focus turn it green. Desktop uses a balanced three by two composition, intermediate widths two columns and mobile one column.
 
-The former standalone homepage Arbeitsweise feature must not return. It has been integrated into the merged section.
+The treatment context section remains below.
 
-Each of the five page cards must turn green on pointer hover and on keyboard focus. The whole card is clickable and must open its corresponding real subpage. The treatment context section remains directly below and still links to deep therapy anchors.
+## Aktuelles contract
 
-The real logo at `assets/logo-raum-und-zeit.png` remains a restrained accent in the site brand and the merged `Was uns prägt` section.
+`content/aktuelles.json` is the bounded prototype content source. It starts empty intentionally. Do not invent demo news.
+
+`aktuelles.html` renders all active published items and keeps a calm empty state when there are none.
+
+The homepage always exposes the Aktuelles page card. A compact homepage notice section appears only when at least one active published item has `showOnHomepage: true`, and shows at most two items.
+
+Validate the renderer and filtering contract from `CONTENT.md`:
+
+- only `status: published`
+- future `publishedAt` remains hidden
+- past `expiresAt` remains hidden
+- homepage requires `showOnHomepage: true`
+- newest active items first
+- text is inserted as text, not trusted HTML
+- no patient or health data
+
+If useful for local validation, use a temporary local fixture and revert it before any commit. Never leave fictional content in the repository.
+
+Future FRAME editing is a product direction, not part of this deployment. Do not build authentication, a CMS, an admin panel or a production content API. FRAME may later provide Sarah a `Website / Aktuelles` editing and preview surface, but after human approval it must write through the authoritative production content source chosen with Tilmann. FRAME is not a second content truth store.
 
 ## Intelligence boundary
 
-The current site prepares only non clinical navigation signals through:
+Preserve:
 
 - `rz:navigation-intent-selected`
 - `rz:navigation-route-selected`
-- ephemeral `sessionStorage` for first and current visitor state
-- optional `window.rzTrack` adapter hook
+- session first intent and current intent
+- optional `window.rzTrack` hook only
 
-The first selected state should remain stable for the session. The current state should reflect the currently open accordion and may be cleared when that accordion is closed.
+Do not introduce external analytics during deployment. Do not collect symptoms, diagnoses, patient names, medical free text or clinical data.
 
-No external analytics service should be introduced during deployment unless an explicitly approved integration already exists. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data.
+## Google Maps
 
-## Google Maps contact route
+`praxis.html` contains `Auf Google Maps öffnen` for Raum und Zeit at Düsseldorfer Str. 101 in Düsseldorf.
 
-`praxis.html` contains a direct `Auf Google Maps öffnen` link for the practice location.
+Keep it as an explicit click through. No Maps iframe, SDK or API key. No Google Maps request should occur merely from loading the page. Do not infer the disputed postcode from Maps.
 
-This is intentionally a click through rather than an embedded Maps iframe. The page must not contact Google Maps merely because the visitor opens the contact section. Google Maps may load only after the visitor actively follows the external link.
+## Public copy
 
-Smoke test that the link resolves to the intended Raum und Zeit Physiotherapie location at Düsseldorfer Str. 101 in Düsseldorf. Do not infer or rewrite the disputed postcode from the Maps destination. Postcode remains a separate launch verification item.
-
-Do not replace this with an iframe, Maps SDK, API key or new consent management implementation during this deployment pass.
-
-## Public copy rule
-
-Avoid Gedankenstriche as a stylistic device and avoid artificial AI style hyphen constructions. Do not damage correct URLs, code, established abbreviations or genuinely necessary German compounds through mechanical replacement.
+Avoid Gedankenstriche as a stylistic device and artificial AI style hyphen constructions. Do not mechanically damage valid URLs, code, established abbreviations or necessary German compounds.
 
 ## Deployment and smoke test
 
 Do not perform another design or product iteration.
 
-After deployment, smoke test at minimum at about 1440, 900 and 390 pixels.
+Validate at about 1440, 900 and 390 pixels:
 
-Check:
-
-- all seven pages and all internal links
-- white first homepage field and green Navigation Home card
-- green Navigation Home uses near square editorial geometry, not soft rounded app card styling
-- visitor state rows remain flat and rectilinear with fine separators
-- all four visitor state controls
-- routes open directly below the selected row
-- clicking the active row closes it
-- opening another row closes the previous row
-- `aria-expanded`, `aria-pressed` and keyboard access
-- merged `Was uns prägt` and `Verstehen, bevor behandelt wird.` section
-- exactly five homepage subpage cards
-- each page card opens the correct subpage
-- each page card turns green on pointer hover and keyboard focus
-- treatment context section remains below the page cards
-- real logo rendering in header and merged homepage section
-- Google Maps link in the contact and address section
-- no Google Maps request before active click
-- external Maps link opens the intended practice location
+- all seven pages and internal links
+- white first homepage field
+- editorial rectangular green Navigation Home
+- all four visitor state accordions, close and switch behavior
+- `aria-expanded`, `aria-pressed`, keyboard access and focus
+- exactly six homepage page cards and correct destinations
+- three by two, two column and one column responsive card layout
+- hover and keyboard focus states
+- real logo
+- conditional homepage Aktuelles section
+- Aktuelles empty state and data renderer contract
+- treatment context deep links
+- `praxis.html#termin`
+- Google Maps behavior
 - mobile menu including Escape
-- therapy details controls
-- deep links such as `praxis.html#termin` and therapy hashes
 - phone links
 - no horizontal overflow
 - no console errors
 - heading order
-- reduced motion behavior
+- reduced motion
 - `noindex,nofollow`
-- custom navigation events fire as intended
-- no external analytics transmission is introduced
+- FRAME navigation events
+- no new external analytics transmission
 
-Fix only a genuine implementation defect and keep any fix narrow. If no defect exists, do not change the website.
+Fix only a genuine technical defect, keep the fix narrow, validate again and merge only after a clean diff. If no defect exists, do not change code.
 
-## Content that remains unresolved
+## Production boundary
 
-Do not invent postcode, public email, appointment URL, current team roster, final methods, news, opening hours, legal copy or final photography.
+Tilmann retains technical authority for production hosting, security, deployment and the final content maintenance path.
 
-## Deployment boundary
+If his confirmed Plesk compatible deployment and content source are available, use exactly that path. Otherwise keep GitHub Pages as preview only and do not choose Cloudflare, Vercel, Netlify, a new CMS or another production host.
 
-Tilmann retains technical authority for the production path.
-
-If a confirmed Plesk compatible deployment and content maintenance path is available, deploy exactly through it.
-
-If it is not available, do not choose Cloudflare, Vercel, Netlify, a new CMS or another production host. The pre existing GitHub Pages setup may remain a preview surface only.
+The current JSON file is a prototype semantic contract, not a production database commitment.
 
 Keep `noindex,nofollow` until explicit public launch approval.
 
@@ -145,11 +145,11 @@ PREVIEW OR TARGET URL
 
 SMOKE TEST STATUS
 
-NAVIGATION HOME VISUAL STATUS
+FRAME NAVIGATION STATUS
 
 HOMEPAGE SUBPAGE NAVIGATION STATUS
 
-FRAME ACCORDION STATUS
+AKTUELLES STATUS
 
 GOOGLE MAPS STATUS
 
