@@ -14,6 +14,15 @@ if (location.hash) {
   if (hashTarget && hashTarget.tagName === 'DETAILS') hashTarget.open = true;
 }
 
+/* Arriving at an anchor should be instant; only anchor clicks made on the
+   page afterwards animate. Enabled two frames after load, once the browser
+   has already jumped to any fragment in the URL. */
+if (!prefersReducedMotion) {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.documentElement.setAttribute('data-smooth-scroll', '');
+  }));
+}
+
 /* --- Mobile navigation ---------------------------------------------------- */
 const menuToggle = document.querySelector('[data-menu-toggle]');
 const setMenu = open => {

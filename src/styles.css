@@ -50,7 +50,11 @@
 
 /* --- Base ----------------------------------------------------------------- */
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scrollbar-color:var(--sage) var(--paper-2);scrollbar-width:thin}
+/* Smooth scrolling is switched on after the first fragment jump has landed,
+   so arriving at praxis.html#termin is instant and only later anchor clicks
+   animate. */
+html{scroll-behavior:auto;scrollbar-color:var(--sage) var(--paper-2);scrollbar-width:thin}
+html[data-smooth-scroll]{scroll-behavior:smooth}
 html::-webkit-scrollbar{width:11px;height:11px}
 html::-webkit-scrollbar-track{background:var(--paper-2)}
 html::-webkit-scrollbar-thumb{background:var(--sage);border:3px solid var(--paper-2);border-radius:var(--radius-pill)}
@@ -559,7 +563,7 @@ html[data-reveal] .time-mark.is-in .rz-mark__sand--bottom{transform:scaleY(.58)}
    Fewer and gentler, not zero: colour and opacity still communicate state,
    movement and scroll animation are removed. */
 @media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
+  html,html[data-smooth-scroll]{scroll-behavior:auto}
   *,*::before,*::after{
     animation-duration:.01ms!important;animation-iteration-count:1!important;
     transition-duration:.01ms!important;transition-delay:0ms!important;
