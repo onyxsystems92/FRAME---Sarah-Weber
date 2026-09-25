@@ -7,9 +7,9 @@ This contract applies equally to Claude Code and Codex. Claude Code remains the 
 
 ## Objective
 
-Implement the newly accepted WEBSITE-REWORK direction from Franklyn's current Sarah Weber Praxisakte while preserving the already validated Experience. The previous deployment-only mandate is superseded for this work. Deliver a concrete, independently runnable local static-site-generator/template proposal, a usable Sarah-facing editor for ordinary text/image/team/news changes, independently triggered publication and a portable, documented build/backup/restore handoff. Do not select or touch production hosting without Tilmann's Plesk/security/operations agreement and Sarah's explicit final approval. Build and validate on an isolated work branch; the existing public GitHub Pages preview on main is not a production endpoint.
+Implement the newly accepted WEBSITE-REWORK direction from Franklyn's current Sarah Weber Praxisakte while preserving the already validated Experience. The previous deployment-only mandate is superseded for this work. Deliver a NEAR-ACCEPTANCE-READY COMPLETE seven-page website in one focused engineering pass, migrated fully to an independently runnable local static-site-generator/template, with a usable Sarah-facing editor for text/image/team/news changes, independent preview/publication, and a portable, documented build/backup/restore handoff. The deliverable is the finished review website, not a standalone spike, architecture memo or merely an unintegrated prototype. Do not select or touch production hosting without Tilmann's Plesk/security/operations agreement and Sarah's explicit final approval. Build and validate on an isolated work branch; the existing public GitHub Pages preview on main is not a production endpoint.
 
-Architecture selection is a technical PROPOSAL subject to proof, not a completed agreement: first spike an existing local static CMS/generator with visual editing and static export/secure host sync (Publii is a candidate, not a mandate), check that it preserves every relevant navigation interaction, team/profile model, URLs and future source ownership. If it fails a binding requirement, evaluate the smallest capable local alternative before committing a full migration. Avoid building a custom admin/backend, GitHub-dependent routine publishing or a parallel FRAME CMS by default.
+Architecture selection must be empirically viable, not protracted: perform a bounded real-world candidate check INSIDE the same continuous full-site migration, then build and test the complete seven-page website and Sarah's editing/export/publication workflow. Publii remains a candidate, not a mandate. If it cannot preserve all key navigation interactions, team/profile editing, stable URLs, independent publication and an exportable single content owner without heavy custom plugins, choose the smallest capable local SSG + non-GitHub-dependent editorial workflow; explain the tradeoff while continuing towards a near-finished review deliverable. Do not create a custom hosted admin/backend, GitHub-dependent publishing, a parallel FRAME CMS or a second production host. Do not prolong the project with a separate customer-facing PoC and another generic framework-question round.
 
 The current `main` is expected to contain the agreed Editorial Green Practice design, FRAME Navigation Home, six visible homepage subpage cards, the bounded Aktuelles content contract, the real practice logo, Google Maps contact route and the full multi-page structure. Verify repository/runtime facts rather than trusting this sentence when exact current state matters.
 
@@ -98,7 +98,7 @@ Avoid Gedankenstriche as a stylistic device and artificial AI-style hyphen const
 
 ## Rework validation and smoke test
 
-Preserve existing design and all patient-navigation routes and event semantics. Franklyn has accepted restrained visual polish and selective increased team/qualification visibility, but no automatic placement on every therapy page and no navigation restructure. Do not treat Sarah's positive visual reaction as final overall/production sign-off. Test the local generator and editor end-to-end before presenting the proposal to Tilmann. All preview paths remain noindex/nofollow.
+Preserve Sarah's positively received existing visual identity, all seven pages, patient-navigation routes, direct treatment/contact/appointment paths, URL and event semantics as binding experience regression baseline. Franklyn explicitly requests a coherent, noticeably more lively/polished but recognizably continuous visual upgrade using the actual design skills available in the current Claude Code environment. Discover and use relevant existing design skills if available; if none is present, deliver a restrained professional editorial design upgrade with existing design-system primitives rather than claim to have used an unavailable skill. Implement visuals in the FINAL generator theme, not a throwaway legacy HTML version. Strengthen team/qualification presence selectively without requiring placement on each therapy page or rearranging Navigation Home. No fictitious final photos, team members or unsupported medical claims. Sarah's positive initial reaction is not final acceptance. Deliver a near-final review build after complete local tests; retain noindex/nofollow and no external analytics on all previews.
 
 Validate at about 1440, 900 and 390 pixels:
 
@@ -126,7 +126,11 @@ Validate at about 1440, 900 and 390 pixels:
 - FRAME navigation events;
 - no new external analytics transmission.
 
-Keep the existing preview unchanged on main while proving migration on the isolated branch; implement only required technical changes and the bounded approved design/team refinements. Run regression across all seven pages, document URL mapping and content fixture cleanup. Validate clean repeatable builds from identical inputs, independent text/photo/new team/news edits and approval-to-publish, full editable-source backup/restore on another machine, safe credential handling and manual static export/host transfer. No invented personnel, clinical claims, news or live credentials in test fixtures.
+Keep the old preview on main as before/after regression reference and complete the ENTIRE migration and bounded design/team upgrade on the isolated engineering branch. Produce a near-ready review URL or portable locally inspectable review artifact if safe staging access is available; do not accidentally replace the current public GitHub Pages preview. Validate all seven pages, stable URL mapping, unchanged visitor-intent interactions, responsive/keyboard navigation and content fixture cleanup. Prove two clean repeatable builds from identical inputs; real text/photo/new-team/news edit → preview → static export → independent simulated publication; full editable-source backup/restore on another machine; safe credentials and portable host transfer. Where live Plesk publish cannot be tested without Tilmann's authorization, mark it as the ONE remaining hosting integration gate, not as already solved. No invented live personnel, clinical claims, news or credentials. Work towards the complete review finish line without waiting for another abstract commercial or technical scope debate.
+
+## Commercial and FRAME independence boundary
+
+The original website-plus-12-month FRAME offer is sent but UNACCEPTED and UNPAID. Franklyn is considering a standalone website sale and only optional later FRAME. This does not authorize any new binding price, revenue claim, customer send, or payment action. He plans to flag the possibility of changing the original offer in the accompanying NEAR-FINAL website review message, without prematurely promising a final website price. Do not postpone the full non-production build for another extended pricing/discovery loop; minimize feature creep and list genuinely missing Sarah-supplied photography, staff facts, legal text and host credentials clearly. FRAME compatibility now means only a documented single authoritative exportable website content source, independent navigation and an optional future integration seam. Do not implement future FRAME functionality, client tracking, separate CMS or mandatory FRAME runtime. A deterministic independent site build and routine content editing without AI after handoff must be demonstrated; do not claim no AI was used while designing/building.
 
 ## Production boundary
 
@@ -151,6 +155,10 @@ Report evidence for:
 REWORK / DEPLOYMENT STATUS
 
 CURRENT MAIN SHA
+
+NEAR-FINAL REVIEW URL OR ARTIFACT AND ACTUAL COMPLETENESS
+
+DESIGN SKILLS USED (only verified) / BEFORE-AFTER EXPERIENCE DELTAS
 
 PREVIEW OR TARGET URL
 
