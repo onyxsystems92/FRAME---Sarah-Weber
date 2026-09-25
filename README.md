@@ -14,8 +14,10 @@ Designverbesserungen und einer verstärkten Teampräsenz. Vorhandene
 Praxisangaben und Qualifikationen sind vor dem Livegang mit Sarah abzugleichen.
 
 Der statische Generator ist Eleventy. Die einzigen bearbeitbaren
-Inhaltsquellen liegen in src/ (Team und Aktuelles als Markdown, allgemeine
-Praxisangaben in src/_data/site.yaml). Layouts liegen in src/_includes.
+Inhaltsquellen liegen in src/ (Team und Aktuelles als Markdown,
+Überschriften und Einleitungen in src/_data/copy.yaml, allgemeine
+Praxisangaben in src/_data/site.yaml). Die weiteren Seitentexte sind
+im Template und noch nicht als einzelne CMS-Felder pflegbar. Layouts liegen in src/_includes.
 Das generierte JSON für Aktuelles ist ausschließlich ein Build-Artefakt;
 es ist keine zweite Inhaltsdatenbank. GitHub wird für Entwicklung und
 Review verwendet und ist für Sarahs spätere Routinepflege nicht nötig.

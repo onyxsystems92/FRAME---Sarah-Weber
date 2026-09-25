@@ -10,6 +10,56 @@ public_folder: "images/team"
 publish_mode: simple
 
 collections:
+  - name: "seitentexte"
+    label: "Seitentexte"
+    files:
+      - name: "einleitungen"
+        label: "Titel & Einleitungen"
+        file: "src/_data/copy.yaml"
+        fields:
+          - name: "home"
+            label: "Startseite"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "arbeitsweise"
+            label: "Arbeitsweise"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "therapie"
+            label: "Therapie"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "team"
+            label: "Team"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "praxis"
+            label: "Praxisbesuch"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "karriere"
+            label: "Karriere"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+          - name: "aktuelles"
+            label: "Aktuelles"
+            widget: "object"
+            fields:
+              - { label: "Überschrift", name: "title", widget: "string" }
+              - { label: "Einleitung", name: "intro", widget: "text" }
+
   - name: "praxis"
     label: "Praxis-Angaben"
     files:

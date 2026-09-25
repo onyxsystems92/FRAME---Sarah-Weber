@@ -17,8 +17,12 @@ Ihrem eigenen geschützten Benutzerkonto.
 
 ## Inhalte bearbeiten
 
-Im deutschen Editor: Praxis-Angaben; Team (Person und Foto ergänzen oder
-bearbeiten); Aktuelles (Hinweis mit Titel, Text, Datum und Status). Ein
+Im deutschen Editor: Seitentexte (Überschriften und Einleitungen aller
+sieben Seiten); Praxis-Angaben; Team (Person und Foto ergänzen oder
+bearbeiten); Aktuelles (Hinweis mit Titel, Text, Datum und Status).
+Für weitere Fließtexte innerhalb der Seiten ist derzeit eine Anpassung
+der Templates durch Franklyn nötig; diese sind keine frei editierbaren
+Textfelder im lokalen Editor. Ein
 Teamfoto benötigen Sie nur mit Einwilligung der betroffenen Person.
 Das Knöpfchen Publish beziehungsweise Speichern schreibt die Änderung
 in die Quelldateien dieses Rechners; die Vorschau wird neu gebaut.
