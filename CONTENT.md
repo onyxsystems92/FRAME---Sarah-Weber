@@ -6,11 +6,19 @@ Sarah must be able to maintain ordinary website content without becoming depende
 
 The prototype therefore defines one small semantic content contract without deciding the final production CMS, framework or storage layer.
 
-## Current prototype source
+## Current Eleventy source and generated feed
 
-`content/aktuelles.json`
-
-This file is the current prototype source for published practice notices. It is intentionally small and portable.
+The authoritative editable source is one Markdown file per announcement in
+src/aktuelles/*.md. A local Static CMS interface edits those files. Eleventy
+generates dist/content/aktuelles.json (and release/content/aktuelles.json)
+for the existing frontend renderer. This JSON is a build artifact, not a
+second editable source or a production database. Only status=published
+items enter the public JSON feed; drafts stay in the local source folder.
+A future-dated published notice is not displayed by the frontend until
+that date, but its text can already be read in the public JSON feed after
+export. Do not enter embargoed/confidential information into scheduled
+public notices. Entire website export and actual host upload are separate
+actions. See EDITING.md for the real local edit/publication boundaries.
 
 Schema per item:
 
@@ -60,7 +68,11 @@ FRAME is the authenticated inside view of the practice. The public website is th
 
 A future Sarah facing surface may therefore expose a bounded `Website / Aktuelles` editor with exactly the fields above, preview the public result and let Sarah publish, unpublish or expire a notice after review.
 
-The final write target remains open until Tilmann confirms the production content maintenance model. It may be a CMS, repository backed content collection or another Plesk compatible source. If the storage implementation changes, preserve the semantic content contract where useful rather than forcing the JSON file to remain the production database.
+The website's local leading content source is now the source files in
+src/aktuelles. Their hosting and upload workflow remains subject to Tilmann's
+Plesk approval, and Sarah must approve the total website. Later FRAME editing,
+if separately commissioned, must use that one leading content source or an
+explicit approved successor, never maintain a parallel CMS.
 
 Do not build authentication, a generic CMS, a second deployment system or a broad website editor from this prototype alone.
 

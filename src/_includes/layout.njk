@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{{ description }}"><meta name="robots" content="{{ site.robots }}"><title>{{ title }}</title><link rel="icon" href="assets/logo-raum-und-zeit.png"><link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="frame-navigation.css">{% if includeAktuellesCss %}<link rel="stylesheet" href="aktuelles.css">{% endif %}</head><body>
+<a class="skip-link" href="#main">Zum Inhalt springen</a>{% include "partials/header.njk" %}<main id="main" class="page-main">
+{{ content | safe }}
+</main>{% include "partials/footer.njk" %}<div class="preview-note">Preview · noindex</div><script src="script.js"></script></body></html>

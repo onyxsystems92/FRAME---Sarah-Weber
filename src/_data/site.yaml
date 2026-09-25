@@ -1,0 +1,16 @@
+# Praxis-Stammdaten. Echte, bestätigte Werte nur. Alles noch nicht
+# bestätigte bleibt offen markiert statt geraten zu werden.
+name: "Raum & Zeit"
+wordmark: "Raum & Zeit"
+tagline: "Physiotherapie Düsseldorf Oberkassel"
+phoneDisplay: "0211 700 680 95"
+phoneHref: "tel:+4921170068095"
+addressLine1: "Düsseldorfer Str. 101"
+addressLine2: "Düsseldorf Oberkassel"
+postcodeConfirmed: false
+mapsUrl: "https://www.google.com/maps/search/?api=1&query=Raum%20und%20Zeit%20Physiotherapie%2C%20D%C3%BCsseldorfer%20Str.%20101%2C%20D%C3%BCsseldorf&query_place_id=ChIJk0Lq86q3uEcRgbWEdlTTvks"
+emailConfirmed: false
+email: null
+appointmentUrlConfirmed: false
+appointmentUrl: null
+robots: "noindex,nofollow"

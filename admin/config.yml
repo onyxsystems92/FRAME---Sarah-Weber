@@ -1,0 +1,71 @@
+backend:
+  name: proxy
+  proxy_url: "http://localhost:8081/api/v1"
+
+local_backend: true
+
+media_folder: "src/images/team"
+public_folder: "images/team"
+
+publish_mode: simple
+
+collections:
+  - name: "praxis"
+    label: "Praxis-Angaben"
+    files:
+      - name: "stammdaten"
+        label: "Kontakt & Adresse"
+        file: "src/_data/site.yaml"
+        fields:
+          - { label: "Telefonnummer (Anzeige)", name: "phoneDisplay", widget: "string" }
+          - { label: "Telefonnummer (Link, Format tel:+49...)", name: "phoneHref", widget: "string" }
+          - { label: "Adresse Zeile 1", name: "addressLine1", widget: "string" }
+          - { label: "Adresse Zeile 2", name: "addressLine2", widget: "string" }
+          - { label: "Postleitzahl bestätigt?", name: "postcodeConfirmed", widget: "boolean", default: false }
+          - { label: "Google-Maps-Link", name: "mapsUrl", widget: "string" }
+          - { label: "E-Mail bestätigt?", name: "emailConfirmed", widget: "boolean", default: false }
+          - { label: "E-Mail-Adresse", name: "email", widget: "string", required: false }
+          - { label: "Termin-Link bestätigt?", name: "appointmentUrlConfirmed", widget: "boolean", default: false }
+          - { label: "Termin-Link (URL)", name: "appointmentUrl", widget: "string", required: false }
+
+  - name: "team"
+    label: "Team"
+    label_singular: "Teammitglied"
+    folder: "src/team"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: "name"
+    summary: "{{name}} — {{role}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string", required: false, hint: "Leer lassen für einen Platzhalter (\"Profil nach Freigabe\")." }
+      - { label: "Rolle / Funktion", name: "role", widget: "string" }
+      - { label: "Hervorgehobenes Profil (große Vorstellung, z. B. Praxisinhaberin)", name: "featured", widget: "boolean", default: false }
+      - { label: "Zusatz über dem Namen (nur bei hervorgehobenem Profil)", name: "eyebrow", widget: "string", required: false, hint: "z. B. Praxisinhaberin" }
+      - { label: "Reihenfolge (kleinere Zahl erscheint zuerst)", name: "order", widget: "number", default: 9, value_type: "int" }
+      - { label: "Foto", name: "photo", widget: "image", required: false, hint: "Leer lassen zeigt einen ruhigen Platzhalter statt eines Fotos." }
+      - { label: "Alternativtext für das Foto", name: "photoAlt", widget: "string", required: false }
+      - { label: "Platzhalter-Beschriftung (nur ohne Foto, z. B. \"Portrait · Physiotherapie\")", name: "placeholderLabel", widget: "string", required: false }
+      - { label: "Status (nur ohne Namen, z. B. \"Profil nach Freigabe\")", name: "status", widget: "string", required: false }
+      - { label: "Qualifikationen", name: "qualifications", widget: "list", required: false }
+      - { label: "Kurzbiografie", name: "body", widget: "markdown", required: false }
+      - { label: "tags", name: "tags", widget: "hidden", default: ["team"] }
+
+  - name: "aktuelles"
+    label: "Aktuelles"
+    label_singular: "Hinweis"
+    folder: "src/aktuelles"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{status}}"
+    fields:
+      - { label: "Eindeutige ID", name: "id", widget: "string", hint: "z. B. ferien-winter-2026 — einmal vergeben, danach nicht mehr ändern." }
+      - { label: "Status", name: "status", widget: "select", options: ["draft", "published"], default: "draft" }
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "Text", name: "text", widget: "text" }
+      - { label: "Veröffentlichen ab", name: "publishedAt", widget: "date", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD" }
+      - { label: "Läuft ab am (optional)", name: "expiresAt", widget: "date", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", required: false }
+      - { label: "Auch auf der Startseite zeigen (max. 2 werden dort angezeigt)", name: "showOnHomepage", widget: "boolean", default: false }
+      - { label: "tags", name: "tags", widget: "hidden", default: ["aktuelles"] }

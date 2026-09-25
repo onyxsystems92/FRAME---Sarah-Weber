@@ -1,147 +1,87 @@
-# Raum & Zeit Website
+# Raum & Zeit · Website
 
-Multi page concept website for **Raum und Zeit Physiotherapie · Sarah Weber · Düsseldorf Oberkassel**.
+**Stand: nahezu abnahmefertige, lokale Review-Version; nicht produktiv.**
+Die bestehende GitHub-Pages-Preview auf main bleibt bis zur ausdrücklichen
+Freigabe unverändert. Diese Umsetzung liegt auf feat/sarah-portable-ssg.
 
-## Status
+## Lieferumfang und Architektur
 
-**Experience prototype. Not production.**
+Sieben Seiten: Startseite, Arbeitsweise, Therapie, Team, Praxisbesuch,
+Karriere und Aktuelles. Die bestehende Navigation Home, vier Besucherwege,
+sechs Seitenkarten, interaktiven Accordions und direkten Termin-/Kontaktwege
+bleiben erhalten. Das visuelle System folgt DESIGN.md mit behutsamen
+Designverbesserungen und einer verstärkten Teampräsenz. Vorhandene
+Praxisangaben und Qualifikationen sind vor dem Livegang mit Sarah abzugleichen.
 
-The current revision supersedes the August one page concept and the first category based Navigation Home draft. It implements the agreed patient facing FRAME Navigation Layer while keeping the site static and portable until Tilmann confirms the production handoff for the existing Plesk environment.
+Der statische Generator ist Eleventy. Die einzigen bearbeitbaren
+Inhaltsquellen liegen in src/ (Team und Aktuelles als Markdown, allgemeine
+Praxisangaben in src/_data/site.yaml). Layouts liegen in src/_includes.
+Das generierte JSON für Aktuelles ist ausschließlich ein Build-Artefakt;
+es ist keine zweite Inhaltsdatenbank. GitHub wird für Entwicklung und
+Review verwendet und ist für Sarahs spätere Routinepflege nicht nötig.
+Die Site baut lokal ohne KI. Eine künftige FRAME-Anbindung ist optional
+und darf die führende Inhaltsquelle nicht ersetzen.
 
-## Information architecture
+## Lokales Prüfen und Inhalte pflegen
 
-- `index.html`: Navigation Home and visible subpage entry surface
-- `arbeitsweise.html`: how Raum und Zeit works
-- `therapie.html`: treatment contexts and deeper professional methods
-- `team.html`: Sarah and team structure
-- `praxis.html`: visit, contact and appointment path
-- `karriere.html`: employer and recruiting surface
-- `aktuelles.html`: maintainable practice updates
+Node.js 20.11+ und npm sind einmalig auf Sarahs eigenem Rechner
+einzurichten. Im Projektverzeichnis:
 
-The homepage starts from visitor state rather than website taxonomy:
+1. Einmalig: npm ci
+2. Editor und Website gemeinsam starten: npm run edit
+3. Website: http://127.0.0.1:8080/
+4. Editor: http://127.0.0.1:8080/admin/
+5. Mit Strg+C beenden.
 
-1. Ich bin neu hier.
-2. Ich bin bereits Patient:in.
-3. Ich möchte eine Behandlung besser verstehen.
-4. Ich möchte bei Raum und Zeit arbeiten.
+Der Editor schreibt über einen auf 127.0.0.1 beschränkten lokalen Proxy
+direkt in src/. Das CMS-Knöpfchen Publish speichert **nur lokal**.
+Es lädt nichts zum Hosting hoch. Details: EDITING.md.
 
-The first composition uses a white positioning field and a green Navigation Home card. Each visitor state opens its relevant next routes directly underneath the selected row. Clicking the open row again closes it. Opening another row closes the previous one.
+## Review, Export und Veröffentlichung
 
-Immediately below that orientation layer, the homepage makes the multi page structure explicit through six clickable page cards:
+npm run export baut die Website und schreibt eine ausschließlich öffentliche
+statische Ausgabe nach release/; die lokale Admin-Oberfläche ist explizit
+ausgeschlossen. Nur release/ (nicht das ganze Repository, nicht dist/ und
+nicht src/) gehört auf einen Webserver. Vor Produktion sind bestätigte
+Praxisinhalte, Rechtsangaben, Datenschutz/Fonts, Domain/Indexierung,
+Team-Fotorechte und Sarahs Gesamtabnahme erforderlich. Aktuell tragen
+alle Seiten noindex,nofollow; die Schriftdateien werden in dieser Version lokal ausgeliefert;
+die vollständigen Datenschutz-/Rechtsinhalte sind vor einem öffentlichen
+Livegang dennoch zu prüfen. Die Review-Version ist somit **nicht freigegeben für Produktion**.
 
-1. Arbeitsweise
-2. Therapie
-3. Team
-4. Praxisbesuch
-5. Karriere
-6. Aktuelles
+Ein optionales npm run publish:dry-run erstellt ohne Netzwerkverbindung
+eine Upload-Vorschau. npm run publish:live kann später nach einmaliger
+Einrichtung einer persönlichen, auf das Zielverzeichnis beschränkten
+SFTP-Berechtigung durch Tilmann die öffentlichen Dateien übertragen.
+Dieser echte Plesk-Pfad wurde noch nicht getestet oder freigegeben.
+Für den SFTP-Batch-Modus ist ein eingerichteter SSH-Schlüssel bzw.
+SSH-Agent und geprüfter Host-Key notwendig, kein Passwort im Quellcode.
+Der Live-Aufruf verlangt zusätzlich eine bewusste Eingabe des Hostnamens.
+EDITING.md enthält die nötigen Schritte und die Verbleibenden-Gates-Liste.
 
-These cards replace the former passive differentiator cards and the separate homepage Arbeitsweise feature. The previous `Was uns prägt` and `Verstehen, bevor behandelt wird.` sections are now one compact navigation section. The differentiators Zeit, funktionelles Kontextdenken, fachliche Tiefe and persönliche Kontinuität remain in the supporting copy.
+## Technische Prüfung
 
-Each page card turns green on pointer hover and keyboard focus, and the whole card opens the corresponding subpage. The six cards use a balanced three by two desktop grid, two columns on intermediate widths and one column on mobile.
+Lokale Prüfkette: npm ci, npm run export; Vorschau über npm run edit,
+Browser-Regression mit scripts/smoke-test.mjs an 1440/900/390 Pixel,
+UI-Test für Team-/News-Änderung, wiederholbarer Build und Restore aus
+vollständiger Quell-Sicherung in einer isolierten Umgebung. Ein lokaler
+Build oder ein GitHub-Commit ist **kein** Nachweis für einen produktiven
+Upload. Jede konkrete Prüfung muss mit Datum und Ergebnis belegt werden;
+nicht durchgeführte Schritte bleiben offen.
 
-The treatment context preview remains below this section and continues to route visitors into deeper therapy anchors.
+## Noch von Menschen zu bestätigen
 
-FRAME translation:
+Sarah: Teamliste und echte Portraits samt Foto-Freigaben; Rolle/Biografien/
+Qualifikationen, korrekte PLZ, E-Mail, Online-Termin-Link, Impressum und
+Datenschutz, Inhalte/Design, wirtschaftliche Konditionen und Gesamtfreigabe.
+Tilmann: Hosting-Verzeichnis, eigener Sarah-Zugang mit minimalen Rechten,
+SFTP-/Rollback-/Backup-Prozess, Font-/Datenschutz-Konzept und technisches
+Go für Produktion. Kein produktiver Upload ohne diese Entscheidungen.
 
-`visitor state → relevance → useful route → next action`
+## Zuständigkeit
 
-This is deterministic orientation. It is not medical AI, diagnosis or triage.
-
-## Aktuelles content contract
-
-Sarah explicitly needs ordinary practice news and notices to be maintainable without developer dependency.
-
-The prototype therefore includes:
-
-- `content/aktuelles.json`: bounded semantic source for current notices
-- `aktuelles.html`: all active published notices
-- a conditional homepage notice surface that appears only when an active item is marked `showOnHomepage: true`
-- a permanent `Aktuelles` page card on the homepage even when no notice is currently published
-
-The repository starts with no fictional news items. The public Aktuelles page shows a calm empty state until a real notice is approved.
-
-See `CONTENT.md` for the content schema and the future FRAME editing boundary.
-
-The intended future flow is:
-
-`Sarah input → FRAME structure and preview → Sarah approval → authoritative website content source → publish or deploy → FRAME sync`
-
-This does not make FRAME a second CMS or state authority. The final production write target remains gated by Tilmann’s content maintenance and Plesk decision.
-
-## Design direction
-
-Selected synthesis: **Professional editorial structure + botanical warmth.**
-
-The green Navigation Home card is the main interactive accent inside a white first section. It uses a near square editorial geometry rather than rounded app card styling. The uploaded Raum und Zeit logo is used selectively as a restrained accent, including the site brand and the merged homepage navigation section. It is not the dominant visual device. The rest of the system uses warm ivory, muted sage, editorial serif type, readable sans serif type, fine rules and generous space.
-
-See `DESIGN.md` for the binding design and copy contract.
-
-## Navigation intelligence boundary
-
-Phase 1 prepares privacy minimal navigation signals only.
-
-Implemented browser signals:
-
-- `rz:navigation-intent-selected`
-- `rz:navigation-route-selected`
-
-The first selected visitor state remains available for the browser session. The currently open visitor state can change as people compare routes and is cleared when the active row is closed. Intent events expose the original first state and the current state where relevant. If an approved analytics adapter is added later, it can expose `window.rzTrack` and consume the same bounded event contract.
-
-No external analytics endpoint is activated by this repository. Do not collect symptoms, diagnoses, patient names, medical free text or other clinical data through this navigation layer or through Aktuelles content.
-
-## Contact and Google Maps
-
-The practice contact section in `praxis.html` includes a direct external link that opens the exact Raum und Zeit location in Google Maps. Google Maps is not embedded and no Maps iframe is loaded on page view. Google is contacted only after the visitor actively follows the link.
-
-The Maps route is for orientation only. The disputed postcode remains a separate launch verification item and is deliberately not required to construct the Maps destination.
-
-## Copy rule
-
-Public website copy avoids Gedankenstriche as a stylistic device and avoids artificial AI style hyphen constructions. Use natural German sentences instead. Correct technical syntax, URLs, established abbreviations and genuinely required compounds are not to be damaged by mechanical replacement.
-
-## Run locally
-
-```bash
-python3 -m http.server 8000
-```
-
-Open `http://localhost:8000`.
-
-No build command or dependency installation is required.
-
-## Production boundary
-
-Do not treat the current static structure, JSON notice source or renderer as a final CMS or framework decision.
-
-The production architecture remains gated by Tilmann’s answer on:
-
-- Plesk compatible deployment path
-- update and handoff workflow
-- Sarah’s protected content editing surface
-- authoritative production content source
-- hosting, security and operational continuity
-
-Do not move production to an alternative host merely because this prototype can run there.
-
-## Unresolved content before public launch
-
-Verify with Sarah and Tilmann:
-
-- correct postcode
-- final public email address
-- final online appointment URL
-- current team roster, roles and approved short bios
-- final qualifications and method inventory
-- first real `Aktuelles` entry
-- final practice and team photography
-- current opening and contact information
-- legal imprint and privacy content
-- production safe font delivery
-- final production content maintenance path for Sarah
-
-All pages stay `noindex,nofollow` until explicit launch approval.
-
-## Implementation handoff
-
-`CLAUDE.md` is the operational deployment and smoke test contract. The website strategy, visitor logic, design direction, homepage page hierarchy, Aktuelles content contract and interaction behavior are already decided. Deployment may repair a genuine technical defect, but must not redesign the experience or build a speculative CMS.
+Franklyn: Website-Produkt, Template, Gestaltung und Übergabe.
+Sarah: fachliche Wahrheit, Routinepflege und finale Freigabe.
+Tilmann: bestehendes Hosting, Plesk, serverseitige Sicherheit und der
+freigegebene Publikationszugang. Ein späteres FRAME-Abonnement ist
+keine Voraussetzung für die eigenständig nutzbare Website.

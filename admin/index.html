@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Raum &amp; Zeit — Inhalte bearbeiten</title>
+  <link rel="stylesheet" href="vendor/static-cms-app/main.css" />
+</head>
+<body>
+  <div id="cms-root"></div>
+  <script src="vendor/static-cms-app/static-cms-app.js"></script>
+  <script>
+    // Static CMS exposes window.CMS but does not auto-mount; this call is
+    // required. If nothing appears, the local editor server is not running
+    // — see EDITING.md ("npm run cms").
+    if (window.CMS && typeof window.CMS.init === "function") {
+      window.CMS.init();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "raum-und-zeit-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Raum und Zeit Physiotherapie – portable static site (Eleventy) with local Sarah-editable content.",
+  "scripts": {
+    "build": "eleventy --input=src --output=dist",
+    "watch": "eleventy --input=src --output=dist --watch",
+    "serve": "node --require ./scripts/loopback-only.js ./node_modules/@11ty/eleventy/cmd.cjs --input=src --output=dist --serve --port=8080",
+    "cms": "node scripts/cms-server.js",
+    "edit": "node scripts/start-editor.js",
+    "clean": "rm -rf dist",
+    "postinstall": "node scripts/vendor-cms.js",
+    "publish:dry-run": "node scripts/publish-sftp.js --dry-run",
+    "publish:live": "node scripts/publish-sftp.js --live",
+    "export": "npm run build && node scripts/export-site.js"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "@staticcms/app": "^4.3.0",
+    "@staticcms/proxy-server": "^4.0.4",
+    "dotenv": "^16.6.1",
+    "js-yaml": "^4.1.0",
+    "playwright": "^1.63.0"
+  }
+}

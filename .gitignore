@@ -1,0 +1,7 @@
+node_modules/
+dist/
+release/
+admin/vendor/
+backups/*.tar.gz
+.env.publish
+.DS_Store
