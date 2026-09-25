@@ -18,8 +18,18 @@ Ihrem eigenen geschützten Benutzerkonto.
 ## Inhalte bearbeiten
 
 Im deutschen Editor: Seitentexte (Überschriften und Einleitungen aller
-sieben Seiten); Praxis-Angaben; Team (Person und Foto ergänzen oder
-bearbeiten); Aktuelles (Hinweis mit Titel, Text, Datum und Status).
+sieben Seiten); Praxis-Angaben; Praxisbilder (die acht Bildplätze der
+Website mit Foto, Alternativtext und Bildausschnitt); Team (Person und
+Foto ergänzen oder bearbeiten); Aktuelles (Hinweis mit Titel, Text,
+Datum und Status).
+
+Solange ein Bildplatz kein Foto hat, zeigt die Website an dieser Stelle
+eine ruhige, deutlich als Platzhalter gekennzeichnete Fläche im richtigen
+Format. Sobald Sie ein echtes Foto einsetzen, erscheint es ohne
+Layoutänderung an genau dieser Stelle. Bitte tragen Sie zu jedem Foto
+einen kurzen Alternativtext ein, damit die Website auch für Menschen mit
+Screenreader verständlich bleibt, und verwenden Sie nur Aufnahmen, für
+die die Nutzungsrechte und, bei Personen, die Einwilligung vorliegen.
 Für weitere Fließtexte innerhalb der Seiten ist derzeit eine Anpassung
 der Templates durch Franklyn nötig; diese sind keine frei editierbaren
 Textfelder im lokalen Editor. Ein

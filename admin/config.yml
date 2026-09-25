@@ -78,6 +78,88 @@ collections:
           - { label: "Termin-Link bestätigt?", name: "appointmentUrlConfirmed", widget: "boolean", default: false }
           - { label: "Termin-Link (URL)", name: "appointmentUrl", widget: "string", required: false }
 
+  - name: "praxisbilder"
+    label: "Praxisbilder"
+    media_folder: "src/images/praxis"
+    public_folder: "images/praxis"
+    files:
+      - name: "bildplaetze"
+        label: "Bildplätze der Website"
+        file: "src/_data/images.yaml"
+        fields:
+          - name: "homeAtmosphere"
+            label: "Startseite · Praxisband (breit)"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "homePortrait"
+            label: "Startseite · Portrait im Bereich „Was uns prägt“"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "arbeitsweiseHands"
+            label: "Arbeitsweise · Behandlungsband"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "therapieRoom"
+            label: "Therapie · Behandlungsband"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "teamGroup"
+            label: "Team · Teamband"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "praxisEntrance"
+            label: "Praxisbesuch · Ankommen"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "praxisRoom"
+            label: "Praxisbesuch · Praxisraum"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "karriereWork"
+            label: "Karriere · Arbeiten in der Praxis"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Leer lassen zeigt den gekennzeichneten Platzhalter." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+
   - name: "team"
     label: "Team"
     label_singular: "Teammitglied"

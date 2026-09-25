@@ -6,4 +6,21 @@ description: "Aktuelle Praxisinformationen von Raum und Zeit Physiotherapie."
 includeAktuellesCss: true
 currentKey: "aktuelles"
 ---
-<section class="page-hero"><div class="shell page-hero-grid"><div><span class="eyebrow">Aktuelles</span><h1 class="display">{{ copy.aktuelles.title | escape }}</h1></div><p class="lede">{{ copy.aktuelles.intro | escape }}</p></div></section><section class="section"><div class="shell"><div class="section-head"><span class="eyebrow">Praxisinformationen</span><h2 class="display">Hinweise, die für Ihren Besuch wichtig sind.</h2><p>Veröffentlichte Informationen bleiben hier gebündelt und können bei Bedarf zusätzlich auf der Startseite erscheinen.</p></div><div data-updates-page><div class="updates-list" data-updates-list data-updates-scope="all"></div><div class="updates-empty" data-updates-empty><span class="eyebrow">Aktueller Stand</span><h2 class="display">Aktuell sind keine zusätzlichen Hinweise veröffentlicht.</h2><p>Wenn sich etwas ändert, das für Ihren Praxisbesuch wichtig ist, finden Sie die Information an dieser Stelle.</p></div></div></div></section>
+{% from "partials/macros.njk" import headIndex %}
+{% set heroKicker = "Aktuelles" %}
+{% set heroNum = "06" %}
+{% include "partials/page-hero.njk" %}
+
+<section class="section">
+  <div class="shell">
+    {{ headIndex("Praxisinformationen", "Hinweise, die für Ihren Besuch wichtig sind.", "Veröffentlichte Informationen bleiben hier gebündelt und können bei Bedarf zusätzlich auf der Startseite erscheinen.") }}
+    <div data-updates-page>
+      <div class="updates-list" data-updates-list data-updates-scope="all"></div>
+      <div class="updates-empty" data-updates-empty>
+        <h2 class="display">Aktuell sind keine zusätzlichen Hinweise veröffentlicht.</h2>
+        <p>Wenn sich etwas ändert, das für Ihren Praxisbesuch wichtig ist, finden Sie die Information an dieser Stelle.</p>
+        <a class="text-link" href="praxis.html#termin">Termin &amp; Kontakt <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>

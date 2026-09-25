@@ -1,0 +1,19 @@
+{#
+  Shared subpage hero. Expects heroKicker, heroNum and optional heroTone
+  ("dark"). Title and intro stay Sarah-editable through _data/copy.yaml.
+#}
+<section class="page-hero {{ heroTone }}">
+  <div class="shell page-hero-grid">
+    <div class="page-hero-main">
+      <span class="eyebrow">{{ heroKicker }}</span>
+      <h1 class="display">{{ copy[currentKey].title | escape }}</h1>
+    </div>
+    <div class="page-hero-side">
+      <p class="lede">{{ copy[currentKey].intro | escape }}</p>
+    </div>
+    <div class="page-hero-meta" aria-hidden="true">
+      <span>{{ heroNum }} / 06</span>
+      <span>Raum &amp; Zeit</span>
+    </div>
+  </div>
+</section>

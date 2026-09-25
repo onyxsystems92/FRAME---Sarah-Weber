@@ -174,3 +174,102 @@ Current notices must remain readable and useful without decorative motion. If no
 This design contract is independent from the eventual production framework.
 
 Tilmann retains authority over hosting, security, Plesk deployment, the authoritative content storage path and technical continuity. Sarah retains professional truth and ordinary content autonomy. Franklyn owns positioning, information architecture, visitor logic, UX, visual direction and the Visibility Intelligence concept.
+
+## Design Review V2 (isolated branch `feat/sarah-design-review-v2`)
+
+This pass refines the Editorial Green Practice direction under the working
+title **Human & Alive**. It preserves the brand identity, the accepted
+Navigation Home experience, all URLs and the full multi page structure. It
+changes composition, imagery, rhythm, states and motion. Nothing here has
+been approved for the production website.
+
+### Geometry
+
+Surfaces are rectilinear. `--radius: 3px`, `--radius-sm: 2px`. Interactive
+controls keep the full pill radius. This is a documented mixed rule:
+**surfaces are near square, controls are pill**. The previous 22px card
+radius produced the SaaS card look the contract already rejects for the
+Navigation Home; the rest of the page now agrees with it.
+
+### Section head forms
+
+The eyebrow plus headline plus small explainer paragraph in a three column
+grid was the single section head on every section of every page. It is
+replaced by two forms that rotate by content type:
+
+- **stacked** — headline, then a lede at a 66 character measure below it;
+- **rule and index** — a hairline carrying a small label, headline below.
+
+Eyebrows are reduced to surfaces that genuinely label themselves: the page
+hero, Navigation Home, the merged `Was uns prägt` head and the CTA band.
+They no longer sit above every mid page heading.
+
+### Editorial compositions
+
+Uniform card grids are kept only where the contract requires them. The six
+homepage page cards remain a three by two grid of full clickable cards, now
+as a hairline grid with the index and arrow on top and the title anchored to
+the bottom. Elsewhere the repeated grids became distinct compositions: a
+treatment context index with hairlines, a numbered step sequence, an
+orientation definition list, a contact block with the telephone number as
+display type, a method tag wall and an editorial team roster without card
+chrome.
+
+### Photography
+
+`src/_data/images.yaml` defines eight practice image slots. Each has a fixed
+aspect ratio, an `object-position` focal point, alt text and a note
+describing what the photograph should show. An empty `src` renders a
+designed, explicitly labelled placeholder at exactly the same size, so a
+later photograph replaces it without any layout change. The local editor
+exposes these slots as **Praxisbilder**.
+
+No stock photography, no generated practice imagery and no invented people.
+Until Sarah supplies approved photographs the placeholders stay visible and
+stay marked as placeholders.
+
+### The Raum und Zeit mark
+
+The hourglass, which is also the Z in Zeit, is drawn as a fine line SVG. It
+appears as a low contrast watermark inside image placeholders, as a quiet
+accent in the Navigation Home card and in the footer. It carries exactly one
+motion moment, on `arbeitsweise.html`: when the section about treatment time
+enters the viewport the sand flows once, ending mid flow rather than empty.
+The logo itself is never animated.
+
+### Motion budget
+
+One authored moment, precise micro feedback, nothing else:
+
+| Surface | Purpose | Motion |
+| --- | --- | --- |
+| Visitor state accordion | state indication | `grid-template-rows` 0fr to 1fr, 280ms, routes staggered 45ms |
+| Treatment context disclosure | state indication | `grid-template-rows`, 280ms |
+| Buttons, cards, rows | feedback | `scale(.975–.99)` on `:active`, 140ms |
+| Page cards, links | feedback | colour and transform, 200ms, gated on `hover: hover` and `pointer: fine` |
+| Section entrances | pacing | 12px rise plus opacity, 520ms, staggered 60ms, once |
+| `arbeitsweise` time mark | explanation | sand flows once, 1500ms |
+
+Deliberately not animated: page transitions and navigation, the header, the
+logo, anything parallax or scroll driven that content depends on.
+
+Easing tokens are `--ease-out: cubic-bezier(.23, 1, .32, 1)` and
+`--ease-in-out: cubic-bezier(.77, 0, .175, 1)`. Only `transform`, `opacity`
+and `grid-template-rows` are animated; the previous hover states animated
+`padding`, which forces layout on every frame.
+
+Scroll reveal is opt in. It is enabled only when JavaScript runs and the
+visitor has not asked for reduced motion, it shows anything already on
+screen immediately, and it has a failsafe plus a print rule. No content ever
+depends on an animation having played.
+
+### Colour and text
+
+`--muted` moved to `#5a6460` and a new `--sage-ink: #456052` carries sage
+toned text on light surfaces. The previous `--sage` at `#809787` was used as
+a text colour at 2.8:1, which failed. Every rendered text node on all seven
+pages now meets WCAG AA; `npm run contrast` proves it.
+
+Browser surfaces are themed from the palette rather than left at their
+defaults: text selection, the caret, the scrollbar, the focus ring and the
+underline offset on the telephone link.

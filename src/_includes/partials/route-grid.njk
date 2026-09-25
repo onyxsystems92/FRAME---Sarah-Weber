@@ -1,1 +1,38 @@
-<section class="section section-stone practice-navigation-section"><div class="shell"><div class="practice-navigation-head"><div><span class="eyebrow">Was uns prägt</span><h2 class="display">Verstehen, bevor behandelt wird.</h2></div><div class="practice-navigation-context"><div class="practice-navigation-logo" aria-hidden="true"><img src="assets/logo-raum-und-zeit.png" alt=""></div><p>Zeit, funktionelles Kontextdenken, fachliche Tiefe und persönliche Kontinuität prägen die Arbeit bei Raum und Zeit. Wählen Sie den Bereich, den Sie vertiefen möchten.</p></div></div><nav class="site-route-grid" aria-label="Bereiche von Raum und Zeit">{% for p in pages %}<a class="site-route-card" href="{{ p.href }}"><span class="num">{{ p.num }}</span><div><h3>{{ p.title }}</h3><p>{{ p.summary }}</p></div><span class="site-route-arrow" aria-hidden="true">↗</span></a>{% endfor %}</nav></div></section>
+{% from "partials/macros.njk" import figure %}
+{#
+  Merged "Was uns prägt" / "Verstehen, bevor behandelt wird." section.
+  Binding: the real logo appears here as a restrained accent, and the six
+  page cards stay full clickable links in a three-by-two composition.
+#}
+<section class="section section-stone practice-navigation-section">
+  <div class="shell">
+    <div class="practice-navigation-head">
+      <div class="practice-navigation-copy">
+        <span class="eyebrow">Was uns prägt</span>
+        <h2 class="display">Verstehen, bevor behandelt wird.</h2>
+        <div class="practice-navigation-context">
+          <div class="practice-navigation-logo" aria-hidden="true"><img src="assets/logo-raum-und-zeit.png" alt=""></div>
+          <p>Zeit, funktionelles Kontextdenken, fachliche Tiefe und persönliche Kontinuität prägen die Arbeit bei Raum und Zeit. Wählen Sie den Bereich, den Sie vertiefen möchten.</p>
+        </div>
+      </div>
+      <div class="practice-navigation-visual">
+        {{ figure(images.homePortrait, "", "rz-figure--portrait rz-figure--lead") }}
+      </div>
+    </div>
+
+    <nav class="site-route-grid" aria-label="Bereiche von Raum und Zeit">
+      {%- for p in pages %}
+      <a class="site-route-card" href="{{ p.href }}" style="--i: {{ loop.index0 }}">
+        <span class="site-route-card__top">
+          <span class="num">{{ p.num }}</span>
+          <span class="site-route-arrow" aria-hidden="true">↗</span>
+        </span>
+        <span class="site-route-card__body">
+          <h3>{{ p.title }}</h3>
+          <p>{{ p.summary }}</p>
+        </span>
+      </a>
+      {%- endfor %}
+    </nav>
+  </div>
+</section>

@@ -1,0 +1,54 @@
+{#
+  Shared editorial building blocks.
+
+  mark()       the Raum-und-Zeit line motif (hourglass / the Z in "Zeit")
+  figure()     a practice image slot: real photo when src is set in
+               _data/images.yaml, otherwise a designed, clearly marked
+               placeholder with the same aspect ratio, so a later photo
+               drops in without any layout change
+  head()       stacked section head (default form)
+  headIndex()  rule-and-index section head (list-type sections)
+#}
+
+{% macro mark(variant = "line") %}
+<svg class="rz-mark rz-mark--{{ variant }}" viewBox="0 0 120 160" aria-hidden="true" focusable="false">
+  <path class="rz-mark__sand rz-mark__sand--top" d="M30 20 C30 58 60 66 60 78 C60 66 90 58 90 20 Z"/>
+  <path class="rz-mark__sand rz-mark__sand--bottom" d="M30 140 C30 102 60 94 60 82 C60 94 90 102 90 140 Z"/>
+  <path class="rz-mark__line" d="M22 14 H98 M22 146 H98"/>
+  <path class="rz-mark__line" d="M30 16 C30 58 60 66 60 80 C60 94 30 102 30 144"/>
+  <path class="rz-mark__line" d="M90 16 C90 58 60 66 60 80 C60 94 90 102 90 144"/>
+</svg>
+{% endmacro %}
+
+{% macro figure(img, ratio = "4 / 3", modifier = "", loading = "lazy") %}
+{% set slot = img or {} %}
+<figure class="rz-figure {{ modifier }}"{% if ratio %} style="--rz-ratio: {{ ratio }}"{% endif %}>
+  {%- if slot.src -%}
+  <img class="rz-figure__img" src="{{ slot.src }}" alt="{{ slot.alt }}" loading="{{ loading }}" decoding="async"
+       style="object-position: {{ slot.focus or 'center center' }}">
+  {%- else -%}
+  <div class="rz-figure__slot">
+    <div class="rz-figure__motif" aria-hidden="true">{{ mark("figure") }}</div>
+    <figcaption class="rz-figure__label">
+      <span class="rz-figure__tag">Platzhalter</span>
+      <span class="rz-figure__note">{{ slot.note or "Echtes Praxisfoto folgt" }}</span>
+    </figcaption>
+  </div>
+  {%- endif -%}
+</figure>
+{% endmacro %}
+
+{% macro head(title, lede = "", modifier = "") %}
+<div class="section-head {{ modifier }}">
+  <h2 class="display">{{ title | safe }}</h2>
+  {%- if lede %}<p class="section-lede">{{ lede | safe }}</p>{% endif -%}
+</div>
+{% endmacro %}
+
+{% macro headIndex(label, title, lede = "") %}
+<div class="section-head section-head--index">
+  <div class="section-head__rule"><span>{{ label }}</span></div>
+  <h2 class="display">{{ title | safe }}</h2>
+  {%- if lede %}<p class="section-lede">{{ lede | safe }}</p>{% endif -%}
+</div>
+{% endmacro %}

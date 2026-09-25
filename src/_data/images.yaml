@@ -1,0 +1,57 @@
+# Praxis-Bildplätze. Jeder Platz hat ein festes Seitenverhältnis, damit ein
+# späteres echtes Foto ohne Layoutumbau eingesetzt werden kann.
+#
+# src    leer  = gestalteter, klar gekennzeichneter Platzhalter
+#        gefüllt = echtes Foto (Pfad relativ zur Website, z. B. images/praxis/raum.jpg)
+# alt    Bildbeschreibung für Screenreader. Pflicht, sobald src gesetzt ist.
+# focus  Bildausschnitt bei beschnittenen Formaten (CSS object-position),
+#        z. B. "center center", "center 30%", "left top".
+# note   Was dieses Bild zeigen soll. Steht im Platzhalter, nie im fertigen Bild.
+
+homeAtmosphere:
+  src: ""
+  alt: ""
+  focus: "center 55%"
+  note: "Behandlungsraum im Tageslicht, weiter Ausschnitt"
+
+homePortrait:
+  src: ""
+  alt: ""
+  focus: "center 30%"
+  note: "Sarah Weber im Praxisraum, ruhige Arbeitssituation"
+
+arbeitsweiseHands:
+  src: ""
+  alt: ""
+  focus: "center center"
+  note: "Behandlung aus der Nähe, Hände und Bewegung"
+
+therapieRoom:
+  src: ""
+  alt: ""
+  focus: "center 45%"
+  note: "Behandlungssituation, Befund und Bewegung"
+
+teamGroup:
+  src: ""
+  alt: ""
+  focus: "center 35%"
+  note: "Team im Praxisraum, natürliche Situation"
+
+praxisEntrance:
+  src: ""
+  alt: ""
+  focus: "center 50%"
+  note: "Ankommen: Eingang oder Empfang"
+
+praxisRoom:
+  src: ""
+  alt: ""
+  focus: "center 50%"
+  note: "Praxisraum, Materialien und Licht"
+
+karriereWork:
+  src: ""
+  alt: ""
+  focus: "center 45%"
+  note: "Arbeiten in der Praxis, Austausch im Team"

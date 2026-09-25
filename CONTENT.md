@@ -48,6 +48,29 @@ Rules:
 
 The repository starts with an empty item list. Do not create fictional practice news for the preview.
 
+## Practice imagery
+
+`src/_data/images.yaml` is the second bounded content source. It holds eight
+named image slots, one per place in the layout that is designed for a
+photograph. Each slot has:
+
+- `src` — the image path, empty for a marked placeholder;
+- `alt` — screen reader description, required as soon as `src` is set;
+- `focus` — the CSS `object-position` focal point for cropped formats;
+- `note` — what the photograph should show, displayed only in the placeholder.
+
+Rules:
+
+- Slot names are fixed; the templates reference them by name. Do not rename
+  or remove a slot without changing the template that uses it.
+- An empty slot is a valid state. It renders a designed, explicitly labelled
+  placeholder at the same aspect ratio, so a later photograph replaces it
+  without any layout change.
+- Only real, rights cleared practice photography. No stock imagery, no
+  generated pictures of a practice or of people, and no photograph of an
+  identifiable person without their consent.
+- No patient may be identifiable in a published photograph.
+
 ## Website behavior
 
 `Aktuelles` is a real sixth website destination alongside Arbeitsweise, Therapie, Team, Praxisbesuch and Karriere.

@@ -47,10 +47,15 @@ async function run() {
       const context = await browser.newContext({ viewport });
       const page = await context.newPage();
       const consoleErrors = [];
+      const externalRequests = [];
       page.on("console", (msg) => {
         if (msg.type() === "error") consoleErrors.push(msg.text());
       });
       page.on("pageerror", (err) => consoleErrors.push(String(err)));
+      page.on("request", (req) => {
+        const target = req.url();
+        if (!target.startsWith(baseUrl) && !target.startsWith("data:")) externalRequests.push(target);
+      });
 
       await page.goto(`${baseUrl}/${url}`, { waitUntil: "networkidle" });
 
@@ -70,6 +75,27 @@ async function run() {
 
       check(`[${viewport.name}] ${url}: no console errors`, consoleErrors.length === 0);
       if (consoleErrors.length) console.log("    errors:", consoleErrors);
+
+      // Nothing may be fetched from a third party, and every image needs alt text.
+      check(
+        `[${viewport.name}] ${url}: no external requests${externalRequests.length ? " (" + [...new Set(externalRequests)].join(", ") + ")" : ""}`,
+        externalRequests.length === 0
+      );
+      const missingAlt = await page.evaluate(
+        () => [...document.querySelectorAll("img")].filter((img) => img.getAttribute("alt") === null).length
+      );
+      check(`[${viewport.name}] ${url}: every image has an alt attribute`, missingAlt === 0);
+
+      // Heading levels must not skip a step.
+      const headingJumps = await page.evaluate(() => {
+        const levels = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => Number(h.tagName[1]));
+        const jumps = [];
+        levels.forEach((lvl, i) => {
+          if (i > 0 && lvl > levels[i - 1] + 1) jumps.push(`h${levels[i - 1]}->h${lvl}`);
+        });
+        return jumps;
+      });
+      check(`[${viewport.name}] ${url}: heading order has no skipped level${headingJumps.length ? " (" + headingJumps.join(", ") + ")" : ""}`, headingJumps.length === 0);
 
       await context.close();
     }
@@ -151,7 +177,7 @@ async function run() {
     check("index: rz:navigation-intent-selected fired at least once", events.some((e) => e.type === "intent"));
 
     // Click a route link inside the open panel, verify rz:navigation-route-selected fires.
-    const openPanelRoute = page.locator('[data-intent-panel]:not([hidden]) .intent-route').first();
+    const openPanelRoute = page.locator('[data-intent-panel][data-open] .intent-route').first();
     const routeHref = await openPanelRoute.getAttribute("href");
     check("index: open panel has a route link with href", !!routeHref);
 
@@ -283,6 +309,107 @@ async function run() {
       check("index: homepage notice section stays hidden when no showOnHomepage item", homeSectionHidden);
     }
 
+    await context.close();
+  }
+
+  // 7) Design-review additions: animated disclosure, image slots, motion
+  //    accessibility and the deep-link offset under the sticky header.
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
+
+    // Collapsed visitor-state panels must be out of the tab order.
+    const collapsedLink = page.locator('[data-intent-panel]:not([data-open]) .intent-route').first();
+    const collapsedVisibility = await collapsedLink.evaluate((el) => getComputedStyle(el.closest("[data-intent-panel]")).visibility);
+    check("index: collapsed intent panel is visibility:hidden (not tabbable)", collapsedVisibility === "hidden");
+
+    // The panel animates its own height instead of snapping.
+    const first = page.locator("[data-intent-button]").first();
+    const panel = page.locator('[data-intent-panel="new"]');
+    const rowsClosed = await panel.evaluate((el) => getComputedStyle(el).gridTemplateRows);
+    await first.click();
+    await page.waitForTimeout(450);
+    const rowsOpen = await panel.evaluate((el) => getComputedStyle(el).gridTemplateRows);
+    check("index: intent panel expands its grid row (animated disclosure)", parseFloat(rowsOpen) > parseFloat(rowsClosed) + 10);
+    check("index: opened intent panel is visible", await panel.isVisible());
+    const routeTabbable = await page.locator('[data-intent-panel][data-open] .intent-route').first()
+      .evaluate((el) => getComputedStyle(el.closest("[data-intent-panel]")).visibility);
+    check("index: opened panel routes become tabbable", routeTabbable === "visible");
+
+    // Every image slot without a real photograph is explicitly marked.
+    const figures = await page.evaluate(() => [...document.querySelectorAll(".rz-figure")].map((f) => ({
+      hasImg: !!f.querySelector("img"),
+      marked: !!f.querySelector(".rz-figure__tag"),
+    })));
+    check("index: at least one practice image slot exists", figures.length > 0);
+    check("index: every slot without a photo is marked as a placeholder", figures.every((f) => f.hasImg || f.marked));
+
+    // Full-bleed bands really span the viewport.
+    const bandWidth = await page.locator(".atmosphere-band .rz-figure").evaluate((el) => el.getBoundingClientRect().width);
+    check(`index: atmosphere band is full-bleed (${Math.round(bandWidth)}px of 1440)`, bandWidth >= 1439);
+
+    await context.close();
+  }
+
+  // 8) Deep link lands below the sticky header, not underneath it.
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    await page.goto(`${baseUrl}/praxis.html#termin`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(400);
+    const geometry = await page.evaluate(() => ({
+      target: document.querySelector("#termin").getBoundingClientRect().top,
+      header: document.querySelector(".site-header").getBoundingClientRect().bottom,
+    }));
+    check(
+      `praxis#termin: target clears the sticky header (target ${Math.round(geometry.target)}px, header ${Math.round(geometry.header)}px)`,
+      geometry.target >= geometry.header - 1
+    );
+    await context.close();
+  }
+
+  // 9) Reduced motion: no reveal animation, nothing stays hidden.
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(300);
+    const reduced = await page.evaluate(() => ({
+      flag: document.documentElement.hasAttribute("data-reveal"),
+      faded: [...document.querySelectorAll(".site-route-card, .context-row")].filter((el) => parseFloat(getComputedStyle(el).opacity) < 0.9).length,
+    }));
+    check("reduced motion: reveal animation is not enabled", reduced.flag === false);
+    check("reduced motion: no content is left faded out", reduced.faded === 0);
+    await context.close();
+  }
+
+  // 10) Without JavaScript the site is still complete and readable.
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "load" });
+    check("no javascript: the six page cards are visible", await page.locator(".site-route-card").first().isVisible());
+    check("no javascript: the practice image band is visible", await page.locator(".atmosphere-band .rz-figure").isVisible());
+    await context.close();
+  }
+
+  // 11) Touch targets on a real phone viewport.
+  {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const page = await context.newPage();
+    let tooSmall = [];
+    for (const url of PAGES) {
+      await page.goto(`${baseUrl}/${url}`, { waitUntil: "networkidle" });
+      const small = await page.evaluate(() => [...document.querySelectorAll("a, button")]
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0 && r.height < 24 && !el.classList.contains("skip-link");
+        })
+        .map((el) => `${el.tagName}.${(el.className || "").toString().split(" ")[0]}`));
+      tooSmall = tooSmall.concat(small.map((s) => `${url}:${s}`));
+    }
+    check(`mobile: no interactive target under 24px${tooSmall.length ? " (" + [...new Set(tooSmall)].join(", ") + ")" : ""}`, tooSmall.length === 0);
     await context.close();
   }
 

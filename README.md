@@ -3,6 +3,9 @@
 **Stand: nahezu abnahmefertige, lokale Review-Version; nicht produktiv.**
 Die bestehende GitHub-Pages-Preview auf main bleibt bis zur ausdrücklichen
 Freigabe unverändert. Diese Umsetzung liegt auf feat/sarah-portable-ssg.
+Der gestalterische Ausbaustand liegt zusätzlich isoliert auf
+feat/sarah-design-review-v2 und wartet auf Franklyns visuelle Abnahme;
+Einzelheiten in DESIGN-REVIEW-V2.md.
 
 ## Lieferumfang und Architektur
 
@@ -16,7 +19,8 @@ Praxisangaben und Qualifikationen sind vor dem Livegang mit Sarah abzugleichen.
 Der statische Generator ist Eleventy. Die einzigen bearbeitbaren
 Inhaltsquellen liegen in src/ (Team und Aktuelles als Markdown,
 Überschriften und Einleitungen in src/_data/copy.yaml, allgemeine
-Praxisangaben in src/_data/site.yaml). Die weiteren Seitentexte sind
+Praxisangaben in src/_data/site.yaml, die acht Praxis-Bildplätze in
+src/_data/images.yaml). Die weiteren Seitentexte sind
 im Template und noch nicht als einzelne CMS-Felder pflegbar. Layouts liegen in src/_includes.
 Das generierte JSON für Aktuelles ist ausschließlich ein Build-Artefakt;
 es ist keine zweite Inhaltsdatenbank. GitHub wird für Entwicklung und
@@ -64,9 +68,12 @@ EDITING.md enthält die nötigen Schritte und die Verbleibenden-Gates-Liste.
 ## Technische Prüfung
 
 Lokale Prüfkette: npm ci, npm run export; Vorschau über npm run edit,
-Browser-Regression mit scripts/smoke-test.mjs an 1440/900/390 Pixel,
-UI-Test für Team-/News-Änderung, wiederholbarer Build und Restore aus
-vollständiger Quell-Sicherung in einer isolierten Umgebung. Ein lokaler
+Browser-Regression mit npm run smoke an 1440/900/390 Pixel,
+Kontrastprüfung mit npm run contrast, Review-Screenshots mit
+npm run review:shots, UI-Test für Team-/News-Änderung, wiederholbarer
+Build und Restore aus vollständiger Quell-Sicherung in einer isolierten
+Umgebung. Die Prüfskripte erwarten einen laufenden lokalen Server und
+nehmen ihn über --base-url entgegen. Ein lokaler
 Build oder ein GitHub-Commit ist **kein** Nachweis für einen produktiven
 Upload. Jede konkrete Prüfung muss mit Datum und Ergebnis belegt werden;
 nicht durchgeführte Schritte bleiben offen.

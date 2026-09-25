@@ -1,1 +1,16 @@
-<header class="site-header"><a class="brand" href="index.html" aria-label="Raum und Zeit Startseite"><img class="brand-logo" src="assets/logo-raum-und-zeit.png" alt=""><span class="brand-wordmark">{{ site.wordmark }}</span></a><nav class="nav" aria-label="Hauptnavigation">{% for p in pages %}{% if p.inNav %}<a href="{{ p.href }}"{% if p.key == currentKey %} aria-current="page"{% endif %}>{{ p.navLabel }}</a>{% endif %}{% endfor %}</nav><div class="header-actions"><a class="button button-dark" href="praxis.html#termin">Termin &amp; Kontakt <span>↗</span></a><button class="menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" data-menu-toggle><span></span></button></div></header>
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Raum und Zeit Startseite">
+    <img class="brand-logo" src="assets/logo-raum-und-zeit.png" alt="" width="32" height="32">
+    <span class="brand-wordmark">{{ site.wordmark }}</span>
+  </a>
+  <nav class="nav" aria-label="Hauptnavigation">
+    {%- for p in pages %}{% if p.inNav %}<a href="{{ p.href }}"{% if p.key == currentKey %} aria-current="page"{% endif %}>{{ p.navLabel }}</a>{% endif %}{% endfor %}
+    {#- The header button is hidden below 1080px, so the appointment route
+        stays reachable from inside the mobile menu. -#}
+    <a class="button button-dark nav__cta" href="praxis.html#termin">Termin &amp; Kontakt <span aria-hidden="true">↗</span></a>
+  </nav>
+  <div class="header-actions">
+    <a class="button button-dark" href="praxis.html#termin">Termin &amp; Kontakt <span aria-hidden="true">↗</span></a>
+    <button class="menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" data-menu-toggle><span></span></button>
+  </div>
+</header>
