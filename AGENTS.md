@@ -1,13 +1,15 @@
 # AGENTS.md — FRAME · Raum & Zeit engineering handoff
 
 Status: CURRENT ENGINEERING ENTRYPOINT
-Updated: 2026-09-13
+Updated: 2026-09-25
 
 This contract applies equally to Claude Code and Codex. Claude Code remains the primary substantive builder; Codex is an equivalent capability-fit surface when explicitly selected. For access, secret and current-session capability proof, follow `onyxsystems92/onyx-core/docs/engineering/BUILDER_CAPABILITY_PARITY.md`.
 
 ## Objective
 
-Deploy and smoke test the already implemented Raum und Zeit website. Do not redesign it, reopen product decisions or invent a new architecture.
+Implement the newly accepted WEBSITE-REWORK direction from Franklyn's current Sarah Weber Praxisakte while preserving the already validated Experience. The previous deployment-only mandate is superseded for this work. Deliver a concrete, independently runnable local static-site-generator/template proposal, a usable Sarah-facing editor for ordinary text/image/team/news changes, independently triggered publication and a portable, documented build/backup/restore handoff. Do not select or touch production hosting without Tilmann's Plesk/security/operations agreement and Sarah's explicit final approval. Build and validate on an isolated work branch; the existing public GitHub Pages preview on main is not a production endpoint.
+
+Architecture selection is a technical PROPOSAL subject to proof, not a completed agreement: first spike an existing local static CMS/generator with visual editing and static export/secure host sync (Publii is a candidate, not a mandate), check that it preserves every relevant navigation interaction, team/profile model, URLs and future source ownership. If it fails a binding requirement, evaluate the smallest capable local alternative before committing a full migration. Avoid building a custom admin/backend, GitHub-dependent routine publishing or a parallel FRAME CMS by default.
 
 The current `main` is expected to contain the agreed Editorial Green Practice design, FRAME Navigation Home, six visible homepage subpage cards, the bounded Aktuelles content contract, the real practice logo, Google Maps contact route and the full multi-page structure. Verify repository/runtime facts rather than trusting this sentence when exact current state matters.
 
@@ -71,7 +73,7 @@ Validate the renderer and filtering contract from `CONTENT.md`:
 
 If useful for local validation, use a temporary local fixture and revert it before any commit. Never leave fictional content in the repository.
 
-Future FRAME editing is a product direction, not part of this deployment. Do not build authentication, a CMS, an admin panel or a production content API. FRAME may later provide Sarah a `Website / Aktuelles` editing and preview surface, but after human approval it must write through the authoritative production content source chosen with Tilmann. FRAME is not a second content truth store.
+For this new work, deliver ordinary independent content editing through an existing local/static generator's bounded editing capability, including actual text/image updates, a newly added team member with image and short biography, and Aktuelles. The existing JSON contract is prototype behavior, not a permanent mandated storage format. Verify Sarah can preview and publish without Franklyn's GitHub account or Tilmann's manual involvement. Do not create a bespoke online admin service, a second FRAME CMS, a patient-data surface or another source of truth. Later FRAME editing is a separate opt-in product phase and must write through the final owning website content source, not copy it into a competing store.
 
 ## Intelligence boundary
 
@@ -94,9 +96,9 @@ Keep it as an explicit click-through. No Maps iframe, SDK or API key. No Google 
 
 Avoid Gedankenstriche as a stylistic device and artificial AI-style hyphen constructions. Do not mechanically damage valid URLs, code, established abbreviations or necessary German compounds.
 
-## Deployment and smoke test
+## Rework validation and smoke test
 
-Do not perform another design or product iteration.
+Preserve existing design and all patient-navigation routes and event semantics. Franklyn has accepted restrained visual polish and selective increased team/qualification visibility, but no automatic placement on every therapy page and no navigation restructure. Do not treat Sarah's positive visual reaction as final overall/production sign-off. Test the local generator and editor end-to-end before presenting the proposal to Tilmann. All preview paths remain noindex/nofollow.
 
 Validate at about 1440, 900 and 390 pixels:
 
@@ -124,11 +126,11 @@ Validate at about 1440, 900 and 390 pixels:
 - FRAME navigation events;
 - no new external analytics transmission.
 
-Fix only a genuine technical defect, keep the fix narrow, validate again and merge only after a clean diff. If no defect exists, do not change code.
+Keep the existing preview unchanged on main while proving migration on the isolated branch; implement only required technical changes and the bounded approved design/team refinements. Run regression across all seven pages, document URL mapping and content fixture cleanup. Validate clean repeatable builds from identical inputs, independent text/photo/new team/news edits and approval-to-publish, full editable-source backup/restore on another machine, safe credential handling and manual static export/host transfer. No invented personnel, clinical claims, news or live credentials in test fixtures.
 
 ## Production boundary
 
-Tilmann retains technical authority for production hosting, security, deployment and the final content-maintenance path.
+Tilmann retains authority over Plesk, hosting, server/security settings, server access and the host-side publication/backup contract. Franklyn owns delivery and documentation of the website product, local generator/template and Sarah's bounded editor/workflow. The production interface (least-privilege publishing credential, deployment directory, preview/rollback, maintenance and backup owner) remains a specific open integration gate; access to a repo is not access to production. Sarah owns professional content, commercial choice and final website approval.
 
 If his confirmed Plesk-compatible deployment and content source are available, use exactly that path. Otherwise keep GitHub Pages as preview only and do not choose Cloudflare, Vercel, Netlify, a new CMS or another production host.
 
@@ -144,9 +146,9 @@ Repository access does not imply production access. If production deployment/smo
 
 ## Completion report
 
-Return only:
+Report evidence for:
 
-DEPLOYMENT STATUS
+REWORK / DEPLOYMENT STATUS
 
 CURRENT MAIN SHA
 
@@ -167,6 +169,16 @@ ISSUES FOUND / FIXED
 NOINDEX STATUS
 
 EXTERNAL TRACKING STATUS
+
+LOCAL GENERATOR + TEMPLATE STATUS
+
+REPRODUCIBLE BUILD / RESET + RESTORE STATUS
+
+SARAH SELF-EDIT AND SELF-PUBLISH STATUS (text, photo, new staff member, news)
+
+FULL SOURCE, ASSET AND HOST-MIGRATION STATUS
+
+EDITOR / ACCESS / BACKUP / UPDATE RESPONSIBILITY
 
 PRODUCTION HANDOFF STATUS
 
