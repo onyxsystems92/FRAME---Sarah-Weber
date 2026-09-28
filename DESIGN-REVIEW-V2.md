@@ -1,6 +1,6 @@
 # Design Review V2 · Raum & Zeit
 
-Status: **DESIGN REVIEW READY · AWAITING FRANKLYN VISUAL APPROVAL**
+Status: **CLIENT PREVIEW READY · AWAITING FRANKLYN APPROVAL** (Nachtrag 2026-09-28 am Ende)
 Datum: 2026-09-25
 Branch: `feat/sarah-design-review-v2` (isolierter Worktree)
 Ausgangsstand: `feat/sarah-portable-ssg` @ `6405cd0`
@@ -313,3 +313,28 @@ Kein Merge nach `feat/sarah-portable-ssg`, kein Merge nach `main`, kein
 Überschreiben der GitHub-Pages-Preview, kein produktiver Upload, keine
 Weitergabe als freigegebene Kundenfassung, keine Aktualisierung der
 Praxisakte mit einer angeblich abgeschlossenen Website-Freigabe.
+
+---
+
+## Nachtrag 2026-09-28 · Client-Preview-Pass
+
+Franklyns visuelle Abnahmerunde umgesetzt, Commit `1cb9153` auf demselben
+isolierten Branch. Einzelheiten stehen in der Commit-Nachricht und in
+`DESIGN.md` unter „Client preview pass“.
+
+- Seitenflächen nur noch Weiß und das etablierte Grün; Header grün,
+  „Termin & Kontakt“ weiß mit grüner Schrift.
+- Startseite: zweiteiliger erster Screen, mittleres Bild und Hinweissatz
+  entfernt, Seitenkacheln ohne Pfeile, Behandlungs-Index grün mit weißer
+  aktiver Zeile.
+- Arbeitsweise als Sequenz 01 → 02 → 03; Therapie-Methodenübersicht neu;
+  Team-Hero-Text unter die Überschrift; Karriere mit echten Accordions.
+- Keine interne Sprache mehr auf der Website, Platzhalter ohne Etikett,
+  offene Daten ausgeblendet statt erklärt.
+- `npm run smoke` 273/273, `npm run contrast` alles WCAG AA.
+
+Die vorläufigen Fotos in `src/assets/review/` stammen aus dem bisherigen
+öffentlichen Praxisauftritt. Das Repository ist öffentlich; die Fotos sind
+deshalb nicht in Git und dürfen erst nach geklärten Bildrechten committet
+werden. Abschnitt 8 dieses Berichts (fehlende Originalfotografie) gilt
+unverändert.

@@ -217,16 +217,18 @@ chrome.
 
 ### Photography
 
-`src/_data/images.yaml` defines eight practice image slots. Each has a fixed
+`src/_data/images.yaml` defines nine practice image slots. Each has a fixed
 aspect ratio, an `object-position` focal point, alt text and a note
-describing what the photograph should show. An empty `src` renders a
-designed, explicitly labelled placeholder at exactly the same size, so a
+describing what the photograph should show. An empty `src` renders a quiet
+brand surface at exactly the same size, without any visible label, so a
 later photograph replaces it without any layout change. The local editor
 exposes these slots as **Praxisbilder**.
 
 No stock photography, no generated practice imagery and no invented people.
-Until Sarah supplies approved photographs the placeholders stay visible and
-stay marked as placeholders.
+The client preview currently fills the slots with photographs from the
+earlier public practice website as provisional placeholders; their rights
+and currency are unconfirmed and they are kept out of Git (public
+repository) until Sarah confirms or replaces them.
 
 ### The Raum und Zeit mark
 
@@ -273,3 +275,19 @@ pages now meets WCAG AA; `npm run contrast` proves it.
 Browser surfaces are themed from the palette rather than left at their
 defaults: text selection, the caret, the scrollbar, the focus ring and the
 underline offset on the telephone link.
+
+### Client preview pass (2026-09-28)
+
+Franklyn's visual review fixed the page surfaces: **website white for
+ordinary content, the established Raum und Zeit green for the header and
+for emphasis sections, nothing else.** No beige, stone or pale sage section
+backgrounds. Components take their colours from role tokens (`--ink`,
+`--muted`, `--line`, `--link`, `--focus`), which the green scope redefines,
+so a section turns green by class alone.
+
+The rendered website carries no internal preview language: no preview
+markers, no placeholder labels, no verification notes. Unresolved data is
+omitted, not explained. `noindex,nofollow` stays in the metadata.
+
+`→` marks internal routes, `↗` only external links. The six homepage page
+cards carry no arrow; their green hover and focus state is the affordance.
