@@ -14,7 +14,7 @@ currentKey: "index"
   {{ figure(images.homeAtmosphere, "", "rz-figure--bleed rz-figure--panorama", "eager") }}
   <div class="atmosphere-band__caption">
     <span>{{ site.addressLine1 }} · {{ site.addressLine2 }}</span>
-    <span>Privatpraxis für Physiotherapie</span>
+    <span>{{ copy.home.practiceBand.text }}</span>
   </div>
 </section>
 
@@ -23,51 +23,20 @@ currentKey: "index"
 
 <section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ headIndex("Therapie", "Orientierung über Behandlungskontexte statt Methodenwand.", "Die wichtigsten Kontexte sind früh verständlich. Fachliche Methoden und Qualifikationen bleiben tiefer verfügbar.") }}
+    {{ headIndex(copy.home.treatments.kicker, copy.home.treatments.title, copy.home.treatments.intro) }}
     <nav class="context-index" aria-label="Behandlungskontexte">
-      <a class="context-row" href="therapie.html#orthopaedie" style="--i: 0">
-        <span class="context-row__num">01</span>
-        <span class="context-row__title">Orthopädie &amp; Bewegung</span>
-        <span class="context-row__note">Rücken, Nacken, Schulter, Knie und funktionelle Beschwerden.</span>
+      {%- for context in contexts %}
+      {%- set item = copy.therapie.contexts[context.anchor] %}
+      <a class="context-row" href="therapie.html#{{ context.anchor }}" style="--i: {{ loop.index0 }}">
+        <span class="context-row__num">{{ context.num }}</span>
+        <span class="context-row__title">{{ item.shortTitle or item.title }}</span>
+        <span class="context-row__note">{{ item.summary }}</span>
         <span class="context-row__arrow" aria-hidden="true">→</span>
       </a>
-      <a class="context-row" href="therapie.html#sport" style="--i: 1">
-        <span class="context-row__num">02</span>
-        <span class="context-row__title">Sport &amp; Belastbarkeit</span>
-        <span class="context-row__note">Vom Alltag bis zum leistungsorientierten Sport.</span>
-        <span class="context-row__arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="context-row" href="therapie.html#neurologie" style="--i: 2">
-        <span class="context-row__num">03</span>
-        <span class="context-row__title">Neurologie</span>
-        <span class="context-row__note">Funktion, Bewegung und konkrete Anforderungen des Alltags.</span>
-        <span class="context-row__arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="context-row" href="therapie.html#cmd" style="--i: 3">
-        <span class="context-row__num">04</span>
-        <span class="context-row__title">Kiefer &amp; CMD</span>
-        <span class="context-row__note">Kieferfunktion im Zusammenhang mit Haltung, Spannung und Bewegung.</span>
-        <span class="context-row__arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="context-row" href="therapie.html#beckenboden" style="--i: 4">
-        <span class="context-row__num">05</span>
-        <span class="context-row__title">Beckenboden</span>
-        <span class="context-row__note">Funktion im Zusammenspiel mit Atmung, Spannung und Alltag.</span>
-        <span class="context-row__arrow" aria-hidden="true">→</span>
-      </a>
+      {%- endfor %}
     </nav>
   </div>
 </section>
 
-<section class="section">
-  <div class="shell">
-    <div class="cta-band">
-      <div class="cta-band__copy">
-        <span class="eyebrow eyebrow-light">Nächster Schritt</span>
-        <h2 class="display">Sie möchten wissen, ob Raum und Zeit zu Ihrem Anliegen passt?</h2>
-        <p>Auf der Praxisseite finden Sie den Ablauf, Kontakt und die Informationen, die vor einem Termin wichtig sind.</p>
-      </div>
-      <a class="button button-light" href="praxis.html">Zum Praxisbesuch <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
+{% set cta = copy.home.cta %}{% set ctaHref = "praxis.html" %}
+{% include "partials/cta-band.njk" %}

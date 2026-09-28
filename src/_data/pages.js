@@ -1,6 +1,7 @@
 // The six core subpages. Single source for main nav, footer links and
 // the homepage's six-card multi-page navigation grid — same destinations
-// everywhere, defined once instead of duplicated per template.
+// everywhere, defined once instead of duplicated per template. Structure
+// only: the short card texts are editable in copy/home.yaml (destinations).
 module.exports = [
   {
     key: "arbeitsweise",
@@ -8,8 +9,6 @@ module.exports = [
     navLabel: "Arbeitsweise",
     num: "01",
     title: "Arbeitsweise",
-    summary:
-      "Wie wir Zusammenhänge verstehen und Therapie individuell strukturieren.",
     footerLabel: "Wie wir arbeiten",
     inNav: true,
   },
@@ -19,8 +18,6 @@ module.exports = [
     navLabel: "Therapie",
     num: "02",
     title: "Therapie",
-    summary:
-      "Behandlungskontexte verständlich einordnen und Methoden tiefer ansehen.",
     footerLabel: "Therapie & Behandlungskontexte",
     inNav: true,
   },
@@ -30,8 +27,6 @@ module.exports = [
     navLabel: "Team",
     num: "03",
     title: "Team",
-    summary:
-      "Menschen, therapeutische Haltung und fachliche Schwerpunkte kennenlernen.",
     footerLabel: "Team",
     inNav: true,
   },
@@ -41,8 +36,6 @@ module.exports = [
     navLabel: "Praxisbesuch",
     num: "04",
     title: "Praxisbesuch",
-    summary:
-      "Termin, Kontakt, Anfahrt und Informationen für den Besuch an einem Ort.",
     footerLabel: "Praxisbesuch & Termin",
     inNav: true,
   },
@@ -52,8 +45,6 @@ module.exports = [
     navLabel: "Karriere",
     num: "05",
     title: "Karriere",
-    summary:
-      "Erfahren, wie Arbeiten mit Zeit, Austausch und fachlicher Entwicklung aussieht.",
     footerLabel: "Karriere",
     inNav: true,
   },
@@ -63,7 +54,6 @@ module.exports = [
     navLabel: "Aktuelles",
     num: "06",
     title: "Aktuelles",
-    summary: "Hinweise zu Praxisablauf, Erreichbarkeit und Veränderungen ansehen.",
     footerLabel: "Aktuelles",
     inNav: false,
   },

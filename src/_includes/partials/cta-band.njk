@@ -1,0 +1,20 @@
+{#
+  Closing call to action. Expects `cta` (kicker, title, text, button) from
+  the page's copy file and `ctaHref`, the fixed destination.
+#}
+<section class="section">
+  <div class="shell">
+    <div class="cta-band">
+      <div class="cta-band__copy">
+        {%- if cta.kicker %}
+        <span class="eyebrow eyebrow-light">{{ cta.kicker }}</span>
+        {%- endif %}
+        <h2 class="display">{{ cta.title }}</h2>
+        {%- if cta.text %}
+        {{ cta.text | absaetze | safe }}
+        {%- endif %}
+      </div>
+      <a class="button button-light" href="{{ ctaHref }}">{{ cta.button }} <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

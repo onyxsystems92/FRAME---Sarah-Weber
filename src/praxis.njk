@@ -6,7 +6,7 @@ description: "Kontakt, Termin und organisatorische Informationen für Raum und Z
 currentKey: "praxis"
 ---
 {% from "partials/macros.njk" import figure, head, headIndex %}
-{% set heroKicker = "Praxisbesuch" %}
+{% set page = copy.praxis %}
 {% set heroNum = "04" %}
 {% include "partials/page-hero.njk" %}
 
@@ -16,12 +16,12 @@ currentKey: "praxis"
 
 <section class="section" id="termin" data-reveal-group>
   <div class="shell">
-    {{ headIndex("Kontakt & Termin", "Der direkte Weg zur Praxis.", "Telefon, Adresse und Anfahrt auf einen Blick.") }}
+    {{ headIndex(page.contact.kicker, page.contact.title, page.contact.intro) }}
     <div class="contact-block">
       <div class="contact-block__primary">
         <span class="contact-block__label">Telefon</span>
         <a class="contact-block__phone display" href="{{ site.phoneHref }}">{{ site.phoneDisplay }}</a>
-        <p>Der schnellste Weg für einen Termin, eine Rückfrage oder eine kurze Einschätzung, ob Raum und Zeit zu Ihrem Anliegen passt.</p>
+        {{ page.contact.phoneText | absaetze | safe }}
         {%- if site.appointmentUrlConfirmed and site.appointmentUrl %}
         <div class="contact-block__appointment">
           <span class="contact-block__label">Termin online</span>
@@ -46,28 +46,17 @@ currentKey: "praxis"
 
 <section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ head("Weniger Rückfragen durch bessere Vorbereitung.") }}
+    {{ head(page.preparation.title) }}
     <dl class="orientation-list">
-      <div class="orientation-item" style="--i: 0">
-        <dt>Terminweg</dt>
-        <dd>Termine vereinbaren Sie telefonisch unter <a href="{{ site.phoneHref }}">{{ site.phoneDisplay }}</a>{% if site.appointmentUrlConfirmed and site.appointmentUrl %} oder <a href="{{ site.appointmentUrl }}" target="_blank" rel="noopener noreferrer">online</a>{% endif %}.</dd>
+      {%- for item in page.preparation.items %}
+      <div class="orientation-item" style="--i: {{ loop.index0 }}">
+        <dt>{{ item.title }}</dt>
+        <dd>{{ item.text | absatz(site) | safe }}</dd>
       </div>
-      <div class="orientation-item" style="--i: 1">
-        <dt>Anfahrt &amp; Praxis</dt>
-        <dd>Die Praxis liegt in der {{ site.addressLine1 }}, {{ site.addressLine2 }}. Den Standort können Sie direkt in <a href="{{ site.mapsUrl }}" target="_blank" rel="noopener noreferrer">Google Maps</a> öffnen.</dd>
-      </div>
+      {%- endfor %}
     </dl>
   </div>
 </section>
 
-<section class="section">
-  <div class="shell">
-    <div class="cta-band">
-      <div class="cta-band__copy">
-        <span class="eyebrow eyebrow-light">Arbeitsweise</span>
-        <h2 class="display">Noch unsicher, was Raum und Zeit anders macht?</h2>
-      </div>
-      <a class="button button-light" href="arbeitsweise.html">Arbeitsweise verstehen <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
+{% set cta = page.cta %}{% set ctaHref = "arbeitsweise.html" %}
+{% include "partials/cta-band.njk" %}

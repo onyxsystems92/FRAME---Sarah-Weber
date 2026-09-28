@@ -5,6 +5,54 @@ module.exports = function (eleventyConfig) {
   // src/_data/site.yaml (and any future .yaml data/front matter) loads.
   eleventyConfig.addDataExtension("yaml", (contents) => yaml.load(contents));
 
+  // --- Editable text -------------------------------------------------------
+  // Page copy comes from src/_data/copy/*.yaml, written by the local editor.
+  // It is plain text: always escaped, never trusted as HTML. Blank lines
+  // start a new paragraph, single line breaks stay line breaks, and three
+  // placeholders insert practice data from site.yaml, so the phone number
+  // and address exist in exactly one place.
+  const escapeHtml = (value) =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+  const withPlaceholders = (escaped, site) => {
+    if (!site) return escaped;
+    const external = 'target="_blank" rel="noopener noreferrer"';
+    return escaped
+      .replace(/\[Telefon\]/gi, `<a href="${escapeHtml(site.phoneHref)}">${escapeHtml(site.phoneDisplay)}</a>`)
+      .replace(/\[Adresse\]/gi, `${escapeHtml(site.addressLine1)}, ${escapeHtml(site.addressLine2)}`)
+      .replace(/\[Google Maps\]/gi, `<a href="${escapeHtml(site.mapsUrl)}" ${external}>Google Maps</a>`);
+  };
+
+  const paragraphs = (value) =>
+    String(value ?? "")
+      .replace(/\r\n/g, "\n")
+      .split(/\n\s*\n/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+  // Inline text (a heading, a list item, a definition): no <p> wrapper.
+  eleventyConfig.addFilter("absatz", (value, site) =>
+    paragraphs(value)
+      .map((part) => withPlaceholders(escapeHtml(part), site).replace(/\n/g, "<br>"))
+      .join("<br><br>")
+  );
+
+  // Body text: one <p> per paragraph, with an optional class on each.
+  eleventyConfig.addFilter("absaetze", (value, className, site) => {
+    const attr = className ? ` class="${escapeHtml(className)}"` : "";
+    return paragraphs(value)
+      .map((part) => `<p${attr}>${withPlaceholders(escapeHtml(part), site).replace(/\n/g, "<br>")}</p>`)
+      .join("\n");
+  });
+
+  // Two-digit index for numbered lists: 1 → "01".
+  eleventyConfig.addFilter("nummer", (n) => String(n).padStart(2, "0"));
+
   // Static passthrough — unchanged design system files and real assets.
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/images");

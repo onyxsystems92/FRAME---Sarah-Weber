@@ -5,7 +5,7 @@ role: "Physiotherapeutin · Master of Functional Kinetic Science"
 eyebrow: "Praxisinhaberin"
 featured: true
 order: 1
-photo: "assets/review/sarah-public.png"
+photo: "images/vorlaeufig/sarah-public.png"
 photoAlt: "Sarah Weber"
 qualifications:
   - "Functional Kinetic Science"

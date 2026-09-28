@@ -1,0 +1,16 @@
+# Seite „Team“ · Texte der Seite. Die Personen selbst (Name, Rolle, Foto,
+# Biografie, Qualifikationen) werden im Editor unter „Team“ gepflegt.
+hero:
+  kicker: "Team"
+  title: "Persönlich genug, um Entwicklung zu sehen."
+  intro: "Raum und Zeit versteht therapeutische Kontinuität als Teil der Qualität. Menschen sollen wissen, wer sie begleitet, nicht nur welche Qualifikationen an der Wand stehen."
+featured:
+  qualificationsTitle: "Fachliche Schwerpunkte"
+roster:
+  title: "Jede Person bekommt eine echte Rolle, keine austauschbare Teamkarte."
+  intro: "Hinter jeder Behandlung stehen Menschen mit eigenen fachlichen Schwerpunkten. Hier lernen Sie das Team von Raum und Zeit kennen."
+cta:
+  kicker: "Karriere"
+  title: "Sie möchten Teil dieser Arbeitsweise werden?"
+  text: ""
+  button: "Arbeiten bei Raum & Zeit"

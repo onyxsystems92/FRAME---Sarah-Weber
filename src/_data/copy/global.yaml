@@ -1,0 +1,4 @@
+# Texte, die auf jeder Seite erscheinen (Fußzeile).
+footer:
+  text: "Privatpraxis für Physiotherapie in Düsseldorf Oberkassel. Zeit für den Menschen, funktionelles Denken und persönliche therapeutische Begleitung."
+  bottomLine: "Privatpraxis · Düsseldorf Oberkassel"

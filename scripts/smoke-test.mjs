@@ -489,11 +489,11 @@ async function run() {
     await first.click();
     await page.waitForTimeout(400);
     check("karriere: click opens the item", (await first.getAttribute("aria-expanded")) === "true");
-    check("karriere: opened text is visible", await page.locator("#karriere-zeit-panel p").isVisible());
+    check("karriere: opened text is visible", await page.locator("#karriere-1-panel p").isVisible());
     check("karriere: open item is green", (await first.evaluate((el) => getComputedStyle(el).backgroundColor)) === FOREST);
     const directlyBelow = await page.evaluate(() => {
-      const t = document.getElementById("karriere-zeit-trigger").getBoundingClientRect();
-      const p = document.getElementById("karriere-zeit-panel").getBoundingClientRect();
+      const t = document.getElementById("karriere-1-trigger").getBoundingClientRect();
+      const p = document.getElementById("karriere-1-panel").getBoundingClientRect();
       return Math.abs(p.top - t.bottom) < 2;
     });
     check("karriere: text opens directly under its item", directlyBelow);
@@ -508,7 +508,7 @@ async function run() {
     await page.waitForTimeout(200);
     check("karriere: Enter opens the focused item", (await second.getAttribute("aria-expanded")) === "true");
     check("karriere: focus stays on the pressed button", await second.evaluate((el) => el === document.activeElement));
-    check("karriere: collapsed panels are not tabbable", (await page.locator("#karriere-zeit-panel").evaluate((el) => getComputedStyle(el).visibility)) === "hidden");
+    check("karriere: collapsed panels are not tabbable", (await page.locator("#karriere-1-panel").evaluate((el) => getComputedStyle(el).visibility)) === "hidden");
 
     await context.close();
   }

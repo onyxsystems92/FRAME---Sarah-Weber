@@ -1,46 +1,93 @@
 # Raum & Zeit: Inhalte selbst pflegen
 
-## Starten
+Alle Texte, Bilder, Teamprofile und Hinweise der Website pflegen Sie in
+einem Editor auf Ihrem eigenen Rechner. Dafür brauchen Sie weder
+Programmierkenntnisse noch GitHub, Franklyn, Tilmann oder eine KI.
+Aufbau, Farben, Navigation und Verlinkung der Website sind geschützt und
+lassen sich im Editor nicht versehentlich verändern.
 
-Die Website befindet sich in einem eigenen Ordner auf Ihrem Rechner.
-Node.js und npm werden **einmalig** bei der Übergabe eingerichtet.
-Öffnen Sie dort das Terminal. Einmalig ausführen: npm ci.
-Danach genügt zum Bearbeiten und zur Vorschau:
+## 1. Starten
+
+Node.js und npm werden **einmalig** bei der Übergabe eingerichtet, ebenso
+einmalig im Projektordner `npm ci`. Danach öffnen Sie das Terminal im
+Projektordner und geben ein:
 
     npm run edit
 
-Öffnen Sie http://127.0.0.1:8080/admin/ für den Editor und
-http://127.0.0.1:8080/ für die Vorschau. Beide Dienste laufen ausschließlich
-auf Ihrem eigenen Rechner (127.0.0.1), nicht auf einer öffentlichen Website.
-Mit Strg+C beenden Sie beide zusammen. Verwenden Sie den Editor nur in
-Ihrem eigenen geschützten Benutzerkonto.
+Dann im Browser öffnen:
 
-## Inhalte bearbeiten
+- **Editor:** http://127.0.0.1:8080/admin/ (auf „Login“ klicken, es gibt
+  kein Passwort, weil der Editor nur auf Ihrem Rechner läuft)
+- **Vorschau der Website:** http://127.0.0.1:8080/
 
-Im deutschen Editor: Seitentexte (Überschriften und Einleitungen aller
-sieben Seiten); Praxis-Angaben; Praxisbilder (die acht Bildplätze der
-Website mit Foto, Alternativtext und Bildausschnitt); Team (Person und
-Foto ergänzen oder bearbeiten); Aktuelles (Hinweis mit Titel, Text,
-Datum und Status).
+Beides läuft ausschließlich auf Ihrem Rechner, nicht im Internet. Mit
+Strg+C im Terminal beenden Sie beides. Nutzen Sie den Editor nur in Ihrem
+eigenen, geschützten Benutzerkonto.
 
-Solange ein Bildplatz kein Foto hat, zeigt die Website an dieser Stelle
-eine ruhige, deutlich als Platzhalter gekennzeichnete Fläche im richtigen
-Format. Sobald Sie ein echtes Foto einsetzen, erscheint es ohne
-Layoutänderung an genau dieser Stelle. Bitte tragen Sie zu jedem Foto
-einen kurzen Alternativtext ein, damit die Website auch für Menschen mit
-Screenreader verständlich bleibt, und verwenden Sie nur Aufnahmen, für
-die die Nutzungsrechte und, bei Personen, die Einwilligung vorliegen.
-Für weitere Fließtexte innerhalb der Seiten ist derzeit eine Anpassung
-der Templates durch Franklyn nötig; diese sind keine frei editierbaren
-Textfelder im lokalen Editor. Ein
-Teamfoto benötigen Sie nur mit Einwilligung der betroffenen Person.
-Das Knöpfchen Publish beziehungsweise Speichern schreibt die Änderung
-in die Quelldateien dieses Rechners; die Vorschau wird neu gebaut.
-**Es ist noch keine Veröffentlichung im Internet.**
+## 2. Wo Sie was ändern
 
-Bitte keine Patientennamen, Diagnosen oder Gesundheitsdaten eintragen.
-Aktuelles im Status Entwurf gehört nicht auf die öffentliche Website.
-Inhaltliche und gestalterische Grundstruktur bleiben im Template geschützt.
+| Im Editor links | Was Sie dort pflegen |
+| --- | --- |
+| **Seiteninhalte** | Alle Texte der sieben Seiten und der Fußzeile, nach Seite und Bereich geordnet: Überschriften, Einleitungen, Absätze, Ablauf-Schritte, Behandlungskontexte, Methodenliste, Karriere-Punkte, Hinweise zum Praxisbesuch, Texte der grünen Abschlusskästen |
+| **Praxis-Angaben** | Telefonnummer, Adresse, Google-Maps-Link, Online-Terminlink (erscheint erst, wenn „bestätigt“ angehakt ist) |
+| **Praxisbilder** | Die neun Fotos der Website: Foto austauschen, Alternativtext, Bildausschnitt |
+| **Team** | Personen: Name, Rolle, Foto, Kurzbiografie, Qualifikationen; neue Person mit „Neue(r/s) Teammitglied“ |
+| **Aktuelles** | Hinweise für Patientinnen und Patienten, z. B. Urlaub oder geänderte Erreichbarkeit |
+| **Medien** | Alle hochgeladenen Fotos an einem Ort |
+
+**Kleine Regeln für Texte**
+
+- Eine Leerzeile beginnt einen neuen Absatz.
+- In den Hinweisen unter „Praxisbesuch“ setzen `[Telefon]`, `[Adresse]`
+  und `[Google Maps]` automatisch die aktuellen Praxis-Angaben ein. So
+  steht die Telefonnummer nur an einer Stelle und bleibt überall richtig.
+- Die fünf Behandlungskontexte, die vier Kennzeichen und die drei Schritte
+  auf der Seite „Arbeitsweise“ haben eine feste Anzahl, weil das Layout
+  darauf aufbaut. Die Texte darin sind frei änderbar.
+- Die vier Besucherwege im grünen Kasten der Startseite sind fest
+  vorgegeben und nicht im Editor änderbar.
+
+**Fotos**
+
+Unter „Praxisbilder“ öffnen Sie den gewünschten Bildplatz, klicken auf
+„Anderes Bild wählen“, dann auf „Hochladen“, wählen das Foto und bestätigen
+mit „Ausgewähltes Element verwenden“. Tragen Sie bitte immer einen kurzen
+Alternativtext ein (was auf dem Foto zu sehen ist). Verwenden Sie nur
+Fotos, deren Nutzungsrechte vorliegen, und bei Personen nur mit deren
+Einwilligung. Ein leerer Bildplatz zeigt eine ruhige Fläche im richtigen
+Format; das Layout bleibt gleich.
+
+**Aktuelles**
+
+Neuen Hinweis anlegen, Titel und Text schreiben, Status auf
+„Veröffentlicht“ stellen und das Datum „Veröffentlichen ab“ setzen.
+„Läuft ab am“ leer lassen, wenn der Hinweis unbegrenzt gelten soll; mit
+Datum verschwindet er danach automatisch. Mit „Auch auf der Startseite
+zeigen“ erscheint er zusätzlich auf der Startseite (höchstens zwei).
+Hinweise im Status „Entwurf“ sind auf der Website nicht zu sehen.
+
+Bitte niemals Patientennamen, Diagnosen oder andere Gesundheitsdaten
+eintragen.
+
+## 3. Vorschau
+
+Nach jedem Speichern baut sich die Vorschau unter http://127.0.0.1:8080/
+innerhalb weniger Sekunden neu auf. Seite im Browser neu laden, und Sie
+sehen die Website genau so, wie sie später veröffentlicht wird.
+
+## 4. Was „Veröffentlichen“ im Editor bedeutet
+
+Der Knopf „Veröffentlichen“ → „Jetzt veröffentlichen“ **speichert Ihre
+Änderung auf Ihrem Rechner**. Er lädt noch nichts ins Internet. Die
+öffentliche Website ändert sich erst, wenn die fertige Website hochgeladen
+wird (Abschnitt „Selbst veröffentlichen“ unten).
+
+## 5. Was Sie nicht von Hand ändern sollten
+
+Bitte nichts direkt in den Ordnern `src/_includes/`, `admin/`, `scripts/`
+und nicht an den Dateien `*.njk`, `*.css`, `*.js`, `.eleventy.js` oder
+`package*.json` ändern. Dort liegen Aufbau und Technik der Website. Alles,
+was Sie inhaltlich pflegen möchten, finden Sie im Editor.
 
 ## Öffentlichen Export vorbereiten
 

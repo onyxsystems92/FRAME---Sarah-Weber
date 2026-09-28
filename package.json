@@ -16,6 +16,7 @@
     "export": "npm run build && node scripts/export-site.js",
     "smoke": "node scripts/smoke-test.mjs",
     "contrast": "node scripts/contrast-check.mjs",
+    "content-check": "node scripts/content-check.mjs",
     "review:shots": "node scripts/design-review-shots.mjs"
   },
   "devDependencies": {

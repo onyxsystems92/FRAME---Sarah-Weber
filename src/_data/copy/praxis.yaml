@@ -1,0 +1,23 @@
+# Seite „Praxisbesuch“ · alle sichtbaren Texte. Telefonnummer, Adresse,
+# Karten- und Terminlink kommen aus den Praxis-Angaben (site.yaml).
+hero:
+  kicker: "Praxisbesuch"
+  title: "Ankommen und wissen, was wichtig ist."
+  intro: "Kontakt, Terminweg und organisatorische Informationen finden Sie hier an einem Ort. Viele einfache Fragen lassen sich so vorab klären; persönliche Beratung ersetzt das dort nicht, wo sie wirklich nötig ist."
+contact:
+  kicker: "Kontakt & Termin"
+  title: "Der direkte Weg zur Praxis."
+  intro: "Telefon, Adresse und Anfahrt auf einen Blick."
+  phoneText: "Der schnellste Weg für einen Termin, eine Rückfrage oder eine kurze Einschätzung, ob Raum und Zeit zu Ihrem Anliegen passt."
+preparation:
+  title: "Weniger Rückfragen durch bessere Vorbereitung."
+  items:
+    - title: "Terminweg"
+      text: "Termine vereinbaren Sie telefonisch unter [Telefon]."
+    - title: "Anfahrt & Praxis"
+      text: "Die Praxis liegt in der [Adresse]. Den Standort können Sie direkt in [Google Maps] öffnen."
+cta:
+  kicker: "Arbeitsweise"
+  title: "Noch unsicher, was Raum und Zeit anders macht?"
+  text: ""
+  button: "Arbeitsweise verstehen"

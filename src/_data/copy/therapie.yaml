@@ -1,0 +1,54 @@
+# Seite „Therapie“ · alle sichtbaren Texte. Die fünf Behandlungskontexte
+# erscheinen auch auf der Startseite (Kurztitel und Kurzbeschreibung).
+hero:
+  kicker: "Therapie"
+  title: "Methoden sind Werkzeuge. Entscheidend ist der Zusammenhang."
+  intro: "Hier finden Sie eine Orientierung über häufige Behandlungskontexte. Sie ersetzt keine individuelle Befundung und stellt keine Diagnose."
+contexts:
+  kicker: "Behandlungskontexte"
+  title: "Schnell verstehen. Fachlich tiefer gehen, wenn es relevant ist."
+  intro: "Öffnen Sie einen Kontext für mehr Details. Eine Übersicht der fachlichen Methoden finden Sie weiter unten."
+  orthopaedie:
+    title: "Orthopädie & Bewegungsapparat"
+    shortTitle: "Orthopädie & Bewegung"
+    summary: "Rücken, Nacken, Schulter, Knie und funktionelle Beschwerden."
+    text: "Beschwerden an Rücken, Nacken, Schulter, Hüfte oder Knie werden nicht automatisch isoliert am Schmerzort betrachtet. Relevant können Bewegungsverhalten, Belastung und funktionelle Beziehungen sein."
+  sport:
+    title: "Sport & Belastbarkeit"
+    shortTitle: "Sport & Belastbarkeit"
+    summary: "Vom Alltag bis zum leistungsorientierten Sport."
+    text: "Bei sportbezogenen Beschwerden oder nach Verletzungen steht die Frage im Mittelpunkt, wie Bewegung und Belastung aktuell verarbeitet werden und welche Anforderungen wieder sicher bewältigt werden sollen."
+  neurologie:
+    title: "Neurologie"
+    shortTitle: "Neurologie"
+    summary: "Funktion, Bewegung und konkrete Anforderungen des Alltags."
+    text: "Neurologische Physiotherapie orientiert sich an vorhandenen Fähigkeiten, Bewegungsmöglichkeiten und konkreten Alltagsanforderungen. Der Behandlungsrahmen wird individuell abgestimmt."
+  cmd:
+    title: "Kiefer & CMD"
+    shortTitle: "Kiefer & CMD"
+    summary: "Kieferfunktion im Zusammenhang mit Haltung, Spannung und Bewegung."
+    text: "Kieferfunktion kann im Zusammenspiel mit Haltung, Spannung, Atmung und Bewegung betrachtet werden. Welche Aspekte relevant sind, ergibt sich aus Befund und Verlauf."
+  beckenboden:
+    title: "Beckenboden & Funktion"
+    shortTitle: "Beckenboden"
+    summary: "Funktion im Zusammenspiel mit Atmung, Spannung und Alltag."
+    text: "Beckenbodenbezogene Behandlung kann Atmung, Spannung, Bewegung und konkrete Anforderungen des Alltags in einen funktionellen Zusammenhang stellen."
+methods:
+  title: "Fachliche Qualifikationen und Methoden bleiben transparent und leicht einsehbar."
+  listTitle: "Methoden und Qualifikationen im Überblick"
+  items:
+    - name: "Manuelle Therapie im osteopathischen Konzept"
+    - name: "Bobath"
+    - name: "Funktionelle Bewegungslehre (FBL)"
+    - name: "Physio Pelvica / Beckenboden"
+    - name: "Manuelle Lymphdrainage"
+    - name: "CMD / K-O-S-T"
+    - name: "Myofasziale Verfahren"
+    - name: "Behandlung bei Skoliose"
+  noteTitle: "Orientierung, keine Zuordnung"
+  noteText: "Die Übersicht ersetzt keine individuelle Befundung. Welche Verfahren in Ihrer Behandlung sinnvoll sind, ergibt sich aus Befund und Verlauf."
+cta:
+  kicker: "Praxisbesuch"
+  title: "Sie möchten den nächsten Schritt klären?"
+  text: "Kontakt, Praxisinformationen und Terminweg finden Sie gebündelt auf einer eigenen Seite."
+  button: "Praxis & Termin"

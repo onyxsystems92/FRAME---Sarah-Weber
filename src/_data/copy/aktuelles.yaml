@@ -1,0 +1,13 @@
+# Seite „Aktuelles“ · Texte der Seite. Die Hinweise selbst werden im
+# Editor unter „Aktuelles“ gepflegt.
+hero:
+  kicker: "Aktuelles"
+  title: "Aktuelles aus der Praxis."
+  intro: "Hier finden Sie Hinweise zu Erreichbarkeit, Praxisablauf, Team oder anderen Veränderungen, die für Ihren Besuch relevant sind."
+notices:
+  kicker: "Praxisinformationen"
+  title: "Hinweise, die für Ihren Besuch wichtig sind."
+empty:
+  title: "Aktuell sind keine zusätzlichen Hinweise veröffentlicht."
+  text: "Wenn sich etwas ändert, das für Ihren Praxisbesuch wichtig ist, finden Sie die Information an dieser Stelle."
+  link: "Termin & Kontakt"

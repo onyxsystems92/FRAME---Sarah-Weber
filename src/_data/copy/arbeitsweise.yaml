@@ -1,0 +1,42 @@
+# Seite „Arbeitsweise“ · alle sichtbaren Texte.
+hero:
+  kicker: "Wie wir arbeiten"
+  title: "Verstehen, bevor behandelt wird."
+  intro: "Zeit ist bei Raum und Zeit kein dekoratives Versprechen. Sie schafft den Rahmen, um Befund, funktionelle Zusammenhänge, Behandlung und Reaktion gemeinsam zu betrachten."
+facts:
+  - value: "≈ 60 Min."
+    text: "Behandlungszeit in der Regel"
+  - value: "Funktion"
+    text: "statt nur Schmerzort"
+  - value: "Individuell"
+    text: "Befund und Therapie werden zusammen gedacht"
+  - value: "Persönlich"
+    text: "Kontinuität in einer kleinen Praxisstruktur"
+method:
+  title: "Die Methode folgt dem Zusammenhang."
+  intro: "Qualifikationen und Techniken sind Werkzeuge. Welche davon sinnvoll sind, ergibt sich aus dem individuellen Befund und dem therapeutischen Verlauf."
+  steps:
+    - label: "Wahrnehmen"
+      title: "Zuhören & untersuchen"
+      text: "Zu Beginn stehen das konkrete Anliegen, relevante Vorgeschichte und die Untersuchung von Bewegung und Funktion."
+    - label: "Einordnen"
+      title: "Zusammenhänge verstehen"
+      text: "Nicht jede Beschwerde erklärt sich allein am Ort des Schmerzes. Kompensationen und funktionelle Beziehungen können Teil des Bildes sein."
+    - label: "Entscheiden"
+      title: "Behandeln & anpassen"
+      text: "Die Behandlung wird an das gekoppelt, was im Termin beobachtet wird. Reaktionen helfen dabei, den nächsten sinnvollen Schritt festzulegen."
+time:
+  title: "Mehr Zeit für relevante Beobachtung."
+  text: "Die längere Behandlungszeit ist der Kern der Arbeitsweise bei Raum und Zeit: nicht als Luxus, sondern als Voraussetzung dafür, genauer zu verstehen und individuell zu reagieren."
+  points:
+    - title: "Kein starrer Takt von 20 Minuten"
+      text: "Raum und Zeit ist als Privatpraxis darauf ausgerichtet, therapeutische Entscheidungen nicht unter permanentem Taktungsdruck treffen zu müssen."
+    - title: "Der Mensch statt der Methodenliste"
+      text: "Manuelle, neurophysiologische, funktionelle oder weitere Verfahren werden nicht isoliert präsentiert. Relevant ist, welches Werkzeug im konkreten Zusammenhang hilfreich sein kann."
+    - title: "Eigenverantwortung bleibt Teil der Therapie"
+      text: "Verstehen gehört zur Behandlung. Wo sinnvoll, sollen Patientinnen und Patienten nachvollziehen können, welche Beobachtungen und nächsten Schritte für sie relevant sind."
+cta:
+  kicker: "Therapie"
+  title: "Welche Behandlungskontexte begleiten wir?"
+  text: ""
+  button: "Zur Therapie"

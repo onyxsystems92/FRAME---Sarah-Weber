@@ -1,0 +1,37 @@
+# Startseite · alle sichtbaren Texte. Aufbau, Verlinkung und die vier
+# Besucherwege der Navigation Home liegen geschützt im Template.
+hero:
+  kicker: "Privatpraxis · Düsseldorf Oberkassel"
+  title: "Physiotherapie mit Zeit, Zusammenhänge wirklich zu verstehen."
+  intro: "Raum und Zeit verbindet persönliche therapeutische Begleitung mit funktionellem Denken und fachlicher Tiefe. Wählen Sie den Einstieg, der zu Ihrer Situation passt."
+orientation:
+  kicker: "Ihre Orientierung"
+  title: "Was führt Sie zu uns?"
+  intro: "Wählen Sie die Situation, die gerade am besten passt. Die passenden nächsten Wege öffnen sich direkt an dieser Auswahl."
+practiceBand:
+  text: "Privatpraxis für Physiotherapie"
+values:
+  kicker: "Was uns prägt"
+  title: "Verstehen, bevor behandelt wird."
+  text: "Zeit, funktionelles Kontextdenken, fachliche Tiefe und persönliche Kontinuität prägen die Arbeit bei Raum und Zeit. Wählen Sie den Bereich, den Sie vertiefen möchten."
+  portraitName: "Sarah Weber"
+  portraitLine: "Persönliche therapeutische Begleitung"
+destinations:
+  arbeitsweise: "Wie wir Zusammenhänge verstehen und Therapie individuell strukturieren."
+  therapie: "Behandlungskontexte verständlich einordnen und Methoden tiefer ansehen."
+  team: "Menschen, therapeutische Haltung und fachliche Schwerpunkte kennenlernen."
+  praxis: "Termin, Kontakt, Anfahrt und Informationen für den Besuch an einem Ort."
+  karriere: "Erfahren, wie Arbeiten mit Zeit, Austausch und fachlicher Entwicklung aussieht."
+  aktuelles: "Hinweise zu Praxisablauf, Erreichbarkeit und Veränderungen ansehen."
+updates:
+  title: "Wichtig für Ihren Praxisbesuch."
+  link: "Alle aktuellen Hinweise"
+treatments:
+  kicker: "Therapie"
+  title: "Orientierung über Behandlungskontexte statt Methodenwand."
+  intro: "Ein Überblick über die häufigsten Behandlungskontexte. Details, Methoden und Qualifikationen finden Sie auf der Therapieseite."
+cta:
+  kicker: "Nächster Schritt"
+  title: "Sie möchten wissen, ob Raum und Zeit zu Ihrem Anliegen passt?"
+  text: "Auf der Praxisseite finden Sie den Ablauf, Kontakt und die Informationen, die vor einem Termin wichtig sind."
+  button: "Zum Praxisbesuch"

@@ -6,7 +6,7 @@ description: "Behandlungskontexte und fachliche Orientierung bei Raum und Zeit P
 currentKey: "therapie"
 ---
 {% from "partials/macros.njk" import figure, head, headIndex %}
-{% set heroKicker = "Therapie" %}
+{% set page = copy.therapie %}
 {% set heroNum = "02" %}
 {% include "partials/page-hero.njk" %}
 
@@ -16,66 +16,38 @@ currentKey: "therapie"
 
 <section class="section" data-reveal-group>
   <div class="shell">
-    {{ headIndex("Behandlungskontexte", "Schnell verstehen. Fachlich tiefer gehen, wenn es relevant ist.", "Die Struktur folgt dem Informationsbedarf von Patientinnen und Patienten; die fachlichen Methoden bleiben darunter zugänglich.") }}
+    {{ headIndex(page.contexts.kicker, page.contexts.title, page.contexts.intro) }}
     <div class="details-list">
-      <details id="orthopaedie" open>
-        <summary><span class="num">01</span><strong>Orthopädie &amp; Bewegungsapparat</strong><span class="plus" aria-hidden="true"></span></summary>
-        <div class="detail-copy"><div class="detail-copy__inner"><p>Beschwerden an Rücken, Nacken, Schulter, Hüfte oder Knie werden nicht automatisch isoliert am Schmerzort betrachtet. Relevant können Bewegungsverhalten, Belastung und funktionelle Beziehungen sein.</p></div></div>
+      {%- for context in contexts %}
+      {%- set item = page.contexts[context.anchor] %}
+      <details id="{{ context.anchor }}"{% if loop.first %} open{% endif %}>
+        <summary><span class="num">{{ context.num }}</span><strong>{{ item.title }}</strong><span class="plus" aria-hidden="true"></span></summary>
+        <div class="detail-copy"><div class="detail-copy__inner">{{ item.text | absaetze | safe }}</div></div>
       </details>
-      <details id="sport">
-        <summary><span class="num">02</span><strong>Sport &amp; Belastbarkeit</strong><span class="plus" aria-hidden="true"></span></summary>
-        <div class="detail-copy"><div class="detail-copy__inner"><p>Bei sportbezogenen Beschwerden oder nach Verletzungen steht die Frage im Mittelpunkt, wie Bewegung und Belastung aktuell verarbeitet werden und welche Anforderungen wieder sicher bewältigt werden sollen.</p></div></div>
-      </details>
-      <details id="neurologie">
-        <summary><span class="num">03</span><strong>Neurologie</strong><span class="plus" aria-hidden="true"></span></summary>
-        <div class="detail-copy"><div class="detail-copy__inner"><p>Neurologische Physiotherapie orientiert sich an vorhandenen Fähigkeiten, Bewegungsmöglichkeiten und konkreten Alltagsanforderungen. Der Behandlungsrahmen wird individuell abgestimmt.</p></div></div>
-      </details>
-      <details id="cmd">
-        <summary><span class="num">04</span><strong>Kiefer &amp; CMD</strong><span class="plus" aria-hidden="true"></span></summary>
-        <div class="detail-copy"><div class="detail-copy__inner"><p>Kieferfunktion kann im Zusammenspiel mit Haltung, Spannung, Atmung und Bewegung betrachtet werden. Welche Aspekte relevant sind, ergibt sich aus Befund und Verlauf.</p></div></div>
-      </details>
-      <details id="beckenboden">
-        <summary><span class="num">05</span><strong>Beckenboden &amp; Funktion</strong><span class="plus" aria-hidden="true"></span></summary>
-        <div class="detail-copy"><div class="detail-copy__inner"><p>Beckenbodenbezogene Behandlung kann Atmung, Spannung, Bewegung und konkrete Anforderungen des Alltags in einen funktionellen Zusammenhang stellen.</p></div></div>
-      </details>
+      {%- endfor %}
     </div>
   </div>
 </section>
 
 <section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ head("Fachliche Qualifikationen und Methoden bleiben transparent und leicht einsehbar.", "", "section-head--wide") }}
+    {{ head(page.methods.title, "", "section-head--wide") }}
     <div class="methods">
       <div class="methods__list">
-        <h3 class="methods__title">Methoden und Qualifikationen im Überblick</h3>
+        <h3 class="methods__title">{{ page.methods.listTitle }}</h3>
         <ol class="method-rows">
-          <li><span class="method-rows__num">01</span><span class="method-rows__name">Manuelle Therapie im osteopathischen Konzept</span></li>
-          <li><span class="method-rows__num">02</span><span class="method-rows__name">Bobath</span></li>
-          <li><span class="method-rows__num">03</span><span class="method-rows__name">Funktionelle Bewegungslehre (FBL)</span></li>
-          <li><span class="method-rows__num">04</span><span class="method-rows__name">Physio Pelvica / Beckenboden</span></li>
-          <li><span class="method-rows__num">05</span><span class="method-rows__name">Manuelle Lymphdrainage</span></li>
-          <li><span class="method-rows__num">06</span><span class="method-rows__name">CMD / K-O-S-T</span></li>
-          <li><span class="method-rows__num">07</span><span class="method-rows__name">Myofasziale Verfahren</span></li>
-          <li><span class="method-rows__num">08</span><span class="method-rows__name">Behandlung bei Skoliose</span></li>
+          {%- for method in page.methods.items %}
+          <li><span class="method-rows__num">{{ loop.index | nummer }}</span><span class="method-rows__name">{{ method.name }}</span></li>
+          {%- endfor %}
         </ol>
       </div>
       <aside class="methods__note">
-        <h3>Orientierung, keine Zuordnung</h3>
-        <p>Die Übersicht ersetzt keine individuelle Befundung. Welche Verfahren in Ihrer Behandlung sinnvoll sind, ergibt sich aus Befund und Verlauf.</p>
+        <h3>{{ page.methods.noteTitle }}</h3>
+        {{ page.methods.noteText | absaetze | safe }}
       </aside>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="shell">
-    <div class="cta-band">
-      <div class="cta-band__copy">
-        <span class="eyebrow eyebrow-light">Praxisbesuch</span>
-        <h2 class="display">Sie möchten den nächsten Schritt klären?</h2>
-        <p>Kontakt, Praxisinformationen und Terminweg finden Sie gebündelt auf einer eigenen Seite.</p>
-      </div>
-      <a class="button button-light" href="praxis.html">Praxis &amp; Termin <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
+{% set cta = page.cta %}{% set ctaHref = "praxis.html" %}
+{% include "partials/cta-band.njk" %}

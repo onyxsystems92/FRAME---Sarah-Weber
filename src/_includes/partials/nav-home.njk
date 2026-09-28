@@ -2,16 +2,16 @@
 <section class="navigation-home" aria-labelledby="navigation-home-title">
   <div class="nav-home-shell">
     <div class="nav-home-intro">
-      <div class="nav-home-kicker"><span class="eyebrow">Privatpraxis · Düsseldorf Oberkassel</span></div>
-      <h1 class="display" id="navigation-home-title">{{ copy.home.title | escape }}</h1>
-      <p>{{ copy.home.intro | escape }}</p>
+      <div class="nav-home-kicker"><span class="eyebrow">{{ copy.home.hero.kicker }}</span></div>
+      <h1 class="display" id="navigation-home-title">{{ copy.home.hero.title }}</h1>
+      {{ copy.home.hero.intro | absaetze | safe }}
     </div>
 
     <div class="nav-home-router">
       <div class="nav-home-router__motif" aria-hidden="true">{{ mark("router") }}</div>
-      <span class="eyebrow">Ihre Orientierung</span>
-      <h2 class="display">Was führt Sie zu uns?</h2>
-      <p>Wählen Sie die Situation, die gerade am besten passt. Die passenden nächsten Wege öffnen sich direkt an dieser Auswahl.</p>
+      <span class="eyebrow">{{ copy.home.orientation.kicker }}</span>
+      <h2 class="display">{{ copy.home.orientation.title }}</h2>
+      {{ copy.home.orientation.intro | absaetze | safe }}
       <div class="intent-choices" role="group" aria-label="Besucherstatus auswählen">
         {%- for intent in intents %}
         <div class="intent-item">

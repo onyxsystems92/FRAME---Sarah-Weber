@@ -10,6 +10,10 @@ const path = require("path");
 
 const root = path.join(__dirname, "..");
 
+// The shared media library must exist before the preview starts; otherwise
+// the first uploaded photo is not served until the next restart.
+require("fs").mkdirSync(path.join(root, "src", "images"), { recursive: true });
+
 function run(label, command, args) {
   const child = spawn(command, args, { cwd: root, env: process.env });
   const prefix = `[${label}] `;

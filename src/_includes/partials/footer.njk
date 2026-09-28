@@ -7,7 +7,7 @@
           <img class="brand-logo" src="assets/logo-raum-und-zeit.png" alt="" width="32" height="32">
           <span class="brand-wordmark">{{ site.wordmark }}</span>
         </a>
-        <p>Privatpraxis für Physiotherapie in Düsseldorf Oberkassel. Zeit für den Menschen, funktionelles Denken und persönliche therapeutische Begleitung.</p>
+        {{ copy.global.footer.text | absaetze | safe }}
         <div class="footer-mark" aria-hidden="true">{{ mark("footer") }}</div>
       </div>
       <div class="footer-col">
@@ -24,7 +24,7 @@
     </div>
     <div class="footer-bottom">
       <span>Raum &amp; Zeit Physiotherapie</span>
-      <span>Privatpraxis · Düsseldorf Oberkassel</span>
+      <span>{{ copy.global.footer.bottomLine }}</span>
     </div>
   </div>
 </footer>

@@ -8,16 +8,16 @@
   <div class="shell">
     <div class="practice-navigation-head">
       <div class="practice-navigation-copy">
-        <span class="eyebrow">Was uns prägt</span>
-        <h2 class="display">Verstehen, bevor behandelt wird.</h2>
+        <span class="eyebrow">{{ copy.home.values.kicker }}</span>
+        <h2 class="display">{{ copy.home.values.title }}</h2>
         <div class="practice-navigation-context">
           <div class="practice-navigation-logo" aria-hidden="true"><img src="assets/logo-raum-und-zeit.png" alt=""></div>
-          <p>Zeit, funktionelles Kontextdenken, fachliche Tiefe und persönliche Kontinuität prägen die Arbeit bei Raum und Zeit. Wählen Sie den Bereich, den Sie vertiefen möchten.</p>
+          {{ copy.home.values.text | absaetze | safe }}
         </div>
       </div>
       <div class="practice-navigation-visual">
         {{ figure(images.homePortrait, "1 / 1", "rz-figure--portrait rz-figure--round") }}
-        <div class="practice-navigation-visual__caption"><span>Sarah Weber</span><span>Persönliche therapeutische Begleitung</span></div>
+        <div class="practice-navigation-visual__caption"><span>{{ copy.home.values.portraitName }}</span><span>{{ copy.home.values.portraitLine }}</span></div>
       </div>
     </div>
 
@@ -27,7 +27,7 @@
         <span class="site-route-card__top"><span class="num">{{ p.num }}</span></span>
         <span class="site-route-card__body">
           <h3>{{ p.title }}</h3>
-          <p>{{ p.summary }}</p>
+          <p>{{ copy.home.destinations[p.key] }}</p>
         </span>
       </a>
       {%- endfor %}

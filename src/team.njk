@@ -6,7 +6,7 @@ description: "Team und therapeutische Haltung bei Raum und Zeit Physiotherapie."
 currentKey: "team"
 ---
 {% from "partials/macros.njk" import figure, head %}
-{% set heroKicker = "Team" %}
+{% set page = copy.team %}
 {% set heroNum = "03" %}
 {% set heroTone = "dark page-hero--photo" %}
 {% set heroPhoto = images.teamHero.src %}
@@ -30,7 +30,7 @@ currentKey: "team"
       <div class="team-bio">{{ member.templateContent | safe }}</div>
       {%- if member.data.qualifications and member.data.qualifications.length %}
       <div class="qual-list">
-        <h3>Fachliche Schwerpunkte</h3>
+        <h3>{{ page.featured.qualificationsTitle }}</h3>
         <ul>{% for q in member.data.qualifications %}<li>{{ q }}</li>{% endfor %}</ul>
       </div>
       {%- endif %}
@@ -45,7 +45,7 @@ currentKey: "team"
 
 <section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ head("Jede Person bekommt eine echte Rolle, keine austauschbare Teamkarte.", "Hinter jeder Behandlung stehen Menschen mit eigenen fachlichen Schwerpunkten. Hier lernen Sie das Team von Raum und Zeit kennen.") }}
+    {{ head(page.roster.title, page.roster.intro) }}
     <div class="team-roster">
       {%- for member in collections.team %}{% if not member.data.featured %}
       <article class="roster-entry" style="--i: {{ loop.index0 }}">
@@ -53,7 +53,7 @@ currentKey: "team"
           src: member.data.photo,
           alt: member.data.photoAlt or member.data.role,
           focus: "center 25%",
-          note: member.data.placeholderLabel or "Portrait"
+          note: "Portrait " + member.data.role
         }, "1 / 1", "rz-figure--portrait") }}
         <div class="roster-entry__copy">
           <h3>{{ member.data.name or member.data.role }}</h3>
@@ -69,14 +69,5 @@ currentKey: "team"
   </div>
 </section>
 
-<section class="section">
-  <div class="shell">
-    <div class="cta-band">
-      <div class="cta-band__copy">
-        <span class="eyebrow eyebrow-light">Karriere</span>
-        <h2 class="display">Sie möchten Teil dieser Arbeitsweise werden?</h2>
-      </div>
-      <a class="button button-light" href="karriere.html">Arbeiten bei Raum &amp; Zeit <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
+{% set cta = page.cta %}{% set ctaHref = "karriere.html" %}
+{% include "partials/cta-band.njk" %}

@@ -48,24 +48,66 @@ Rules:
 
 The repository starts with an empty item list. Do not create fictional practice news for the preview.
 
+## Content ownership
+
+One rule separates Sarah's content from the website implementation:
+
+| Kind | Where it lives | Who edits it |
+| --- | --- | --- |
+| Public editorial copy of all seven pages and the footer | `src/_data/copy/<page>.yaml` | Sarah, local editor → „Seiteninhalte“ |
+| Practice master data (phone, address, map and booking link) | `src/_data/site.yaml` | Sarah → „Praxis-Angaben“ |
+| Photographs and their alt text and crop | `src/_data/images.yaml`, files in `src/images/` | Sarah → „Praxisbilder“, „Medien“ |
+| Team profiles | `src/team/*.md` | Sarah → „Team“ |
+| Current notices | `src/aktuelles/*.md` | Sarah → „Aktuelles“ |
+| Layout, components, colours, motion | `src/**/*.njk`, `src/*.css`, `src/script.js` | developer |
+| Navigation structure: page list, visitor states and routes, treatment anchors | `src/_data/pages.js`, `intents.js`, `contexts.js` | developer (binding UX contract) |
+
+Copy files (`home`, `arbeitsweise`, `therapie`, `team`, `praxis`, `karriere`,
+`aktuelles`, `global`) are grouped by page section with fields named after
+their meaning (`hero.title`, `method.steps[].text`, `cta.button`), never
+after layout geometry. They are plain text: templates always escape them.
+A blank line starts a new paragraph. In the Praxisbesuch notes,
+`[Telefon]`, `[Adresse]` and `[Google Maps]` insert the practice data from
+`site.yaml`, so contact data exists in exactly one place.
+
+Fixed-count lists (four facts, three process steps, five treatment
+contexts) are locked in the editor with `min`/`max`/`allow_add: false`,
+because the layout and the deep-link anchors depend on them. Their wording
+is free.
+
+Deliberately template-owned text: the navigation labels and the four
+binding visitor states with their routes (DESIGN.md contract), the
+interface labels „Telefon“, „Adresse“, „Termin online“, „Auf Google Maps
+öffnen“, „Online einen Termin vereinbaren“ and „Termin & Kontakt“, the
+legal name in the footer, accessibility helper strings, the card label
+„Praxisinformation“ on notices, and the page `<title>` and meta
+description in each page's front matter.
+
+`npm run content-check` guards this: it fails when a template contains
+three or more words of visible text outside that list, when a copy text
+is not rendered anywhere, or when `admin/config.yml` and an edited data
+file disagree on their keys. The local editor rewrites a whole file when
+it saves: comments disappear and quoting changes, values stay; any key
+without an editor field could be lost, which is why that third check
+exists.
+
 ## Practice imagery
 
-`src/_data/images.yaml` is the second bounded content source. It holds eight
-named image slots, one per place in the layout that is designed for a
+`src/_data/images.yaml` holds nine named image slots, one per place in the layout that is designed for a
 photograph. Each slot has:
 
-- `src` — the image path, empty for a marked placeholder;
+- `src` — the image path (uploads land in `src/images/`), empty for a quiet brand surface;
 - `alt` — screen reader description, required as soon as `src` is set;
 - `focus` — the CSS `object-position` focal point for cropped formats;
-- `note` — what the photograph should show, displayed only in the placeholder.
+- `note` — what the photograph should show; an editor note, never rendered.
 
 Rules:
 
 - Slot names are fixed; the templates reference them by name. Do not rename
   or remove a slot without changing the template that uses it.
-- An empty slot is a valid state. It renders a designed, explicitly labelled
-  placeholder at the same aspect ratio, so a later photograph replaces it
-  without any layout change.
+- An empty slot is a valid state. It renders a quiet brand surface at the
+  same aspect ratio, so a later photograph replaces it without any layout
+  change.
 - Only real, rights cleared practice photography. No stock imagery, no
   generated pictures of a practice or of people, and no photograph of an
   identifiable person without their consent.

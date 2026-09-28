@@ -17,11 +17,13 @@ Designverbesserungen und einer verstärkten Teampräsenz. Vorhandene
 Praxisangaben und Qualifikationen sind vor dem Livegang mit Sarah abzugleichen.
 
 Der statische Generator ist Eleventy. Die einzigen bearbeitbaren
-Inhaltsquellen liegen in src/ (Team und Aktuelles als Markdown,
-Überschriften und Einleitungen in src/_data/copy.yaml, allgemeine
-Praxisangaben in src/_data/site.yaml, die acht Praxis-Bildplätze in
-src/_data/images.yaml). Die weiteren Seitentexte sind
-im Template und noch nicht als einzelne CMS-Felder pflegbar. Layouts liegen in src/_includes.
+Inhaltsquellen liegen in src/: alle Seitentexte der sieben Seiten und der
+Fußzeile in src/_data/copy/<seite>.yaml, Praxisangaben in
+src/_data/site.yaml, die neun Praxis-Bildplätze in src/_data/images.yaml
+mit den Fotos in src/images/, Team und Aktuelles als Markdown. Alles davon
+ist im lokalen Editor pflegbar. Templates in src/*.njk und src/_includes
+enthalten nur Aufbau, keine Fließtexte; npm run content-check prüft das.
+Einzelheiten zur Trennung von Inhalt und Umsetzung: CONTENT.md.
 Das generierte JSON für Aktuelles ist ausschließlich ein Build-Artefakt;
 es ist keine zweite Inhaltsdatenbank. GitHub wird für Entwicklung und
 Review verwendet und ist für Sarahs spätere Routinepflege nicht nötig.
@@ -69,7 +71,8 @@ EDITING.md enthält die nötigen Schritte und die Verbleibenden-Gates-Liste.
 
 Lokale Prüfkette: npm ci, npm run export; Vorschau über npm run edit,
 Browser-Regression mit npm run smoke an 1440/900/390 Pixel,
-Kontrastprüfung mit npm run contrast, Review-Screenshots mit
+Kontrastprüfung mit npm run contrast, Inhaltstrennung mit
+npm run content-check (nach npm run build), Review-Screenshots mit
 npm run review:shots, UI-Test für Team-/News-Änderung, wiederholbarer
 Build und Restore aus vollständiger Quell-Sicherung in einer isolierten
 Umgebung. Die Prüfskripte erwarten einen laufenden lokalen Server und

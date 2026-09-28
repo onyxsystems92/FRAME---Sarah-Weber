@@ -1,6 +1,6 @@
 # Design Review V2 · Raum & Zeit
 
-Status: **CLIENT PREVIEW READY · AWAITING FRANKLYN APPROVAL** (Nachtrag 2026-09-28 am Ende)
+Status: **CONTENT AUTONOMY READY · AWAITING FRANKLYN REVIEW** (Nachträge 2026-09-28 am Ende)
 Datum: 2026-09-25
 Branch: `feat/sarah-design-review-v2` (isolierter Worktree)
 Ausgangsstand: `feat/sarah-portable-ssg` @ `6405cd0`
@@ -333,8 +333,60 @@ isolierten Branch. Einzelheiten stehen in der Commit-Nachricht und in
   offene Daten ausgeblendet statt erklärt.
 - `npm run smoke` 273/273, `npm run contrast` alles WCAG AA.
 
-Die vorläufigen Fotos in `src/assets/review/` stammen aus dem bisherigen
+Die vorläufigen Fotos (inzwischen in `src/images/vorlaeufig/`) stammen aus dem bisherigen
 öffentlichen Praxisauftritt. Das Repository ist öffentlich; die Fotos sind
 deshalb nicht in Git und dürfen erst nach geklärten Bildrechten committet
 werden. Abschnitt 8 dieses Berichts (fehlende Originalfotografie) gilt
 unverändert.
+
+---
+
+## Nachtrag 2026-09-28 · Inhaltsautonomie
+
+Alle öffentlichen Seitentexte liegen jetzt in `src/_data/copy/<seite>.yaml`
+und sind im lokalen Editor unter „Seiteninhalte“ pflegbar. Templates
+enthalten nur noch Aufbau. Einzelheiten: `CONTENT.md` („Content ownership“),
+Anleitung für Sarah: `EDITING.md`.
+
+**Nachweis, dass die Umstellung selbst nichts verändert:** Textknoten-
+Schnappschuss aller 7 Seiten × 3 Breiten vor und nach der Umstellung mit
+unverändertem Wortlaut: 0 Abweichungen in Text und Position. Danach wurden
+fünf Sätze mit Projekt- oder Entwicklersicht ausschließlich über die
+Inhaltsdateien umformuliert; Team und Aktuelles blieben byte-identisch.
+
+**Selbstpflege im echten Editor** (`npm run edit`, Browser-Automatisierung
+der Editor-Oberfläche, je Bearbeiten → Vorschau → Build → Export geprüft,
+danach vollständig zurückgesetzt):
+
+| Test | Weg im Editor | Ergebnis |
+| --- | --- | --- |
+| A Seitentext | Seiteninhalte › Praxisbesuch › Text unter der Telefonnummer, zwei Absätze | zwei `<p>` in Vorschau und Export |
+| B Bild | Praxisbilder › Praxisraum › Hochladen, Alternativtext, Bildausschnitt | Foto geladen, Alt-Text und Ausschnitt gesetzt |
+| C Team | Team › Sarah Weber › Qualifikationen ergänzen | neue Qualifikation auf der Teamseite |
+| D Aktuelles | Neuer Hinweis, veröffentlicht, Startseite an | Hinweis auf Startseite und Aktuelles-Seite, Leerzustand ausgeblendet |
+| E Praxis-Angaben | Adresse Zeile 2 speichern | technische Werte inkl. `robots: noindex,nofollow` bleiben erhalten |
+
+**Dabei gefundene und behobene Editorfehler** (bestanden vor dieser Runde):
+
+- Aktuelles: Static CMS 4 kennt kein Widget `date`. „Veröffentlichen ab“ und
+  „Läuft ab am“ waren im Editor nicht bedienbar. Jetzt `datetime`.
+- Aktuelles: Ein leeres Ablaufdatum wurde mit dem heutigen Tag vorbelegt,
+  jeder neue Hinweis wäre am Folgetag verschwunden. Jetzt `default: ""`.
+- Aktuelles: Dateinamen enthielten Umlaute und Sonderzeichen. Jetzt ASCII.
+- Praxisbilder: Hochgeladene Fotos landeten unter `src/_data/src/images/…`
+  mit falschem Pfad. Jetzt eine gemeinsame Medienbibliothek `src/images/`.
+- Praxis-Angaben: `robots`, `name`, `wordmark`, `tagline` hatten kein
+  Editorfeld und hätten beim Speichern verloren gehen können. Jetzt
+  unsichtbare Felder; Test E belegt den Erhalt.
+- Team: zwei Felder ohne Wirkung auf die Website entfernt; Editor-Oberfläche
+  auf Deutsch; die rohe Feldvorschau im Editor abgeschaltet.
+
+**Portabilität:** Reinraum-Kopie der Quellen, `npm ci`, zwei Builds mit
+leerer Umgebung (nur `PATH`, `HOME`): identische Prüfsumme, gleich dem
+Build im Arbeitsbaum. Kein KI-, API-Schlüssel- oder GitHub-Bezug in
+Website, Build oder Editor.
+
+**Weiterhin offen:** der echte Upload auf Tilmanns Plesk (Abschnitt
+„Selbst veröffentlichen“ in `EDITING.md`) und ein Probelauf auf Sarahs
+eigenem Rechner mit ihr selbst am Editor. Technisch portabel ist belegt;
+Sarahs eigener Arbeitsablauf ist es noch nicht.

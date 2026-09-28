@@ -7,19 +7,19 @@ includeAktuellesCss: true
 currentKey: "aktuelles"
 ---
 {% from "partials/macros.njk" import headIndex %}
-{% set heroKicker = "Aktuelles" %}
+{% set page = copy.aktuelles %}
 {% set heroNum = "06" %}
 {% include "partials/page-hero.njk" %}
 
 <section class="section">
   <div class="shell">
-    {{ headIndex("Praxisinformationen", "Hinweise, die für Ihren Besuch wichtig sind.") }}
+    {{ headIndex(page.notices.kicker, page.notices.title) }}
     <div data-updates-page>
       <div class="updates-list" data-updates-list data-updates-scope="all"></div>
       <div class="updates-empty" data-updates-empty>
-        <h2 class="display">Aktuell sind keine zusätzlichen Hinweise veröffentlicht.</h2>
-        <p>Wenn sich etwas ändert, das für Ihren Praxisbesuch wichtig ist, finden Sie die Information an dieser Stelle.</p>
-        <a class="text-link" href="praxis.html#termin">Termin &amp; Kontakt <span class="arrow" aria-hidden="true">→</span></a>
+        <h2 class="display">{{ page.empty.title }}</h2>
+        {{ page.empty.text | absaetze | safe }}
+        <a class="text-link" href="praxis.html#termin">{{ page.empty.link }} <span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
   </div>

@@ -34,17 +34,18 @@
 </figure>
 {% endmacro %}
 
+{#- Headings and ledes are editable plain text: escaped, never raw HTML. -#}
 {% macro head(title, lede = "", modifier = "") %}
 <div class="section-head {{ modifier }}">
-  <h2 class="display">{{ title | safe }}</h2>
-  {%- if lede %}<p class="section-lede">{{ lede | safe }}</p>{% endif -%}
+  <h2 class="display">{{ title }}</h2>
+  {%- if lede %}{{ lede | absaetze("section-lede") | safe }}{% endif -%}
 </div>
 {% endmacro %}
 
 {% macro headIndex(label, title, lede = "") %}
 <div class="section-head section-head--index">
   <div class="section-head__rule"><span>{{ label }}</span></div>
-  <h2 class="display">{{ title | safe }}</h2>
-  {%- if lede %}<p class="section-lede">{{ lede | safe }}</p>{% endif -%}
+  <h2 class="display">{{ title }}</h2>
+  {%- if lede %}{{ lede | absaetze("section-lede") | safe }}{% endif -%}
 </div>
 {% endmacro %}

@@ -1,0 +1,22 @@
+# Seite „Karriere“ · alle sichtbaren Texte.
+hero:
+  kicker: "Karriere"
+  title: "Therapie braucht Zeit. Gute Arbeit auch."
+  intro: "Raum und Zeit möchte wachsen, ohne die eigene Arbeitsweise zu verlieren. Deshalb geht es hier vor allem um den professionellen Kontext, in dem bei uns gearbeitet wird."
+values:
+  title: "Mehr Raum für therapeutisches Denken."
+  intro: "Bei Raum und Zeit stehen Zeit, fachliche Entwicklung, Austausch und die Möglichkeit im Mittelpunkt, Spezialisierungen wirklich einzusetzen."
+  items:
+    - title: "Zeit für Behandlung"
+      text: "Nicht im klassischen Rhythmus mit 20 Minuten pro Termin arbeiten, sondern Befund und Behandlung in Ruhe zusammenbringen."
+    - title: "Fachlich denken"
+      text: "Eigene Spezialisierungen nicht nur besitzen, sondern in sinnvollen funktionellen Zusammenhängen einsetzen."
+    - title: "Austausch"
+      text: "Eine kleine Praxisstruktur ermöglicht kurze Wege und persönlichen fachlichen Austausch."
+    - title: "Entwicklung"
+      text: "Raum für Hospitation, Lernen und die Weiterentwicklung der eigenen therapeutischen Arbeit."
+contact:
+  kicker: "Interesse?"
+  title: "Hospitation oder Zusammenarbeit kennenlernen."
+  text: "Sie interessieren sich für eine Hospitation oder eine Zusammenarbeit? Nehmen Sie gern direkt Kontakt mit der Praxis auf."
+  button: "Praxis kontaktieren"

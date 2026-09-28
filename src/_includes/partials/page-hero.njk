@@ -1,16 +1,17 @@
 {#
-  Shared subpage hero. Expects heroKicker, heroNum and optional heroTone
-  ("dark") and heroPhoto (an image path from _data/images.yaml). Title and
-  intro stay Sarah-editable through _data/copy.yaml.
+  Shared subpage hero. Kicker, title and intro come from the page's copy
+  file (_data/copy/<page>.yaml, key "hero"). Expects heroNum and optional
+  heroTone ("dark") and heroPhoto (an image path from _data/images.yaml).
 #}
 <section class="page-hero {{ heroTone }}"{% if heroPhoto %} style="--hero-photo: url('{{ heroPhoto }}')"{% endif %}>
   <div class="shell page-hero-grid">
     <div class="page-hero-main">
-      <span class="eyebrow">{{ heroKicker }}</span>
-      <h1 class="display">{{ copy[currentKey].title | escape }}</h1>
+      {%- set hero = copy[currentKey].hero %}
+      <span class="eyebrow">{{ hero.kicker }}</span>
+      <h1 class="display">{{ hero.title }}</h1>
     </div>
     <div class="page-hero-side">
-      <p class="lede">{{ copy[currentKey].intro | escape }}</p>
+      {{ hero.intro | absaetze("lede") | safe }}
     </div>
     <div class="page-hero-meta" aria-hidden="true">
       <span>{{ heroNum }} / 06</span>
