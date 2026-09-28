@@ -337,13 +337,16 @@ async function run() {
       .evaluate((el) => getComputedStyle(el.closest("[data-intent-panel]")).visibility);
     check("index: opened panel routes become tabbable", routeTabbable === "visible");
 
-    // Every image slot without a real photograph is explicitly marked.
+    // Image slots: a photo has alt text; an empty slot is a quiet surface that
+    // is hidden from assistive technology and carries no visible label.
     const figures = await page.evaluate(() => [...document.querySelectorAll(".rz-figure")].map((f) => ({
-      hasImg: !!f.querySelector("img"),
-      marked: !!f.querySelector(".rz-figure__tag"),
-    })));
+      img: f.querySelector("img"),
+      hidden: f.getAttribute("aria-hidden") === "true",
+      text: f.innerText.trim(),
+    })).map((f) => ({ hasImg: !!f.img, hidden: f.hidden, text: f.text })));
     check("index: at least one practice image slot exists", figures.length > 0);
-    check("index: every slot without a photo is marked as a placeholder", figures.every((f) => f.hasImg || f.marked));
+    check("index: every empty image slot is aria-hidden", figures.every((f) => f.hasImg || f.hidden));
+    check("index: no image slot shows visible text", figures.every((f) => f.text === ""));
 
     // Full-bleed bands really span the viewport.
     const bandWidth = await page.locator(".atmosphere-band .rz-figure").evaluate((el) => el.getBoundingClientRect().width);
@@ -404,12 +407,109 @@ async function run() {
       const small = await page.evaluate(() => [...document.querySelectorAll("a, button")]
         .filter((el) => {
           const r = el.getBoundingClientRect();
-          return r.width > 0 && r.height > 0 && r.height < 24 && !el.classList.contains("skip-link");
+          // WCAG 2.5.8 exempts a link that sits inside a sentence of text.
+          const inline = getComputedStyle(el).display === "inline" && !!el.closest("p, dd");
+          return r.width > 0 && r.height > 0 && r.height < 24 && !el.classList.contains("skip-link") && !inline;
         })
         .map((el) => `${el.tagName}.${(el.className || "").toString().split(" ")[0]}`));
       tooSmall = tooSmall.concat(small.map((s) => `${url}:${s}`));
     }
     check(`mobile: no interactive target under 24px${tooSmall.length ? " (" + [...new Set(tooSmall)].join(", ") + ")" : ""}`, tooSmall.length === 0);
+    await context.close();
+  }
+
+  // 12) Client preview surface (Franklyn's review decisions, 2026-09-28).
+  {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    const WHITE = "rgb(255, 255, 255)";
+    const FOREST = "rgb(33, 55, 47)";
+    const INTERNAL = [
+      "Platzhalter", "noindex", "Konzeptentwurf", "Preview", "Review", "Tilmann", "FRAME",
+      "vor Veröffentlichung", "Entwurf", "nach Freigabe", "Launch", "medizinischen Angaben",
+      "Design-Review", "Bildrechte",
+    ];
+    for (const url of PAGES) {
+      await page.goto(`${baseUrl}/${url}`, { waitUntil: "networkidle" });
+      const report = await page.evaluate(() => {
+        const bg = (el) => getComputedStyle(el).backgroundColor;
+        const surfaces = [document.querySelector(".site-header"), ...document.querySelectorAll("main > section, main > div"), document.querySelector(".footer")]
+          .filter(Boolean)
+          .map((el) => ({ name: `${el.tagName}.${(el.className || "").toString().split(" ")[0]}`, bg: bg(el) }));
+        return { body: bg(document.body), surfaces, text: document.body.innerText };
+      });
+      check(`${url}: page background is white`, report.body === WHITE);
+      const off = report.surfaces.filter((s) => ![WHITE, FOREST, "rgba(0, 0, 0, 0)"].includes(s.bg));
+      check(`${url}: every section is white or green${off.length ? " (" + off.map((o) => o.name + " " + o.bg).join(", ") + ")" : ""}`, off.length === 0);
+      const leaks = INTERNAL.filter((w) => report.text.includes(w));
+      check(`${url}: no internal preview language visible${leaks.length ? " (" + leaks.join(", ") + ")" : ""}`, leaks.length === 0);
+      const header = report.surfaces[0];
+      check(`${url}: header is green`, header.bg === FOREST);
+    }
+
+    // Header call to action: website white with green text.
+    const cta = await page.locator(".header-cta").evaluate((el) => ({ bg: getComputedStyle(el).backgroundColor, color: getComputedStyle(el).color }));
+    check("header: Termin & Kontakt is white with green text", cta.bg === WHITE && cta.color === FOREST);
+
+    // Homepage: two-part hero, no disclaimer, no tile arrows, green treatment index.
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "networkidle" });
+    check("index: no middle image in the first screen", (await page.locator(".navigation-home img, .navigation-home .rz-figure").count()) === 0);
+    check("index: page cards carry no arrow", (await page.locator(".site-route-card").evaluateAll((els) => els.filter((el) => /[↗→]/.test(el.innerText)).length)) === 0);
+    const contextSection = await page.locator(".context-index").evaluate((el) => getComputedStyle(el.closest("section")).backgroundColor);
+    check("index: treatment context section is green", contextSection === FOREST);
+    const row = page.locator(".context-row").nth(1);
+    await row.scrollIntoViewIfNeeded();
+    await row.hover();
+    await page.waitForTimeout(350);
+    check("index: hovered treatment row turns white", (await row.evaluate((el) => getComputedStyle(el).backgroundColor)) === WHITE);
+
+    // Arbeitsweise: a real sequence, three steps joined by two lines.
+    await page.goto(`${baseUrl}/arbeitsweise.html`, { waitUntil: "networkidle" });
+    check("arbeitsweise: process has three steps", (await page.locator(".process__step").count()) === 3);
+    check("arbeitsweise: steps are joined by two lines", (await page.locator(".process__line").count()) === 2);
+    check("arbeitsweise: process steps are not interactive", (await page.locator(".process a, .process button").count()) === 0);
+
+    // Therapie: every method is listed in the green overview.
+    await page.goto(`${baseUrl}/therapie.html`, { waitUntil: "networkidle" });
+    check("therapie: eight methods listed", (await page.locator(".method-rows li").count()) === 8);
+    check("therapie: methods overview is green", (await page.locator(".methods").evaluate((el) => getComputedStyle(el.closest("section")).backgroundColor)) === FOREST);
+
+    // Karriere: real inline accordions.
+    await page.goto(`${baseUrl}/karriere.html`, { waitUntil: "networkidle" });
+    const triggers = page.locator("[data-accordion-trigger]");
+    check("karriere: four accordion items", (await triggers.count()) === 4);
+    const wiring = await triggers.evaluateAll((els) => els.every((b) => {
+      const panel = document.getElementById(b.getAttribute("aria-controls"));
+      return b.tagName === "BUTTON" && b.getAttribute("aria-expanded") === "false" && panel && panel.getAttribute("aria-labelledby") === b.id;
+    }));
+    check("karriere: triggers are buttons wired to their panels", wiring);
+    const first = triggers.nth(0);
+    const second = triggers.nth(1);
+    await first.scrollIntoViewIfNeeded();
+    await first.click();
+    await page.waitForTimeout(400);
+    check("karriere: click opens the item", (await first.getAttribute("aria-expanded")) === "true");
+    check("karriere: opened text is visible", await page.locator("#karriere-zeit-panel p").isVisible());
+    check("karriere: open item is green", (await first.evaluate((el) => getComputedStyle(el).backgroundColor)) === FOREST);
+    const directlyBelow = await page.evaluate(() => {
+      const t = document.getElementById("karriere-zeit-trigger").getBoundingClientRect();
+      const p = document.getElementById("karriere-zeit-panel").getBoundingClientRect();
+      return Math.abs(p.top - t.bottom) < 2;
+    });
+    check("karriere: text opens directly under its item", directlyBelow);
+    await second.click();
+    await page.waitForTimeout(400);
+    check("karriere: opening another closes the first", (await first.getAttribute("aria-expanded")) === "false" && (await second.getAttribute("aria-expanded")) === "true");
+    await second.click();
+    await page.waitForTimeout(400);
+    check("karriere: second click closes it", (await second.getAttribute("aria-expanded")) === "false");
+    await second.focus();
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(200);
+    check("karriere: Enter opens the focused item", (await second.getAttribute("aria-expanded")) === "true");
+    check("karriere: focus stays on the pressed button", await second.evaluate((el) => el === document.activeElement));
+    check("karriere: collapsed panels are not tabbable", (await page.locator("#karriere-zeit-panel").evaluate((el) => getComputedStyle(el).visibility)) === "hidden");
+
     await context.close();
   }
 

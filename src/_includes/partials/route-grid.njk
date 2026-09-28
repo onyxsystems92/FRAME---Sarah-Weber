@@ -4,7 +4,7 @@
   Binding: the real logo appears here as a restrained accent, and the six
   page cards stay full clickable links in a three-by-two composition.
 #}
-<section class="section section-stone practice-navigation-section">
+<section class="section practice-navigation-section">
   <div class="shell">
     <div class="practice-navigation-head">
       <div class="practice-navigation-copy">
@@ -16,17 +16,15 @@
         </div>
       </div>
       <div class="practice-navigation-visual">
-        {{ figure(images.homePortrait, "", "rz-figure--portrait rz-figure--lead") }}
+        {{ figure(images.homePortrait, "1 / 1", "rz-figure--portrait rz-figure--round") }}
+        <div class="practice-navigation-visual__caption"><span>Sarah Weber</span><span>Persönliche therapeutische Begleitung</span></div>
       </div>
     </div>
 
     <nav class="site-route-grid" aria-label="Bereiche von Raum und Zeit">
       {%- for p in pages %}
       <a class="site-route-card" href="{{ p.href }}" style="--i: {{ loop.index0 }}">
-        <span class="site-route-card__top">
-          <span class="num">{{ p.num }}</span>
-          <span class="site-route-arrow" aria-hidden="true">↗</span>
-        </span>
+        <span class="site-route-card__top"><span class="num">{{ p.num }}</span></span>
         <span class="site-route-card__body">
           <h3>{{ p.title }}</h3>
           <p>{{ p.summary }}</p>

@@ -1,8 +1,9 @@
 {#
   Shared subpage hero. Expects heroKicker, heroNum and optional heroTone
-  ("dark"). Title and intro stay Sarah-editable through _data/copy.yaml.
+  ("dark") and heroPhoto (an image path from _data/images.yaml). Title and
+  intro stay Sarah-editable through _data/copy.yaml.
 #}
-<section class="page-hero {{ heroTone }}">
+<section class="page-hero {{ heroTone }}"{% if heroPhoto %} style="--hero-photo: url('{{ heroPhoto }}')"{% endif %}>
   <div class="shell page-hero-grid">
     <div class="page-hero-main">
       <span class="eyebrow">{{ heroKicker }}</span>

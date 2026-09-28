@@ -17,39 +17,66 @@ currentKey: "karriere"
 
 <section class="section" data-reveal-group>
   <div class="shell">
-    {{ head("Mehr Raum für therapeutisches Denken.", "Sarahs bisherige Arbeitgeberbotschaften drehen sich um Zeit, fachliche Entwicklung, Austausch und die Möglichkeit, Spezialisierungen wirklich einzusetzen.") }}
-    <div class="pillars">
-      <article class="pillar" style="--i: 0">
-        <span class="num">01</span>
-        <h3>Zeit für Behandlung</h3>
-        <p>Nicht im klassischen Rhythmus mit 20 Minuten pro Termin arbeiten, sondern Befund und Behandlung in Ruhe zusammenbringen.</p>
-      </article>
-      <article class="pillar" style="--i: 1">
-        <span class="num">02</span>
-        <h3>Fachlich denken</h3>
-        <p>Eigene Spezialisierungen nicht nur besitzen, sondern in sinnvollen funktionellen Zusammenhängen einsetzen.</p>
-      </article>
-      <article class="pillar" style="--i: 2">
-        <span class="num">03</span>
-        <h3>Austausch</h3>
-        <p>Eine kleine Praxisstruktur ermöglicht kurze Wege und persönlichen fachlichen Austausch.</p>
-      </article>
-      <article class="pillar" style="--i: 3">
-        <span class="num">04</span>
-        <h3>Entwicklung</h3>
-        <p>Raum für Hospitation, Lernen und die Weiterentwicklung der eigenen therapeutischen Arbeit.</p>
-      </article>
+    {{ head("Mehr Raum für therapeutisches Denken.", "Bei Raum und Zeit stehen Zeit, fachliche Entwicklung, Austausch und die Möglichkeit im Mittelpunkt, Spezialisierungen wirklich einzusetzen.") }}
+    {#- Each item reveals its own text directly beneath it; one open at a time. -#}
+    <div class="accordion" data-accordion>
+      <div class="accordion__item" style="--i: 0">
+        <h3 class="accordion__heading">
+          <button class="accordion__trigger" type="button" id="karriere-zeit-trigger" aria-expanded="false" aria-controls="karriere-zeit-panel" data-accordion-trigger>
+            <span class="accordion__num">01</span>
+            <span class="accordion__title">Zeit für Behandlung</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="accordion__panel" id="karriere-zeit-panel" role="region" aria-labelledby="karriere-zeit-trigger" data-accordion-panel>
+          <div class="accordion__inner"><p>Nicht im klassischen Rhythmus mit 20 Minuten pro Termin arbeiten, sondern Befund und Behandlung in Ruhe zusammenbringen.</p></div>
+        </div>
+      </div>
+      <div class="accordion__item" style="--i: 1">
+        <h3 class="accordion__heading">
+          <button class="accordion__trigger" type="button" id="karriere-denken-trigger" aria-expanded="false" aria-controls="karriere-denken-panel" data-accordion-trigger>
+            <span class="accordion__num">02</span>
+            <span class="accordion__title">Fachlich denken</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="accordion__panel" id="karriere-denken-panel" role="region" aria-labelledby="karriere-denken-trigger" data-accordion-panel>
+          <div class="accordion__inner"><p>Eigene Spezialisierungen nicht nur besitzen, sondern in sinnvollen funktionellen Zusammenhängen einsetzen.</p></div>
+        </div>
+      </div>
+      <div class="accordion__item" style="--i: 2">
+        <h3 class="accordion__heading">
+          <button class="accordion__trigger" type="button" id="karriere-austausch-trigger" aria-expanded="false" aria-controls="karriere-austausch-panel" data-accordion-trigger>
+            <span class="accordion__num">03</span>
+            <span class="accordion__title">Austausch</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="accordion__panel" id="karriere-austausch-panel" role="region" aria-labelledby="karriere-austausch-trigger" data-accordion-panel>
+          <div class="accordion__inner"><p>Eine kleine Praxisstruktur ermöglicht kurze Wege und persönlichen fachlichen Austausch.</p></div>
+        </div>
+      </div>
+      <div class="accordion__item" style="--i: 3">
+        <h3 class="accordion__heading">
+          <button class="accordion__trigger" type="button" id="karriere-entwicklung-trigger" aria-expanded="false" aria-controls="karriere-entwicklung-panel" data-accordion-trigger>
+            <span class="accordion__num">04</span>
+            <span class="accordion__title">Entwicklung</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="accordion__panel" id="karriere-entwicklung-panel" role="region" aria-labelledby="karriere-entwicklung-trigger" data-accordion-panel>
+          <div class="accordion__inner"><p>Raum für Hospitation, Lernen und die Weiterentwicklung der eigenen therapeutischen Arbeit.</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section section-stone">
-  <div class="shell">
-    <div class="empty-state">
-      <span class="eyebrow">Interesse?</span>
-      <h2 class="display">Hospitation oder Zusammenarbeit kennenlernen.</h2>
-      <p>Der finale Bewerbungsweg und die aktuell gesuchte Rolle werden vor Veröffentlichung mit Sarah bestätigt. Bis dahin verweist der Entwurf bewusst nicht auf eine erfundene Stellenausschreibung.</p>
-      <a class="button button-dark" href="praxis.html#termin">Praxis kontaktieren <span aria-hidden="true">↗</span></a>
-    </div>
+<section class="section section-forest">
+  <div class="shell closing">
+    <span class="eyebrow">Interesse?</span>
+    <h2 class="display">Hospitation oder Zusammenarbeit kennenlernen.</h2>
+    <p>Sie interessieren sich für eine Hospitation oder eine Zusammenarbeit? Nehmen Sie gern direkt Kontakt mit der Praxis auf.</p>
+    <a class="button button-light" href="praxis.html#termin">Praxis kontaktieren <span aria-hidden="true">→</span></a>
   </div>
 </section>

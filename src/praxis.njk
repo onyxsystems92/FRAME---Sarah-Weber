@@ -16,17 +16,18 @@ currentKey: "praxis"
 
 <section class="section" id="termin" data-reveal-group>
   <div class="shell">
-    {{ headIndex("Kontakt & Termin", "Der direkte Weg zur Praxis.", "Die finalen Stammdaten und der konkrete Terminlink werden vor Veröffentlichung mit Sarah und Tilmann verifiziert.") }}
+    {{ headIndex("Kontakt & Termin", "Der direkte Weg zur Praxis.", "Telefon, Adresse und Anfahrt auf einen Blick.") }}
     <div class="contact-block">
       <div class="contact-block__primary">
         <span class="contact-block__label">Telefon</span>
         <a class="contact-block__phone display" href="{{ site.phoneHref }}">{{ site.phoneDisplay }}</a>
         <p>Der schnellste Weg für einen Termin, eine Rückfrage oder eine kurze Einschätzung, ob Raum und Zeit zu Ihrem Anliegen passt.</p>
+        {%- if site.appointmentUrlConfirmed and site.appointmentUrl %}
         <div class="contact-block__appointment">
           <span class="contact-block__label">Termin online</span>
-          <p>Die heutige Terminvereinbarung im Internet soll weiterverwendet werden, sobald Sarah und Tilmann den finalen Link bestätigen.</p>
-          <span class="draft-chip">Link offen</span>
+          <a class="text-link" href="{{ site.appointmentUrl }}" target="_blank" rel="noopener noreferrer">Online einen Termin vereinbaren <span class="arrow" aria-hidden="true">↗</span></a>
         </div>
+        {%- endif %}
       </div>
       <div class="contact-block__secondary">
         <div class="contact-block__address">
@@ -34,7 +35,6 @@ currentKey: "praxis"
           <address>
             <strong>{{ site.addressLine1 }}</strong><br>
             {{ site.addressLine2 }}
-            {%- if not site.postcodeConfirmed %}<br><span class="draft-chip">PLZ vor Launch bestätigen</span>{% endif %}
           </address>
           <a class="text-link" href="{{ site.mapsUrl }}" target="_blank" rel="noopener noreferrer">Auf Google Maps öffnen <span class="arrow" aria-hidden="true">↗</span></a>
         </div>
@@ -44,21 +44,17 @@ currentKey: "praxis"
   </div>
 </section>
 
-<section class="section section-stone" data-reveal-group>
+<section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ head("Weniger Rückfragen durch bessere Vorbereitung.", "Diese Informationen können später aus dem realen Praxisalltag ergänzt werden. Keine medizinischen Freitexte oder Patientendaten werden dafür benötigt.") }}
+    {{ head("Weniger Rückfragen durch bessere Vorbereitung.") }}
     <dl class="orientation-list">
       <div class="orientation-item" style="--i: 0">
         <dt>Terminweg</dt>
-        <dd>Online oder telefonisch. Der finale Prozess bleibt im bestehenden Praxissystem, nicht in FRAME oder einer neuen Website Datenbank.</dd>
+        <dd>Termine vereinbaren Sie telefonisch unter <a href="{{ site.phoneHref }}">{{ site.phoneDisplay }}</a>{% if site.appointmentUrlConfirmed and site.appointmentUrl %} oder <a href="{{ site.appointmentUrl }}" target="_blank" rel="noopener noreferrer">online</a>{% endif %}.</dd>
       </div>
       <div class="orientation-item" style="--i: 1">
-        <dt>Was mitbringen?</dt>
-        <dd>Dieser Bereich wird mit Sarah anhand der tatsächlich wiederkehrenden Fragen aus Empfang und Praxis finalisiert.</dd>
-      </div>
-      <div class="orientation-item" style="--i: 2">
         <dt>Anfahrt &amp; Praxis</dt>
-        <dd>Der Standort lässt sich direkt in Google Maps öffnen. Hinweise zu Parken, ÖPNV und Zugang werden mit Sarah vor Veröffentlichung finalisiert.</dd>
+        <dd>Die Praxis liegt in der {{ site.addressLine1 }}, {{ site.addressLine2 }}. Den Standort können Sie direkt in <a href="{{ site.mapsUrl }}" target="_blank" rel="noopener noreferrer">Google Maps</a> öffnen.</dd>
       </div>
     </dl>
   </div>
@@ -71,7 +67,7 @@ currentKey: "praxis"
         <span class="eyebrow eyebrow-light">Arbeitsweise</span>
         <h2 class="display">Noch unsicher, was Raum und Zeit anders macht?</h2>
       </div>
-      <a class="button button-light" href="arbeitsweise.html">Arbeitsweise verstehen <span aria-hidden="true">↗</span></a>
+      <a class="button button-light" href="arbeitsweise.html">Arbeitsweise verstehen <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

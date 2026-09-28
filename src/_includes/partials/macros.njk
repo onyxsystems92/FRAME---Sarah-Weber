@@ -3,9 +3,9 @@
 
   mark()       the Raum-und-Zeit line motif (hourglass / the Z in "Zeit")
   figure()     a practice image slot: real photo when src is set in
-               _data/images.yaml, otherwise a designed, clearly marked
-               placeholder with the same aspect ratio, so a later photo
-               drops in without any layout change
+               _data/images.yaml, otherwise a quiet brand surface with the
+               same aspect ratio, so a later photo drops in without any
+               layout change
   head()       stacked section head (default form)
   headIndex()  rule-and-index section head (list-type sections)
 #}
@@ -22,18 +22,14 @@
 
 {% macro figure(img, ratio = "4 / 3", modifier = "", loading = "lazy") %}
 {% set slot = img or {} %}
-<figure class="rz-figure {{ modifier }}"{% if ratio %} style="--rz-ratio: {{ ratio }}"{% endif %}>
+<figure class="rz-figure {{ modifier }}"{% if ratio %} style="--rz-ratio: {{ ratio }}"{% endif %}{% if not slot.src %} aria-hidden="true"{% endif %}>
   {%- if slot.src -%}
   <img class="rz-figure__img" src="{{ slot.src }}" alt="{{ slot.alt }}" loading="{{ loading }}" decoding="async"
        style="object-position: {{ slot.focus or 'center center' }}">
   {%- else -%}
-  <div class="rz-figure__slot">
-    <div class="rz-figure__motif" aria-hidden="true">{{ mark("figure") }}</div>
-    <figcaption class="rz-figure__label">
-      <span class="rz-figure__tag">Platzhalter</span>
-      <span class="rz-figure__note">{{ slot.note or "Echtes Praxisfoto folgt" }}</span>
-    </figcaption>
-  </div>
+  {#- An empty slot keeps its size and a quiet brand surface. What the photo
+      should show lives in _data/images.yaml (note), never on the page. -#}
+  <div class="rz-figure__slot"><div class="rz-figure__motif">{{ mark("figure") }}</div></div>
   {%- endif -%}
 </figure>
 {% endmacro %}

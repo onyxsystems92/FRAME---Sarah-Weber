@@ -18,6 +18,7 @@ for (const p of PAGES) {
   // open every disclosure so hidden copy is measured too
   await page.evaluate(() => {
     document.querySelectorAll('details').forEach(d => d.open = true);
+    const acc = document.querySelector('[data-accordion-trigger]'); if (acc) acc.click();
     document.querySelectorAll('[data-intent-button]').forEach((b,i) => { if (i===0) b.click(); });
     document.querySelectorAll('[data-reveal-item]').forEach(e => e.classList.add('is-in'));
   });

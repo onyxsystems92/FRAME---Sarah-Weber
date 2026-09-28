@@ -21,30 +21,26 @@ currentKey: "arbeitsweise"
 <section class="section" data-reveal-group>
   <div class="shell">
     {{ head("Die Methode folgt dem Zusammenhang.", "Qualifikationen und Techniken sind Werkzeuge. Welche davon sinnvoll sind, ergibt sich aus dem individuellen Befund und dem therapeutischen Verlauf.") }}
-    <ol class="step-sequence">
-      <li class="step" style="--i: 0">
-        <span class="step__num">01</span>
-        <div class="step__body">
-          <span class="step__label">Wahrnehmen</span>
-          <h3>Zuhören &amp; untersuchen</h3>
-          <p>Zu Beginn stehen das konkrete Anliegen, relevante Vorgeschichte und die Untersuchung von Bewegung und Funktion.</p>
-        </div>
+    {#- Three steps that follow from each other. The connecting line carries
+        the sequence; nothing here is clickable, so nothing pretends to be. -#}
+    <ol class="process" aria-label="Wahrnehmen, einordnen, entscheiden">
+      <li class="process__step" style="--i: 0">
+        <div class="process__marker" aria-hidden="true"><span class="process__num">01</span><span class="process__line"></span></div>
+        <span class="process__label">Wahrnehmen</span>
+        <h3>Zuhören &amp; untersuchen</h3>
+        <p>Zu Beginn stehen das konkrete Anliegen, relevante Vorgeschichte und die Untersuchung von Bewegung und Funktion.</p>
       </li>
-      <li class="step" style="--i: 1">
-        <span class="step__num">02</span>
-        <div class="step__body">
-          <span class="step__label">Einordnen</span>
-          <h3>Zusammenhänge verstehen</h3>
-          <p>Nicht jede Beschwerde erklärt sich allein am Ort des Schmerzes. Kompensationen und funktionelle Beziehungen können Teil des Bildes sein.</p>
-        </div>
+      <li class="process__step" style="--i: 1">
+        <div class="process__marker" aria-hidden="true"><span class="process__num">02</span><span class="process__line"></span></div>
+        <span class="process__label">Einordnen</span>
+        <h3>Zusammenhänge verstehen</h3>
+        <p>Nicht jede Beschwerde erklärt sich allein am Ort des Schmerzes. Kompensationen und funktionelle Beziehungen können Teil des Bildes sein.</p>
       </li>
-      <li class="step" style="--i: 2">
-        <span class="step__num">03</span>
-        <div class="step__body">
-          <span class="step__label">Entscheiden</span>
-          <h3>Behandeln &amp; anpassen</h3>
-          <p>Die Behandlung wird an das gekoppelt, was im Termin beobachtet wird. Reaktionen helfen dabei, den nächsten sinnvollen Schritt festzulegen.</p>
-        </div>
+      <li class="process__step" style="--i: 2">
+        <div class="process__marker" aria-hidden="true"><span class="process__num">03</span></div>
+        <span class="process__label">Entscheiden</span>
+        <h3>Behandeln &amp; anpassen</h3>
+        <p>Die Behandlung wird an das gekoppelt, was im Termin beobachtet wird. Reaktionen helfen dabei, den nächsten sinnvollen Schritt festzulegen.</p>
       </li>
     </ol>
   </div>
@@ -54,7 +50,7 @@ currentKey: "arbeitsweise"
   {{ figure(images.arbeitsweiseHands, "", "rz-figure--bleed rz-figure--band") }}
 </section>
 
-<section class="section section-stone" data-reveal-group>
+<section class="section section-forest" data-reveal-group>
   <div class="shell content-two">
     <div class="sticky-note">
       <div class="time-mark" data-time-mark>{{ mark("time") }}</div>
@@ -85,7 +81,7 @@ currentKey: "arbeitsweise"
         <span class="eyebrow eyebrow-light">Therapie</span>
         <h2 class="display">Welche Behandlungskontexte begleiten wir?</h2>
       </div>
-      <a class="button button-light" href="therapie.html">Zur Therapie <span aria-hidden="true">↗</span></a>
+      <a class="button button-light" href="therapie.html">Zur Therapie <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

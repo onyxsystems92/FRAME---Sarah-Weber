@@ -24,10 +24,6 @@
 .nav-home-kicker{display:flex;align-items:center;gap:14px;margin-bottom:26px}
 .nav-home-intro h1{font-size:clamp(44px,5.2vw,74px);margin:0 0 22px;max-width:15ch}
 .nav-home-intro > p{font-size:17.5px;line-height:1.66;color:var(--muted);max-width:var(--measure);margin:0}
-.nav-home-note{
-  margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
-  font-size:12.5px;line-height:1.55;color:var(--muted);max-width:52ch;
-}
 
 /* --- The green orientation card ------------------------------------------- */
 .nav-home-router{
@@ -131,21 +127,24 @@
 
 /* --- "Was uns prägt" head and the six page entries ------------------------ */
 .practice-navigation-head{
-  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
-  gap:clamp(32px,5vw,80px);align-items:end;margin-bottom:clamp(36px,4vw,56px);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.5fr);
+  gap:clamp(34px,6vw,100px);align-items:center;margin-bottom:clamp(40px,4.4vw,60px);
 }
 .practice-navigation-copy h2{font-size:clamp(40px,4.9vw,68px);margin:14px 0 0;max-width:14ch}
 .practice-navigation-context{display:grid;grid-template-columns:64px minmax(0,1fr);gap:20px;align-items:center;max-width:var(--measure);margin-top:clamp(26px,3vw,38px)}
 .practice-navigation-context p{font-size:15px;line-height:1.7;color:var(--muted);margin:0}
 .practice-navigation-logo{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(24,34,29,.08)}
 .practice-navigation-logo img{width:50px;height:50px;border-radius:50%;object-fit:cover}
-.practice-navigation-visual .rz-figure{max-width:380px;margin-left:auto}
+.practice-navigation-visual{justify-self:center;width:100%;max-width:290px;text-align:center}
+.practice-navigation-visual .rz-figure{max-width:236px;margin:13px auto 0}
+.practice-navigation-visual__caption{display:flex;flex-direction:column;gap:5px;margin-top:30px;font-size:13px;color:var(--muted)}
+.practice-navigation-visual__caption span:first-child{font:400 28px/1.1 "Newsreader",Georgia,serif;letter-spacing:-.03em;color:var(--ink)}
 
 .site-route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius)}
 .site-route-card{
   min-width:0;min-height:230px;padding:clamp(20px,2.2vw,28px);
   display:flex;flex-direction:column;gap:18px;
-  background:var(--paper);color:var(--ink);
+  background:var(--page);color:var(--ink);cursor:pointer;
   transition:background var(--d-hover) var(--ease-out),color var(--d-hover) var(--ease-out),transform var(--d-press) var(--ease-out);
 }
 .site-route-card:first-child{border-radius:var(--radius) 0 0 0}
@@ -154,37 +153,37 @@
 .site-route-card:last-child{border-radius:0 0 var(--radius) 0}
 .site-route-card__top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--line-soft);transition:border-color var(--d-hover) var(--ease-out)}
 .site-route-card .num{font-size:11.5px;font-weight:700;color:var(--sage-ink);transition:color var(--d-hover) var(--ease-out)}
-.site-route-arrow{font-size:17px;color:var(--sage-ink);transition:color var(--d-hover) var(--ease-out),transform var(--d-hover) var(--ease-out)}
 .site-route-card__body{margin-top:auto}
 .site-route-card h3{font-family:"Newsreader",Georgia,serif;font-size:clamp(25px,2.3vw,31px);font-weight:400;letter-spacing:-.03em;line-height:1.06;margin:0 0 10px}
 .site-route-card p{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0;transition:color var(--d-hover) var(--ease-out)}
 .site-route-card:active{transform:scale(.99)}
 
 .site-route-card:hover,.site-route-card:focus-visible{background:var(--forest);color:var(--paper)}
-.site-route-card:hover .num,.site-route-card:focus-visible .num,
-.site-route-card:hover .site-route-arrow,.site-route-card:focus-visible .site-route-arrow{color:rgba(244,240,231,.78)}
+.site-route-card:hover .num,.site-route-card:focus-visible .num{color:rgba(244,240,231,.8)}
 .site-route-card:hover p,.site-route-card:focus-visible p{color:rgba(244,240,231,.72)}
 .site-route-card:hover .site-route-card__top,.site-route-card:focus-visible .site-route-card__top{border-bottom-color:rgba(244,240,231,.24)}
-.site-route-card:hover .site-route-arrow,.site-route-card:focus-visible .site-route-arrow{transform:translate(3px,-3px)}
-.site-route-card:focus-visible{outline:2px solid var(--forest-2);outline-offset:-2px}
+.site-route-card:focus-visible{outline:2px solid var(--paper);outline-offset:-6px}
 
 /* --- Treatment context index (homepage) ----------------------------------- */
-.context-index{border-top:1px solid rgba(24,34,29,.18)}
+.context-index{border-top:1px solid var(--line)}
 .context-row{
   display:grid;grid-template-columns:56px minmax(0,.9fr) minmax(0,1.2fr) auto;
   gap:clamp(16px,3vw,40px);align-items:center;
-  padding:clamp(20px,2.4vw,28px) 12px;border-bottom:1px solid rgba(24,34,29,.18);
+  padding:clamp(20px,2.4vw,28px) 16px;border-bottom:1px solid var(--line);color:var(--ink);
   position:relative;
-  transition:background var(--d-hover) var(--ease-out),transform var(--d-press) var(--ease-out);
+  transition:background var(--d-hover) var(--ease-out),color var(--d-hover) var(--ease-out),transform var(--d-press) var(--ease-out);
 }
 .context-row__num{font-size:11.5px;font-weight:700;color:var(--sage-ink)}
 .context-row__title{font-family:"Newsreader",Georgia,serif;font-size:clamp(24px,2.5vw,32px);font-weight:400;letter-spacing:-.03em;line-height:1.1}
-.context-row__note{font-size:14.5px;line-height:1.6;color:var(--muted);max-width:46ch}
-.context-row__arrow{font-size:17px;color:var(--sage-ink);transition:transform var(--d-hover) var(--ease-out)}
+.context-row__note{font-size:14.5px;line-height:1.6;color:var(--muted);max-width:46ch;transition:color var(--d-hover) var(--ease-out)}
+.context-row__arrow{font-size:17px;color:var(--sage-ink);transition:transform var(--d-hover) var(--ease-out),color var(--d-hover) var(--ease-out)}
 .context-row:active{transform:scale(.995)}
-.context-row:focus-visible{outline:2px solid var(--forest-2);outline-offset:-2px;background:rgba(255,255,255,.5)}
+.context-row:hover,.context-row:focus-visible{background:var(--white);color:var(--forest)}
+.context-row:hover .context-row__note,.context-row:focus-visible .context-row__note{color:var(--muted-on-light)}
+.context-row:hover .context-row__num,.context-row:focus-visible .context-row__num,
+.context-row:hover .context-row__arrow,.context-row:focus-visible .context-row__arrow{color:var(--forest)}
+.context-row:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
 @media (hover:hover) and (pointer:fine){
-  .context-row:hover{background:rgba(255,255,255,.52)}
   .context-row:hover .context-row__arrow{transform:translateX(5px)}
 }
 
@@ -196,8 +195,7 @@
   .navigation-home{min-height:0}
   .navigation-home .nav-home-shell{grid-template-columns:1fr;gap:40px;padding:64px 0}
   .nav-home-intro,.nav-home-router{max-width:780px}
-  .practice-navigation-head{grid-template-columns:1fr;gap:30px;align-items:start}
-  .practice-navigation-visual .rz-figure{max-width:none;margin-left:0}
+  .practice-navigation-head{grid-template-columns:minmax(0,1fr) minmax(190px,.5fr);gap:32px}
   .site-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .site-route-card:nth-child(3),.site-route-card:nth-child(4){border-radius:0}
   .site-route-card:nth-child(2){border-radius:0 var(--radius) 0 0}
@@ -210,7 +208,6 @@
   .nav-home-kicker{margin-bottom:16px}
   .nav-home-intro h1{font-size:clamp(38px,11.6vw,52px);margin-bottom:18px}
   .nav-home-intro > p{font-size:15.5px}
-  .nav-home-note{display:none}
   .nav-home-router .nav-home-router__motif{display:none}
   .nav-home-router{padding:22px 16px}
   .nav-home-router h2{font-size:31px;max-width:none}
@@ -224,7 +221,10 @@
   .practice-navigation-context{grid-template-columns:48px minmax(0,1fr);gap:14px}
   .practice-navigation-logo{width:48px;height:48px}
   .practice-navigation-logo img{width:38px;height:38px}
-  .practice-navigation-visual .rz-figure{max-width:none}
+  .practice-navigation-head{grid-template-columns:1fr;gap:36px}
+  .practice-navigation-visual{max-width:240px}
+  .practice-navigation-visual .rz-figure{max-width:180px}
+  .practice-navigation-visual__caption{margin-top:20px}
 
   .site-route-grid{grid-template-columns:1fr}
   .site-route-card{min-height:0;padding:20px 16px;gap:14px}
@@ -237,3 +237,6 @@
   .context-row__title{font-size:22px}
   .context-row__note{font-size:13.5px}
 }
+
+/* --- Practice band caption ---------------------------------------------- */
+.atmosphere-band__caption{color:var(--muted)}

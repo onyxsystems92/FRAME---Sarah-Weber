@@ -112,13 +112,37 @@ document.querySelectorAll('[data-intent-route]').forEach(link => {
   });
 });
 
+/* --- Content accordions (Karriere) ----------------------------------------
+   Same contract as the visitor states: the text opens directly under its own
+   row, a second click closes it, opening one closes the others, and focus
+   stays on the button that was pressed. */
+document.querySelectorAll('[data-accordion]').forEach(group => {
+  const triggers = [...group.querySelectorAll('[data-accordion-trigger]')];
+  const panelFor = trigger => document.getElementById(trigger.getAttribute('aria-controls'));
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const willOpen = trigger.getAttribute('aria-expanded') !== 'true';
+      triggers.forEach(other => {
+        other.setAttribute('aria-expanded', 'false');
+        const panel = panelFor(other);
+        if (panel) panel.removeAttribute('data-open');
+      });
+      if (!willOpen) return;
+      trigger.setAttribute('aria-expanded', 'true');
+      const panel = panelFor(trigger);
+      if (panel) panel.setAttribute('data-open', '');
+    });
+  });
+});
+
 /* --- Scroll reveal --------------------------------------------------------
    One quiet entrance per section, staggered inside a group. Decorative, so
    it never gates content: elements are visible unless this code runs. */
 const REVEAL_ITEMS = [
-  '.section-head', '.step', '.context-row', '.site-route-card', '.pillar',
-  '.roster-entry', '.orientation-item', '.prose-block', '.fact',
-  '.method-panel > *', '.contact-block > *', '.team-feature > *',
+  '.section-head', '.process__step', '.context-row', '.site-route-card', '.accordion__item',
+  '.roster-entry', '.orientation-item', '.prose-block', '.fact', '.closing > *',
+  '.methods > *', '.contact-block > *', '.team-feature > *',
   '.time-mark', '.image-band .rz-figure', '.atmosphere-band .rz-figure'
 ].join(',');
 

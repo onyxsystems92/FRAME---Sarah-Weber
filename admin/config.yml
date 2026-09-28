@@ -123,6 +123,15 @@ collections:
               - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Pflicht, sobald ein Foto gesetzt ist." }
               - { label: "Bildausschnitt", name: "focus", widget: "string", required: false, hint: "z. B. center center, center 30%, left top" }
               - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
+          - name: "teamHero"
+            label: "Team · Hintergrund der Überschrift"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Foto", name: "src", widget: "image", required: false, hint: "Wird hinter einem grünen Verlauf gezeigt; ruhiges Motiv ohne Personen wählen." }
+              - { label: "Alternativtext", name: "alt", widget: "string", required: false, hint: "Leer lassen: das Bild ist nur Hintergrund." }
+              - { label: "Bildausschnitt", name: "focus", widget: "string", required: false }
+              - { label: "Notiz zum Platzhalter", name: "note", widget: "string", required: false }
           - name: "teamGroup"
             label: "Team · Teamband"
             widget: "object"

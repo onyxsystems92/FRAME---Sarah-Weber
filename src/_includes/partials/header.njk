@@ -7,10 +7,10 @@
     {%- for p in pages %}{% if p.inNav %}<a href="{{ p.href }}"{% if p.key == currentKey %} aria-current="page"{% endif %}>{{ p.navLabel }}</a>{% endif %}{% endfor %}
     {#- The header button is hidden below 1080px, so the appointment route
         stays reachable from inside the mobile menu. -#}
-    <a class="button button-dark nav__cta" href="praxis.html#termin">Termin &amp; Kontakt <span aria-hidden="true">↗</span></a>
+    <a class="button button-light nav__cta" href="praxis.html#termin">Termin &amp; Kontakt</a>
   </nav>
   <div class="header-actions">
-    <a class="button button-dark" href="praxis.html#termin">Termin &amp; Kontakt <span aria-hidden="true">↗</span></a>
+    <a class="button button-light header-cta" href="praxis.html#termin">Termin &amp; Kontakt</a>
     <button class="menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" data-menu-toggle><span></span></button>
   </div>
 </header>

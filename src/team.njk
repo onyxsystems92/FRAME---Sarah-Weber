@@ -8,7 +8,8 @@ currentKey: "team"
 {% from "partials/macros.njk" import figure, head %}
 {% set heroKicker = "Team" %}
 {% set heroNum = "03" %}
-{% set heroTone = "dark" %}
+{% set heroTone = "dark page-hero--photo" %}
+{% set heroPhoto = images.teamHero.src %}
 {% include "partials/page-hero.njk" %}
 
 {%- for member in collections.team %}{% if member.data.featured %}
@@ -20,7 +21,7 @@ currentKey: "team"
         alt: member.data.photoAlt or member.data.name,
         focus: "center 25%",
         note: "Portrait " + member.data.name
-      }, "4 / 5", "rz-figure--portrait", "eager") }}
+      }, "1 / 1", "rz-figure--portrait rz-figure--round", "eager") }}
     </div>
     <div class="team-feature__copy">
       <span class="eyebrow">{{ member.data.eyebrow }}</span>
@@ -38,13 +39,13 @@ currentKey: "team"
 </section>
 {% endif %}{% endfor -%}
 
-<section class="image-band" aria-label="Das Team in der Praxis">
+<section class="image-band" aria-label="Einblick in die Praxis">
   {{ figure(images.teamGroup, "", "rz-figure--bleed rz-figure--band") }}
 </section>
 
-<section class="section section-stone" data-reveal-group>
+<section class="section section-forest" data-reveal-group>
   <div class="shell">
-    {{ head("Jede Person bekommt eine echte Rolle, keine austauschbare Teamkarte.", "Die aktuellen Teamdaten im bestehenden Webauftritt werden vor Veröffentlichung mit Sarah abgeglichen. Der Entwurf hält deshalb bewusst Platz, ohne veraltete Namen als neue Wahrheit zu übernehmen.") }}
+    {{ head("Jede Person bekommt eine echte Rolle, keine austauschbare Teamkarte.", "Hinter jeder Behandlung stehen Menschen mit eigenen fachlichen Schwerpunkten. Hier lernen Sie das Team von Raum und Zeit kennen.") }}
     <div class="team-roster">
       {%- for member in collections.team %}{% if not member.data.featured %}
       <article class="roster-entry" style="--i: {{ loop.index0 }}">
@@ -53,10 +54,10 @@ currentKey: "team"
           alt: member.data.photoAlt or member.data.role,
           focus: "center 25%",
           note: member.data.placeholderLabel or "Portrait"
-        }, "4 / 5", "rz-figure--portrait") }}
+        }, "1 / 1", "rz-figure--portrait") }}
         <div class="roster-entry__copy">
           <h3>{{ member.data.name or member.data.role }}</h3>
-          <span class="roster-entry__role">{% if member.data.name %}{{ member.data.role }}{% else %}{{ member.data.status }}{% endif %}</span>
+          {%- if member.data.name %}<span class="roster-entry__role">{{ member.data.role }}</span>{% endif %}
           {%- if member.templateContent %}<div class="roster-entry__bio">{{ member.templateContent | safe }}</div>{% endif %}
           {%- if member.data.qualifications and member.data.qualifications.length %}
           <ul class="roster-entry__quals" aria-label="Qualifikationen">{% for q in member.data.qualifications %}<li>{{ q }}</li>{% endfor %}</ul>
@@ -75,7 +76,7 @@ currentKey: "team"
         <span class="eyebrow eyebrow-light">Karriere</span>
         <h2 class="display">Sie möchten Teil dieser Arbeitsweise werden?</h2>
       </div>
-      <a class="button button-light" href="karriere.html">Arbeiten bei Raum &amp; Zeit <span aria-hidden="true">↗</span></a>
+      <a class="button button-light" href="karriere.html">Arbeiten bei Raum &amp; Zeit <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
