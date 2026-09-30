@@ -41,8 +41,20 @@ function startServer() {
   });
 }
 
+// PROTOTYPE_URL=<url> checks an already running server instead (e.g. the
+// Basic-Auth Worker under `wrangler dev`). Credentials come from
+// PROTOTYPE_USER / PROTOTYPE_PASS and are only ever sent to a local host.
+const remoteUrl = process.env.PROTOTYPE_URL || null;
+const auth = process.env.PROTOTYPE_USER ? { username: process.env.PROTOTYPE_USER, password: process.env.PROTOTYPE_PASS || "" } : null;
+if (auth && remoteUrl && !["127.0.0.1", "localhost"].includes(new URL(remoteUrl).hostname)) {
+  throw new Error("Credentials are only used against a local host.");
+}
+
 async function newPage(browser, origin, opts = {}) {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true, ...opts });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 }, acceptDownloads: true,
+    ...(auth && origin.startsWith("http") ? { httpCredentials: auth } : {}), ...opts,
+  });
   if (origin.startsWith("http")) await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
   const page = await context.newPage();
   const log = { errors: [], foreign: [] };
@@ -312,10 +324,10 @@ async function contrast(browser, url) {
 }
 
 const browser = await chromium.launch();
-const server = await startServer();
+const server = remoteUrl ? { url: remoteUrl, child: { kill() {} } } : await startServer();
 try {
   await story(browser, server.url, "http");
-  await story(browser, pathToFileURL(join(pkg, "site", "index.html")).href, "file");
+  if (!remoteUrl) await story(browser, pathToFileURL(join(pkg, "site", "index.html")).href, "file");
   await layout(browser, server.url);
   await keyboardAndMotion(browser, server.url);
   await contrast(browser, server.url);
