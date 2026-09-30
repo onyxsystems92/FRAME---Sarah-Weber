@@ -5,3 +5,4 @@ admin/vendor/
 backups/*.tar.gz
 .env.publish
 .DS_Store
+prototype-release/

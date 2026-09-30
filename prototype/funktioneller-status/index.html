@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <!-- Kein Netzwerk: nur eigene Dateien, keine Verbindungen nach außen. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <title>Funktioneller Status · Raum &amp; Zeit</title>
+  <link rel="icon" href="assets/logo-raum-und-zeit.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#stage">Zum Arbeitsbereich</a>
+
+  <header class="app-header">
+    <div class="shell app-header__row">
+      <div class="brand">
+        <img class="brand__logo" src="assets/logo-raum-und-zeit.png" alt="" width="32" height="32">
+        <span class="brand__wordmark" data-slot="practice">Raum &amp; Zeit</span>
+      </div>
+      <span class="app-header__divider" aria-hidden="true"></span>
+      <h1 class="app-title" data-slot="title">Funktioneller Status</h1>
+      <div class="app-header__end">
+        <span class="demo-badge" data-slot="demoBadge">Demo · synthetische Daten</span>
+        <button class="button button--ghost reset" type="button" data-reset data-key="reset">Demo zurücksetzen</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="flow" aria-label="Ablauf">
+    <ol class="shell flow__list" data-flow></ol>
+    <p class="shell flow__caption" data-flow-caption aria-hidden="true"></p>
+  </nav>
+
+  <main class="shell stage" id="stage" tabindex="-1"></main>
+
+  <div class="toast-region" aria-live="polite" data-toast-region></div>
+
+  <noscript><p class="shell noscript">Dieser Prototyp braucht JavaScript.</p></noscript>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
