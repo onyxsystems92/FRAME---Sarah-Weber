@@ -16,7 +16,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const pkg = join(root, "prototype-release", "funktioneller-status");
+// PROTOTYPE_PACKAGE=<dir> checks a copied package, e.g. the offline presentation folder.
+const pkg = process.env.PROTOTYPE_PACKAGE || join(root, "prototype-release", "funktioneller-status");
 const shotsIndex = process.argv.indexOf("--shots");
 const shots = shotsIndex !== -1 ? process.argv[shotsIndex + 1] : null;
 if (shots) mkdirSync(shots, { recursive: true });
