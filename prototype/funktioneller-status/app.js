@@ -311,6 +311,8 @@
     }
 
     renderFlow();
+    const flowNav = flowEl.closest(".flow");
+    if (flowNav) flowNav.classList.toggle("is-overview", state.view === "overview");
     stageEl.replaceChildren(state.view === "overview" ? renderOverview() : renderStep());
     stageEl.querySelectorAll("textarea").forEach(autosize);
     lastView = viewKey();
@@ -387,14 +389,26 @@
 
   function goOverview() {
     dismissToast();
+    const back = state.ui.returnFocus;
     state.view = "overview";
     state.ui.editingFactor = null; state.ui.addingFactor = null;
     state.ui.editingStatement = null; state.ui.addingStatement = null;
     state.ui.adjusting = null; state.ui.addingOwn = false;
-    if (state.ui.returnFocus && itemOf(state.ui.returnFocus.kind, state.ui.returnFocus.id)) state.ui.focus = state.ui.returnFocus;
+    state.ui.focus = null;
     state.ui.returnFocus = null;
-    const f = state.ui.focus;
-    render({ enter: true, focus: f ? `[data-key="node-${f.kind}-${f.id}"]` : "#overview-title" });
+    let focus = "#overview-title";
+    if (back?.kind === "status") {
+      const signal = (C.overview.signals || []).find((s) => s.source === back.id);
+      if (signal) focus = `[data-key="overview-signal-${signal.id}"]`;
+    } else if (back?.kind === "problem" || back?.kind === "statement") {
+      focus = '[data-key="overview-hypothesis-edit"]';
+    } else if (back?.kind === "intervention") {
+      focus = document.querySelector(`[data-key="overview-choice-${back.id}-detail"]`)
+        ? `[data-key="overview-choice-${back.id}-detail"]` : '[data-key="overview-all-interventions"]';
+    } else if (back?.kind === "factor") {
+      focus = '[data-key="overview-details"]';
+    }
+    render({ enter: true, focus });
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
@@ -477,43 +491,111 @@
 
   function renderOverview() {
     const queue = reviewQueue();
-    const caseFields = C.statusFields.filter((f) => f.overview === "case" && (state.status[f.id] || "").trim());
-    const casebar = h("section", { class: "casebar", "aria-labelledby": "overview-title" },
-      h("div", { class: "casebar__id" },
-        h("p", { class: "casebar__eyebrow" },
-          h("span", { text: C.meta.caseLabel }),
-          h("span", { class: "casebar__demo", text: C.meta.demoBadge })),
-        h("h2", { class: "casebar__title display", id: "overview-title", tabindex: "-1", text: C.meta.caseSummary }),
-        caseFields.map((f) => h("p", { class: "casebar__ref" },
-          h("span", { class: "casebar__reflabel", text: `${f.label}` }),
-          h("span", { text: firstSentence(state.status[f.id]) })))),
-      h("div", { class: "casebar__side" },
-        h("div", { class: "casebar__actions" },
-          queue.length
-            ? h("button", {
-              type: "button", class: "review-chip", "data-key": "review-next",
-              onClick: () => focusNextReview(),
-            }, icon("review"), h("span", { text: `${queue.length} ${T.reviewCount}` }))
-            : h("span", { class: "review-chip review-chip--none" }, icon("check"), h("span", { text: T.reviewNone })),
+    const p = state.problem;
+    const problemReview = problemNeedsReview();
+    const preferred = (C.overview.interventionIds || [])
+      .map((id) => byId(state.interventions, id))
+      .filter((i) => i && i.state !== "removed");
+    const acceptedExtra = planned().filter((i) => !preferred.some((p) => p.id === i.id));
+    const visibleInterventions = [...acceptedExtra, ...preferred]
+      .filter((item, index, all) => all.findIndex((x) => x.id === item.id) === index)
+      .slice(0, C.overview.interventionLimit || 3);
+    const remaining = state.interventions.filter((i) => i.state !== "removed" && !visibleInterventions.some((v) => v.id === i.id)).length;
+
+    const openFirstReview = () => {
+      const next = queue[0];
+      if (!next) return;
+      if (next.kind === "problem") return openDetail("problem");
+      return openDetail(next.kind, next.id);
+    };
+
+    const hero = h("section", { class: "simple-hero", "aria-labelledby": "overview-title" },
+      h("div", { class: "simple-hero__meta" },
+        h("span", { text: C.meta.caseLabel })),
+      h("h2", { class: "simple-hero__title display", id: "overview-title", tabindex: "-1", text: C.meta.caseSummary }),
+      h("p", { class: "simple-hero__lead", text: C.overview.intro }),
+      queue.length ? h("button", {
+        type: "button", class: "simple-review", "data-key": "overview-review",
+        onClick: openFirstReview,
+      }, icon("review"), h("span", { text: `${queue.length} ${T.reviewCount}` })) : null);
+
+    const signals = h("section", { class: "simple-block simple-signals", "aria-labelledby": "simple-signals-title" },
+      h("div", { class: "simple-block__head" },
+        h("div", null,
+          h("p", { class: "simple-kicker", text: "01" }),
+          h("h3", { class: "simple-block__title", id: "simple-signals-title", text: C.overview.signalsTitle })),
+        h("p", { class: "simple-block__intro", text: C.overview.signalsIntro })),
+      h("ul", { class: "simple-signal-list", role: "list" },
+        (C.overview.signals || []).map((signal) => {
+          const changed = signal.source ? statusTouched(signal.source) : false;
+          return h("li", { class: "simple-signal" },
+            h("button", {
+              type: "button", class: "simple-signal__button", "data-key": `overview-signal-${signal.id}`,
+              onClick: () => openDetail("status", signal.source),
+            },
+              h("span", { class: "simple-signal__label", text: signal.label }),
+              h("span", { class: "simple-signal__text", text: signal.text }),
+              changed ? h("span", { class: "simple-signal__changed", text: T.reasonStatus }) : null,
+              icon("arrow")));
+        })));
+
+    const hypothesisStatus = problemReview ? T.confirmedReview : p.confirmed ? T.confirmed : p.changedAfterConfirm ? T.draftChanged : T.draft;
+    const hypothesis = h("section", { class: `simple-block simple-hypothesis${problemReview ? " needs-review" : ""}`, "aria-labelledby": "simple-hypothesis-title" },
+      h("div", { class: "simple-block__head" },
+        h("div", null,
+          h("p", { class: "simple-kicker", text: "02" }),
+          h("h3", { class: "simple-block__title", id: "simple-hypothesis-title", text: C.overview.hypothesisTitle })),
+        h("span", { class: `simple-state${p.confirmed && !problemReview ? " is-confirmed" : ""}${problemReview ? " is-review" : ""}` },
+          p.confirmed && !problemReview ? icon("check") : problemReview ? icon("review") : null,
+          h("span", { text: hypothesisStatus }))),
+      h("p", { class: "simple-hypothesis__text", text: p.hypothesis === C.demoCase.problem.hypothesis ? C.overview.hypothesisPreview : firstSentence(p.hypothesis) }),
+      h("p", { class: "simple-block__intro simple-hypothesis__intro", text: C.overview.hypothesisIntro }),
+      h("div", { class: "simple-actions" },
+        h("button", { type: "button", class: "button button--small button--ghost", "data-key": "overview-hypothesis-edit", onClick: () => openDetail("problem") }, C.overview.editLabel, icon("arrow")),
+        p.confirmed && !problemReview
+          ? null
+          : h("button", {
+            type: "button", class: "button button--small button--primary", "data-key": "overview-confirm",
+            onClick: () => { confirmProblem(); render({ focus: '[data-key="overview-hypothesis-edit"]' }); },
+          }, icon("check"), h("span", { text: problemReview ? T.reconfirm : T.confirm }))));
+
+    const interventions = h("section", { class: "simple-block simple-next", "aria-labelledby": "simple-next-title" },
+      h("div", { class: "simple-block__head" },
+        h("div", null,
+          h("p", { class: "simple-kicker", text: "03" }),
+          h("h3", { class: "simple-block__title", id: "simple-next-title", text: C.overview.interventionsTitle })),
+        h("p", { class: "simple-block__intro", text: C.overview.interventionsIntro })),
+      h("ul", { class: "simple-choice-list", role: "list" }, visibleInterventions.map((i) => {
+        const accepted = i.state === "accepted";
+        const review = itemReasons(i).length > 0;
+        return h("li", { class: `simple-choice${accepted ? " is-accepted" : ""}${review ? " needs-review" : ""}` },
           h("button", {
-            type: "button", class: `text-button casebar__clear${state.ui.focus ? "" : " is-hidden"}`, "data-key": "clear-focus",
-            "aria-hidden": state.ui.focus ? null : "true", tabindex: state.ui.focus ? null : "-1",
-            text: T.clearFocus, onClick: () => setFocus(null),
-          })),
-        h("p", { class: "casebar__hint", "aria-live": "polite", "data-relation-summary": true },
-          state.ui.focus ? relationSummary(state.ui.focus) : C.overview.hint)));
+            type: "button", class: "simple-choice__toggle", "data-key": `overview-choice-${i.id}`,
+            "aria-pressed": String(accepted), "aria-label": `${accepted ? T.withdraw : T.accept}: ${i.title}`,
+            onClick: () => {
+              i.state = accepted ? "candidate" : "accepted";
+              if (!accepted) snapshotItem(i);
+              render({ focus: `[data-key="overview-choice-${i.id}"]` });
+            },
+          }, icon("check")),
+          h("button", {
+            type: "button", class: "simple-choice__main", "data-key": `overview-choice-${i.id}-detail`,
+            onClick: () => openDetail("intervention", i.id),
+          },
+            h("span", { class: "simple-choice__category", text: categoryLabel(i.category) }),
+            h("span", { class: "simple-choice__title", text: i.title }),
+            review ? h("span", { class: "simple-choice__review", text: T.basisChanged }) : null),
+          icon("arrow"));
+      })),
+      h("button", { type: "button", class: "simple-more", "data-key": "overview-all-interventions", onClick: () => openDetail("interventions") },
+        h("span", { text: remaining > 0 ? `${C.overview.moreLabel} · ${remaining} weitere` : C.overview.moreLabel }), icon("arrow")));
 
-    const surface = h("div", {
-      class: `surface${state.ui.focus ? " has-focus" : ""}`, "data-surface": true,
-      onClick: (e) => {
-        if (state.ui.focus && !e.target.closest(".node, button, textarea, input, select, a")) setFocus(null);
-      },
-    },
-      zoneStatus(), zoneFactors(), zoneProblem(),
-      h("div", { class: "zone-stack" }, zonePlan(), zoneDocumentation()),
-      svgEl("svg", { class: "relations", "aria-hidden": "true", focusable: "false" }));
+    const details = h("div", { class: "simple-footer" },
+      h("p", { class: "simple-footer__note", text: C.overview.detailsHint }),
+      h("button", { type: "button", class: "button button--primary simple-footer__button", "data-key": "overview-details", onClick: () => openDetail("status") },
+        h("span", { text: C.overview.detailsLabel }), icon("arrow")));
 
-    return h("div", { class: "overview" }, casebar, surface);
+    return h("div", { class: "simple-overview" }, hero, signals, hypothesis, interventions, details);
   }
 
   function svgEl(tag, attrs = {}) {

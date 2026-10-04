@@ -536,3 +536,70 @@ h1,h2,h3{margin:0}
   .app-header,.flow,.step-nav,.toast-region,.doc__actions,.notices{display:none}
   body{background:#fff}
 }
+
+/* --- V3 · radikal vereinfachter Einstieg ----------------------------------- */
+.flow.is-overview{display:none}
+.stage:has(.simple-overview){padding-block:24px 72px}
+.simple-overview{width:min(920px,100%);margin:0 auto;display:grid;gap:18px}
+.simple-hero{position:relative;padding:10px 4px 22px;border-bottom:1px solid var(--line-soft)}
+.simple-hero__meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.simple-hero__demo{padding:3px 9px;border-radius:var(--radius-pill);background:var(--cream);color:var(--taupe-ink);letter-spacing:.01em;text-transform:none;font-weight:600}
+.simple-hero__title{max-width:760px;font-size:clamp(30px,4.2vw,48px);line-height:1.04;letter-spacing:-.035em;outline:none}
+.simple-hero__lead{max-width:680px;margin-top:10px;font-size:15px;line-height:1.55;color:var(--muted)}
+.simple-review{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 11px;border:1px solid rgba(164,214,43,.7);border-radius:var(--radius-pill);background:var(--lime-wash);font-size:12.5px;font-weight:700;color:#43571a}
+.simple-review .icon{width:15px;height:15px}
+.simple-block{padding:22px 24px;border:1px solid var(--line-soft);border-radius:18px;background:var(--surface);box-shadow:0 12px 36px -30px rgba(31,38,36,.4)}
+.simple-block__head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:16px}
+.simple-kicker{margin-bottom:3px;font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--teal-ink)}
+.simple-block__title{font-family:"Newsreader",Georgia,serif;font-size:clamp(22px,2.4vw,29px);font-weight:500;line-height:1.1;letter-spacing:-.02em}
+.simple-block__intro{max-width:38ch;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.simple-signal-list,.simple-choice-list{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.simple-signal{border-top:1px solid var(--line-soft)}
+.simple-signal:first-child{border-top:0}
+.simple-signal__button{display:grid;grid-template-columns:100px minmax(0,1fr) auto auto;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 2px;border:0;background:transparent;text-align:left;border-radius:var(--radius-sm)}
+.simple-signal__label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.simple-signal__text{font-size:14px;line-height:1.45;color:var(--ink)}
+.simple-signal__changed{font-size:11.5px;font-weight:700;color:var(--teal-ink)}
+.simple-signal__button>.icon{width:15px;height:15px;color:var(--faint)}
+@media (hover:hover) and (pointer:fine){.simple-signal__button:hover{background:var(--teal-wash)}.simple-signal__button:hover>.icon{color:var(--teal-ink)}}
+.simple-hypothesis{border-color:rgba(23,198,189,.28);background:linear-gradient(135deg,rgba(23,198,189,.045),rgba(76,197,131,.025) 58%,var(--surface))}
+.simple-hypothesis.needs-review{border-color:rgba(164,214,43,.7)}
+.simple-state{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;padding:4px 9px;border-radius:var(--radius-pill);background:var(--cream);font-size:11.5px;font-weight:700;color:var(--muted)}
+.simple-state .icon{width:14px;height:14px}
+.simple-state.is-confirmed{background:var(--teal-wash);color:var(--teal-ink)}
+.simple-state.is-review{background:var(--lime-wash);color:#43571a}
+.simple-hypothesis__text{max-width:790px;font-family:"Newsreader",Georgia,serif;font-size:clamp(19px,2.2vw,25px);line-height:1.42;letter-spacing:-.018em;color:var(--ink)}
+.simple-hypothesis__intro{margin-top:10px}
+.simple-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.simple-choice{display:grid;grid-template-columns:34px minmax(0,1fr) 18px;align-items:center;gap:10px;min-height:58px;padding:8px 2px;border-top:1px solid var(--line-soft)}
+.simple-choice:first-child{border-top:0}
+.simple-choice__toggle{display:grid;place-items:center;width:30px;height:30px;border:1px solid rgba(11,110,104,.38);border-radius:50%;background:transparent;color:var(--teal-ink)}
+.simple-choice__toggle .icon{width:15px;height:15px;opacity:.35}
+.simple-choice.is-accepted .simple-choice__toggle{background:var(--teal-ink);border-color:var(--teal-ink);color:#fff}
+.simple-choice.is-accepted .simple-choice__toggle .icon{opacity:1}
+.simple-choice__main{display:grid;gap:2px;justify-items:start;border:0;background:transparent;text-align:left;padding:4px 0;border-radius:var(--radius-sm)}
+.simple-choice__category{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.simple-choice__title{font-size:15px;font-weight:650;line-height:1.35;color:var(--ink)}
+.simple-choice__review{font-size:11.5px;font-weight:700;color:#43571a}
+.simple-choice>.icon{width:15px;height:15px;color:var(--faint)}
+.simple-choice.is-accepted{background:linear-gradient(90deg,rgba(23,198,189,.06),transparent 62%)}
+.simple-more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 2px;border:0;background:transparent;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;color:var(--teal-ink)}
+.simple-more .icon{width:14px;height:14px}
+.simple-footer{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:6px 2px 0}
+.simple-footer__note{max-width:58ch;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.simple-footer__button{flex:none}
+@media (max-width:760px){
+  .stage:has(.simple-overview){padding-block:20px 80px}
+  .simple-overview{gap:12px}
+  .simple-hero{padding-inline:2px}
+  .simple-hero__title{font-size:32px}
+  .simple-block{padding:18px 16px;border-radius:14px}
+  .simple-block__head{display:grid;gap:8px;margin-bottom:12px}
+  .simple-block__intro{max-width:none}
+  .simple-signal__button{grid-template-columns:76px minmax(0,1fr) 16px;gap:8px;min-height:56px}
+  .simple-signal__changed{grid-column:2;grid-row:2}
+  .simple-signal__button>.icon{grid-column:3;grid-row:1/3}
+  .simple-hypothesis__text{font-size:20px}
+  .simple-footer{align-items:stretch;flex-direction:column}
+  .simple-footer__button{width:100%}
+}

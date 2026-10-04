@@ -5,26 +5,25 @@ werden kann, bevor Sarah fachlich entscheidet:
 
 `STATUS → RELEVANTE FAKTOREN → FUNKTIONELLES PROBLEM → INTERVENTIONSKANDIDATEN → SARAH BESTÄTIGT → DOKUMENTATION`
 
-## V2: Überblick als Arbeitsfläche
+## V3: einfacher Einstieg, Details erst auf Wunsch
 
-Der Prototyp öffnet im **Überblick**: Fall, Statussignale, Faktoren (veränderbar /
-Kontext / offen), Arbeitshypothese mit Bestätigung, Plan und Vorschläge sowie
-eine laufend erzeugte Dokumentationsvorschau auf einer Fläche. Die Bereiche
-stehen in der Denkrichtung von links nach rechts.
+Der Prototyp öffnet jetzt bewusst **nicht** mehr mit der kompletten Arbeitsfläche.
+Sarah sieht zuerst nur drei Dinge: vier auffällige Hinweise aus dem Status, eine
+kurze funktionelle Einschätzung und drei mögliche nächste Schritte. Erst über
+„Fall genauer ansehen“, „Einschätzung bearbeiten“ oder einen konkreten Hinweis
+öffnet sich die vollständige V1/V2-Detailtiefe.
 
-- **Zusammenhänge:** Ein gewähltes Element (Klick, Enter/Leertaste) zeigt, was
-  über Faktoren damit verbunden ist: Verbundenes bekommt Fläche, der Rest tritt
-  zurück, auf breiten Bildschirmen verbinden feine Linien die Nachbarbereiche.
-  Eine Zeile oben nennt die Verbindungen auch für Screenreader. Escape hebt auf.
-- **Prüfbedarf:** Jeder Faktor merkt sich seine Statusfelder, jeder Eintrag und
-  jede Intervention ihre Faktoren. Ändert sich eine Grundlage, steht dort
-  „Grundlage geändert · prüfen“; nichts wird gelöscht oder umgeschrieben.
-  „Geprüft“, Bearbeiten, Übernehmen oder Bestätigen setzt die Grundlage neu.
-  Eine bestätigte Arbeitshypothese bleibt bestätigt, wird aber bei geänderter
-  Grundlage als „Bestätigt · Grundlage geändert“ gekennzeichnet.
-- **Detail:** Die fünf Schritte aus V1 bleiben vollständig erhalten. Jedes
-  Element führt direkt in seinen Editor; „Zum Überblick“ kehrt mit erhaltener
-  Auswahl zurück.
+- **Was fällt auf?** Vier knappe, zentral konfigurierbare Signale. Ein Klick
+  springt direkt zum zugehörigen Statusfeld.
+- **Funktionelle Einschätzung:** Im Einstieg nur als kurze lesbare Vorschau.
+  Bearbeitung und Bestätigung bleiben einen Klick tiefer erhalten.
+- **Mögliche nächste Schritte:** Genau drei Kandidaten im Einstieg. Übernehmen
+  ist direkt möglich; Anpassen, weitere Kandidaten und Dokumentation bleiben im
+  Detail.
+- **Progressive Disclosure:** Faktoren, Kategorien, Beziehungslinien,
+  Dokumentationsvorschau und die komplette Schrittleiste sind auf der Startseite
+  nicht mehr sichtbar. Die bestehende fachliche State-/Dependency-Logik bleibt
+  vollständig erhalten.
 
 Präsentationsmaterial, **nicht** Teil der Praxis-Website: Er liegt außerhalb
 von `src/`, wird weder von `npm run build` noch von `npm run export` erfasst
@@ -37,7 +36,7 @@ Fast alles steht in **`config.js`**. Die Oberfläche (`app.js`) liest nur von do
 | Was | Wo in `config.js` |
 | --- | --- |
 | Titel, Demo-Hinweis, Fallbezeichnung | `meta` |
-| Überblick: Hinweistext, Länge der Doku-Vorschau | `overview` |
+| Einfacher Einstieg: Signale, Kurztexte, drei bevorzugte Kandidaten | `overview` |
 | Die fünf Schritte, Überschriften, Einleitungen, Bereichstitel im Überblick | `steps` (`zone`) |
 | Statusfelder: Name, Reihenfolge, Hinweis, Größe, Gruppe, Platz im Überblick | `statusFields` (`overview`), `statusGroups` |
 | Faktor-Kategorien (veränderbar / Kontext / offen) | `factorCategories` |
@@ -52,7 +51,7 @@ ist ein technischer Schlüssel; Labels sind frei. Verweise laufen über ids:
 ein Faktor nennt mit `sources` seine Statusfelder, Einträge und Kandidaten nennen
 mit `factorIds` ihre Faktoren. Nur synthetische Inhalte.
 
-Aus diesen Verweisen entstehen die Zusammenhänge im Überblick und der
+Aus diesen Verweisen entstehen im Hintergrund weiterhin Zusammenhänge und
 Prüfbedarf: Wird ein Statusfeld geändert, zeigen die daraus abgeleiteten
 Faktoren und alles, was auf ihnen beruht, „Grundlage geändert · prüfen“. Wird ein Faktor entfernt oder
 umgeordnet, zeigen die Bezug-Chips in Problem und Interventionen das an. Jede
@@ -83,20 +82,25 @@ damit die einzige Quelle der Markenelemente.
 - Vorschläge sind vorformuliert (Demo-Fall), nicht berechnet. Die fachliche
   Entscheidung bleibt bei Sarah: übernehmen, anpassen, entfernen, ergänzen.
 
+## Nachweis (V3, 2026-10-04)
+
+`npm run prototype:check`: 218 Prüfungen, 0 Fehler. Vereinfachter Einstieg und
+komplette Detail-Geschichte jeweils über Offline-Server und `file://`; direkte
+Wege vom Signal zum Statusfeld, von der Einschätzung zum Problem-Editor und vom
+Kandidaten zum bestehenden Interventions-Editor; Zurücksetzen und Neuladen;
+1440/900/390 px ohne horizontalen Überlauf oder abgeschnittene Bedienelemente;
+Tastatur, reduzierte Bewegung, WCAG AA; kein externes Netzwerk und kein
+Browser-Speicher.
+
+Die Website-Implementierung unter `src/` ist gegenüber V2 unverändert;
+`npm run build` und `npm run content-check` laufen erfolgreich.
+
 ## Nachweis (V2, 2026-10-04)
 
-`npm run prototype:check`: 325 Prüfungen. Überblick-Geschichte und
-Detail-Geschichte jeweils über den Offline-Server und über `file://`;
-Überblick zuerst, alle Kernelemente bei 1440×900 ohne Scrollen sichtbar;
-Zusammenhänge für Status, Faktor, Eintrag, Intervention; Prüfbedarf nach
-Statusänderung, Faktoränderung, Umordnung und Entfernen; Bestätigung mit
-nachträglich geänderter Grundlage; Plan und Dokumentationsvorschau reagieren;
-Hin- und Rückweg zwischen Überblick und Detail; Zurücksetzen und Neuladen;
-1440/900/390 px ohne Überlauf oder abgeschnittene Bedienelemente;
-Tastatur, reduzierte Bewegung, WCAG AA; kein Netzwerk, kein Browser-Speicher.
-
-Website-Regression: `release/` aus sauberer Quelle am Website-Stand `4e2aa24`
-und aus diesem Branch sind byte-identisch (20 Dateien).
+V2 hatte 325 bestandene Prüfungen und zeigte Status, Faktoren, funktionelles
+Problem, Plan und Dokumentation gleichzeitig auf einer Arbeitsfläche. Diese
+Variante bleibt als Git-Historie erhalten, wurde aber wegen zu hoher kognitiver
+Dichte durch V3 ersetzt.
 
 ## Nachweis (V1, 2026-09-30)
 

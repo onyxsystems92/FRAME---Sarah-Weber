@@ -26,13 +26,29 @@ window.RZ_FUNKTIONELLER_STATUS = {
   },
 
   /* --- Überblick (Arbeitsfläche) ----------------------------------------- */
-  // Die Startansicht. Zeigt alle fünf Bereiche gleichzeitig; ein Klick auf
-  // ein Element macht seine Zusammenhänge sichtbar.
+  // Die Startansicht zeigt bewusst nur das Wesentliche. Details bleiben einen Klick tiefer.
   overview: {
     label: "Überblick",
-    hint: "Ein Element wählen, um seine Zusammenhänge zu sehen.",
-    // Wie viele Zeilen Vorschau die Dokumentation im Überblick zeigt.
-    docPreviewLines: 7,
+    intro: "Ein möglicher Arbeitsstand: erst das Wesentliche sehen, dann bei Bedarf tiefer einsteigen.",
+    signalsTitle: "Was fällt auf?",
+    signalsIntro: "Vier Hinweise, die für diesen Demo-Fall zuerst ins Auge fallen.",
+    hypothesisTitle: "Funktionelle Einschätzung",
+    hypothesisPreview: "Eingeschränkte Hüftbeweglichkeit und reduzierte lumbopelvine Kontrolle könnten die Belastung beim Laufen stärker in den unteren Rücken verlagern.",
+    hypothesisIntro: "Arbeitsentwurf · Sarah entscheidet, was davon trägt.",
+    interventionsTitle: "Mögliche nächste Schritte",
+    interventionsIntro: "Drei Kandidaten zum Übernehmen, Anpassen oder Verwerfen.",
+    detailsLabel: "Fall genauer ansehen",
+    detailsHint: "Alle Befundfelder, Faktoren, Zusammenhänge und die Dokumentation bleiben im Detail verfügbar.",
+    editLabel: "Einschätzung bearbeiten",
+    moreLabel: "Alle Vorschläge ansehen",
+    interventionLimit: 3,
+    interventionIds: ["i-laufumfang", "i-lpstab", "i-hueftmob"],
+    signals: [
+      { id: "belastung", label: "Belastung", source: "anamnese", text: "Beschwerden nach längerem Sitzen und nach Läufen über 8 km" },
+      { id: "verlauf", label: "Verlauf", source: "anamnese", text: "Morgens steifer, nach Bewegung deutlich besser" },
+      { id: "training", label: "Training", source: "sport", text: "Trainingsumfang in kurzer Zeit deutlich gesteigert" },
+      { id: "befund", label: "Befund", source: "veraenderbar", text: "Hüftextension und lumbopelvine Kontrolle rechts auffällig" },
+    ],
   },
 
   /* --- Ablauf ------------------------------------------------------------- */
