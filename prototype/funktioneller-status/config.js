@@ -25,37 +25,53 @@ window.RZ_FUNKTIONELLER_STATUS = {
     caseSummary: "46 J. · Rückenbeschwerden, belastungsabhängig",
   },
 
+  /* --- Überblick (Arbeitsfläche) ----------------------------------------- */
+  // Die Startansicht. Zeigt alle fünf Bereiche gleichzeitig; ein Klick auf
+  // ein Element macht seine Zusammenhänge sichtbar.
+  overview: {
+    label: "Überblick",
+    hint: "Ein Element wählen, um seine Zusammenhänge zu sehen.",
+    // Wie viele Zeilen Vorschau die Dokumentation im Überblick zeigt.
+    docPreviewLines: 7,
+  },
+
   /* --- Ablauf ------------------------------------------------------------- */
-  // Fünf Schritte. "title" ist die Überschrift im Arbeitsbereich,
-  // "label" die Beschriftung im Ablauf oben.
+  // Fünf Schritte. "title" ist die Überschrift der Detailansicht,
+  // "label" die Beschriftung im Ablauf oben, "zone" die Überschrift des
+  // Bereichs im Überblick.
   steps: [
     {
       id: "status",
       label: "Status erfassen",
+      zone: "Status",
       title: "Status erfassen",
       intro: "Die gewohnte Befundgrammatik. Jede Angabe bleibt frei formulierbar und kann jederzeit ergänzt werden.",
     },
     {
       id: "factors",
       label: "Relevante Faktoren",
+      zone: "Faktoren",
       title: "Relevante Faktoren",
       intro: "Aus dem Status verdichtete Faktoren. Einordnen, ändern, entfernen oder ergänzen: nichts davon ist gesetzt.",
     },
     {
       id: "problem",
       label: "Funktionelles Problem",
+      zone: "Funktionelles Problem",
       title: "Funktionelles Problem",
       intro: "Ein Entwurf, wie die Einzelbefunde zusammenhängen könnten. Er wird erst durch Bestätigung zur Arbeitshypothese.",
     },
     {
       id: "interventions",
       label: "Intervention",
+      zone: "Plan",
       title: "Interventionskandidaten",
       intro: "Mögliche Ansätze mit Bezug zum funktionellen Problem. Kandidaten, keine Verordnung: übernommen wird nur, was bestätigt ist.",
     },
     {
       id: "documentation",
       label: "Dokumentation",
+      zone: "Dokumentation",
       title: "Dokumentation",
       intro: "Zusammenfassung aus dem bestätigten Stand. Der Text bleibt editierbar und kann kopiert oder als Textdatei gesichert werden.",
     },
@@ -63,6 +79,8 @@ window.RZ_FUNKTIONELLER_STATUS = {
 
   /* --- Schritt 1 · Status ------------------------------------------------- */
   // size: "short" = einzeilig wirkend, "long" = Fließtext.
+  // overview: "signal" (Standard) = Zeile im Bereich Status,
+  //           "case" = Kopfzeile des Falls, "hidden" = nur in der Detailansicht.
   // Gruppen gliedern die Erfassung optisch; ihre Reihenfolge gilt.
   // columns: Spalten auf großen Bildschirmen (Standard 2).
   statusGroups: [
@@ -75,7 +93,7 @@ window.RZ_FUNKTIONELLER_STATUS = {
   statusFields: [
     { id: "kondition",   group: "zuweisung", size: "short", label: "Kondition",
       hint: "Allgemeinzustand, Belastbarkeit" },
-    { id: "diagnose",    group: "zuweisung", size: "short", label: "Diagnose / Überweisung",
+    { id: "diagnose",    group: "zuweisung", size: "short", label: "Diagnose / Überweisung", overview: "case",
       hint: "Laut Verordnung oder Zuweisung" },
     { id: "anamnese",    group: "anamnese",  size: "long",  label: "Anamnese",
       hint: "Beginn, Verlauf, Auslöser, Tagesrhythmus" },
@@ -137,25 +155,28 @@ window.RZ_FUNKTIONELLER_STATUS = {
       veraenderbar: "Hüftextension rechts endgradig eingeschränkt. Lumbopelvine Stabilisation unter Last reduziert. Hüftabduktoren rechts schwächer, Becken sinkt im Einbeinstand rechts auf der Gegenseite ab. Rotation der BWS eingeschränkt. Trainingsumfang.",
     },
 
-    // source: aus welchem Statusfeld der Faktor stammt (id oder leer).
+    // sources: aus welchen Statusfeldern der Faktor stammt (ids, auch leer).
+    // Ändert sich eines davon, zeigt der Faktor „Grundlage geändert · prüfen“.
     factors: [
-      { id: "f-hueftext", category: "modifiable", source: "veraenderbar",
+      { id: "f-hueftext", category: "modifiable", sources: ["veraenderbar"],
         text: "Hüftextension rechts endgradig eingeschränkt" },
-      { id: "f-stabil", category: "modifiable", source: "veraenderbar",
+      { id: "f-stabil", category: "modifiable", sources: ["veraenderbar"],
         text: "Lumbopelvine Stabilisation unter Last reduziert" },
-      { id: "f-abduktion", category: "modifiable", source: "veraenderbar",
+      { id: "f-abduktion", category: "modifiable", sources: ["veraenderbar"],
         text: "Hüftabduktoren rechts schwächer, Becken sinkt im Einbeinstand ab" },
-      { id: "f-bws", category: "modifiable", source: "veraenderbar",
+      { id: "f-bws", category: "modifiable", sources: ["veraenderbar"],
         text: "Rotation der BWS eingeschränkt" },
-      { id: "f-umfang", category: "modifiable", source: "sport",
+      { id: "f-umfang", category: "modifiable", sources: ["sport", "veraenderbar"],
         text: "Trainingsumfang in kurzer Zeit gesteigert" },
-      { id: "f-sitzen", category: "context", source: "beruf",
+      { id: "f-sitzen", category: "context", sources: ["beruf", "unveraenderbar"],
         text: "Überwiegend sitzender Arbeitstag, rund acht Stunden" },
-      { id: "f-termin", category: "context", source: "unveraenderbar",
+      { id: "f-termin", category: "context", sources: ["unveraenderbar", "sport"],
         text: "Wettkampftermin in zehn Wochen" },
-      { id: "f-schuh", category: "open", source: "anamnese",
+      { id: "f-distorsion", category: "context", sources: ["andereLeiden", "unveraenderbar"],
+        text: "Zurückliegende Distorsion links, ausgeheilt" },
+      { id: "f-schuh", category: "open", sources: ["anamnese"],
         text: "Einfluss des Laufschuhwechsels unklar" },
-      { id: "f-regeneration", category: "open", source: "",
+      { id: "f-regeneration", category: "open", sources: [],
         text: "Regeneration zwischen den Einheiten nicht erfragt" },
     ],
 
@@ -222,6 +243,7 @@ window.RZ_FUNKTIONELLER_STATUS = {
     },
     hypothesisConfirmed: "Arbeitshypothese (bestätigt)",
     hypothesisDraft: "Arbeitshypothese (Entwurf, noch nicht bestätigt)",
+    hypothesisReview: "Arbeitshypothese (bestätigt, Grundlage seither geändert, prüfen)",
     rationaleLabel: "Begründung",
     dosageLabel: "Umfang",
     ownMarker: "eigene Ergänzung",
@@ -242,7 +264,30 @@ window.RZ_FUNKTIONELLER_STATUS = {
     cancel: "Abbrechen",
     remove: "Entfernen",
     fromStatus: "aus",
-    statusChanged: "Status geändert · prüfen",
+    basisChanged: "Grundlage geändert · prüfen",
+    markReviewed: "Geprüft",
+    reviewCount: "prüfen",
+    reviewNone: "Nichts zu prüfen",
+    reasonStatus: "Status geändert",
+    reasonFactor: "Faktor geändert",
+    reasonFactorRemoved: "Faktor entfernt",
+    confirmedReview: "Bestätigt · Grundlage geändert",
+    reconfirm: "Erneut bestätigen",
+    openDetail: "Im Detail",
+    toOverview: "Überblick",
+    backToOverview: "Zum Überblick",
+    clearFocus: "Auswahl aufheben",
+    connected: "verbunden",
+    noRelations: "Keine abgeleiteten Faktoren.",
+    inPlan: "Im Plan",
+    ownShort: "Eigene",
+    candidates: "Vorschläge",
+    removedShort: "entfernt",
+    docLive: "aus aktuellem Stand",
+    docEdited: "manuell bearbeitet",
+    docOutdated: "manuell bearbeitet · veraltet",
+    docOpen: "Öffnen und bearbeiten",
+    relCounts: { status: ["Statusangabe", "Statusangaben"], factor: ["Faktor", "Faktoren"], statement: ["Eintrag", "Einträge"], intervention: ["Intervention", "Interventionen"] },
     ownEntry: "Ergänzt",
     addFactor: "Faktor ergänzen",
     addFactorPlaceholder: "Neuer Faktor",

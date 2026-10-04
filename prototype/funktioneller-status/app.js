@@ -1,9 +1,15 @@
 /* ==========================================================================
-   Raum & Zeit · Funktioneller Status · Oberfläche
+   Raum & Zeit · Funktioneller Status · Oberfläche (V2)
    --------------------------------------------------------------------------
    Liest alle Inhalte aus config.js (window.RZ_FUNKTIONELLER_STATUS).
    Zustand nur im Arbeitsspeicher: kein Speichern im Browser, kein Netzwerk.
    Neu laden setzt die Demo zurück.
+
+   Zwei Ansichten auf denselben Zustand:
+   - Überblick: die ganze Fallogik auf einer Arbeitsfläche. Ein gewähltes
+     Element zeigt, womit es zusammenhängt.
+   - Detail: die fünf Bearbeitungsschritte (Status, Faktoren, Problem,
+     Interventionen, Dokumentation).
    ========================================================================== */
 (() => {
   "use strict";
@@ -11,12 +17,15 @@
   const C = window.RZ_FUNKTIONELLER_STATUS;
   const T = C.text;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Verbindungslinien nur, wenn die vier Bereiche nebeneinander stehen.
+  const wideLayout = window.matchMedia("(min-width: 1180px)");
 
   /* --- Helfer --------------------------------------------------------- */
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const byId = (list, id) => list.find((item) => item.id === id);
+  const stepIndex = (id) => C.steps.findIndex((s) => s.id === id);
   let counter = 0;
   const newId = (prefix) => `${prefix}-neu-${++counter}`;
 
@@ -48,6 +57,8 @@
     check: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     arrow: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10h11.5M11 5.5l4.5 4.5-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     back: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 10H4.5M9 5.5L4.5 10 9 14.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    review: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10 6.8v3.6M10 12.9v.1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    overview: '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 4.5h4v11h-4zM9 4.5h7.5v5H9zM9 11h7.5v4.5H9z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>',
   };
   function icon(name) {
     const span = h("span", { class: "icon" });
@@ -66,17 +77,21 @@
 
   let state;
 
+  const sourcesOf = (f) => (Array.isArray(f.sources) ? f.sources : f.source ? [f.source] : []);
+
   function initialState() {
     const demo = clone(C.demoCase);
-    return {
+    const s = {
+      view: "overview",
       step: 0,
       status: Object.fromEntries(C.statusFields.map((f) => [f.id, demo.status[f.id] ?? ""])),
-      factors: demo.factors.map((f) => ({ ...f, origin: "suggested" })),
+      factors: demo.factors.map((f) => ({ ...f, sources: sourcesOf(f), origin: "suggested" })),
       problem: {
         hypothesis: demo.problem.hypothesis,
-        statements: demo.problem.statements.map((s) => ({ ...s, factorIds: s.factorIds || [] })),
+        statements: demo.problem.statements.map((st) => ({ ...st, factorIds: st.factorIds || [] })),
         confirmed: false,
         changedAfterConfirm: false,
+        confirmedBasis: "",
       },
       interventions: demo.interventions.map((i) => ({
         ...i, factorIds: i.factorIds || [], dosage: i.dosage || "",
@@ -84,11 +99,18 @@
       })),
       doc: { text: "", manual: false, basis: "" },
       ui: {
+        focus: null, returnFocus: null,
         editingFactor: null, addingFactor: null,
         editingStatement: null, addingStatement: null,
         adjusting: null, addingOwn: false, ownDraft: null,
       },
     };
+    state = s;
+    // Jede abgeleitete Aussage merkt sich, worauf sie beruht.
+    s.factors.forEach(snapshotFactor);
+    s.problem.statements.forEach(snapshotItem);
+    s.interventions.forEach(snapshotItem);
+    return s;
   }
 
   const statusTouched = (fieldId) =>
@@ -99,10 +121,66 @@
   const planned = () => state.interventions.filter((i) => i.state === "accepted");
   const undecided = () => state.interventions.filter((i) => i.state === "candidate");
   const removedInterventions = () => state.interventions.filter((i) => i.state === "removed");
+  const liveInterventions = () => state.interventions.filter((i) => i.state !== "removed");
   const categoryLabel = (id) => (byId(C.interventionCategories, id) || { label: id }).label;
+  const fieldLabel = (id) => (byId(C.statusFields, id) || { label: id }).label;
 
-  // Jede inhaltliche Änderung am Problem macht eine Bestätigung ungültig:
-  // bestätigt ist nur, was die Therapeutin in genau dieser Form gesehen hat.
+  /* --- Grundlagen und Prüfbedarf --------------------------------------
+     Faktor:       beruht auf seinen Statusfeldern.
+     Eintrag/Intervention: beruht auf ihren Faktoren (Text, Einordnung)
+                   und deren Statusfeldern.
+     Ändert sich eine Grundlage, wird nichts gelöscht oder umgeschrieben:
+     das Element zeigt „Grundlage geändert · prüfen“, bis die Therapeutin
+     es prüft, bearbeitet oder übernimmt. */
+
+  function factorSig(fid) {
+    const f = byId(state.factors, fid);
+    if (!f) return null;
+    return { text: f.text, category: f.category, status: Object.fromEntries(f.sources.map((sid) => [sid, state.status[sid] || ""])) };
+  }
+
+  function snapshotFactor(f) {
+    f.basis = Object.fromEntries(f.sources.map((sid) => [sid, state.status[sid] || ""]));
+  }
+
+  function snapshotItem(item) {
+    item.basis = Object.fromEntries(item.factorIds.map((fid) => [fid, factorSig(fid)]));
+  }
+
+  function factorReasons(f) {
+    if (!f.basis) return [];
+    return f.sources.filter((sid) => (state.status[sid] || "") !== f.basis[sid])
+      .map((sid) => `${T.reasonStatus}: ${fieldLabel(sid)}`);
+  }
+
+  function itemReasons(item) {
+    if (!item.basis) return [];
+    const reasons = [];
+    for (const fid of item.factorIds) {
+      const was = item.basis[fid];
+      const now = factorSig(fid);
+      if (was === undefined) continue;
+      const name = (now || was || {}).text || fid;
+      if (!now && was) { reasons.push(`${T.reasonFactorRemoved}: ${name}`); continue; }
+      if (!now || !was) continue;
+      if (now.text !== was.text || now.category !== was.category) { reasons.push(`${T.reasonFactor}: ${name}`); continue; }
+      const changed = Object.keys(now.status).filter((sid) => now.status[sid] !== was.status[sid]);
+      if (changed.length) reasons.push(`${T.reasonStatus}: ${changed.map(fieldLabel).join(", ")}`);
+    }
+    return [...new Set(reasons)];
+  }
+
+  const reasonsFor = (kind, item) => (kind === "factor" ? factorReasons(item) : itemReasons(item));
+
+  function factorsBasisKey() {
+    return JSON.stringify(state.factors.map((f) => [f.id, factorSig(f.id)]));
+  }
+
+  // Bestätigt ist nur, was die Therapeutin in genau dieser Form gesehen hat.
+  // Direkte Änderungen am Problem heben die Bestätigung auf; geänderte
+  // Grundlagen lassen sie stehen, kennzeichnen sie aber sichtbar.
+  const problemNeedsReview = () => state.problem.confirmed && state.problem.confirmedBasis !== factorsBasisKey();
+
   function problemChanged() {
     if (state.problem.confirmed) {
       state.problem.confirmed = false;
@@ -112,11 +190,111 @@
     return false;
   }
 
+  function confirmProblem() {
+    const p = state.problem;
+    p.confirmed = true;
+    p.changedAfterConfirm = false;
+    p.confirmedBasis = factorsBasisKey();
+    p.statements.forEach(snapshotItem);
+  }
+
+  function reviewQueue() {
+    const queue = [];
+    state.factors.forEach((f) => { if (factorReasons(f).length) queue.push({ kind: "factor", id: f.id }); });
+    if (problemNeedsReview()) queue.push({ kind: "problem", id: "hypothesis" });
+    state.problem.statements.forEach((s) => { if (itemReasons(s).length) queue.push({ kind: "statement", id: s.id }); });
+    liveInterventions().forEach((i) => { if (itemReasons(i).length) queue.push({ kind: "intervention", id: i.id }); });
+    return queue;
+  }
+
+  function markReviewed(kind, item) {
+    if (kind === "factor") snapshotFactor(item);
+    else snapshotItem(item);
+  }
+
+  /* --- Zusammenhänge ---------------------------------------------------- */
+
+  function itemOf(kind, id) {
+    if (kind === "status") return byId(C.statusFields, id);
+    if (kind === "factor") return byId(state.factors, id);
+    if (kind === "statement") return byId(state.problem.statements, id);
+    if (kind === "intervention") return byId(state.interventions, id);
+    return null;
+  }
+
+  // Alles, was mit dem gewählten Element über Faktoren verbunden ist.
+  function related(focus) {
+    const out = { status: new Set(), factor: new Set(), statement: new Set(), intervention: new Set() };
+    if (!focus) return out;
+    const item = itemOf(focus.kind, focus.id);
+    if (!item) return out;
+    const exists = (fid) => byId(state.factors, fid);
+    let factors = [];
+    if (focus.kind === "status") factors = state.factors.filter((f) => f.sources.includes(focus.id)).map((f) => f.id);
+    if (focus.kind === "factor") factors = [focus.id];
+    if (focus.kind === "statement" || focus.kind === "intervention") factors = item.factorIds.filter(exists);
+    factors.forEach((fid) => out.factor.add(fid));
+    if (focus.kind === "status") out.status.add(focus.id);
+    for (const fid of factors) exists(fid).sources.forEach((sid) => out.status.add(sid));
+    for (const s of state.problem.statements) if (s.factorIds.some((fid) => out.factor.has(fid))) out.statement.add(s.id);
+    for (const i of liveInterventions()) if (i.factorIds.some((fid) => out.factor.has(fid))) out.intervention.add(i.id);
+    out[focus.kind].add(focus.id);
+    return out;
+  }
+
+  // Linien nur zwischen benachbarten Bereichen: Status → Faktor → Eintrag →
+  // Intervention. So bleibt jede Linie in ihrer Spalte und nichts kreuzt Text.
+  function relationPairs(focus, rel) {
+    const pairs = [];
+    for (const fid of rel.factor) {
+      const f = byId(state.factors, fid);
+      for (const sid of f.sources) if (rel.status.has(sid)) pairs.push([`status:${sid}`, `factor:${fid}`]);
+    }
+    for (const sid of rel.statement) {
+      const s = byId(state.problem.statements, sid);
+      for (const fid of s.factorIds) if (rel.factor.has(fid)) pairs.push([`factor:${fid}`, `statement:${sid}`]);
+    }
+    if (focus.kind !== "status") {
+      for (const sid of rel.statement) {
+        const s = byId(state.problem.statements, sid);
+        for (const iid of rel.intervention) {
+          const i = byId(state.interventions, iid);
+          if (s.factorIds.some((fid) => rel.factor.has(fid) && i.factorIds.includes(fid))) pairs.push([`statement:${sid}`, `intervention:${iid}`]);
+        }
+      }
+    }
+    return pairs;
+  }
+
+  function nodeTitle(kind, id) {
+    const item = itemOf(kind, id);
+    if (!item) return "";
+    if (kind === "status") return item.label;
+    if (kind === "intervention") return item.title;
+    return item.text;
+  }
+
+  function relationSummary(focus) {
+    if (!focus) return "";
+    const rel = related(focus);
+    const parts = [];
+    for (const kind of ["status", "factor", "statement", "intervention"]) {
+      const n = rel[kind].size - (kind === focus.kind ? 1 : 0);
+      if (n > 0) parts.push(`${n} ${T.relCounts[kind][n === 1 ? 0 : 1]}`);
+    }
+    const title = nodeTitle(focus.kind, focus.id);
+    return parts.length ? `${title}: ${T.connected} mit ${parts.join(", ")}.` : `${title}: ${T.noRelations}`;
+  }
+
   /* --- Rendering ------------------------------------------------------ */
 
+  const toastRegion = $("[data-toast-region]");
+  let toastTimer = null;
   const flowEl = $("[data-flow]");
   const stageEl = $("#stage");
   const flowCaption = $("[data-flow-caption]");
+  let lastView = null;
+  let lastPreview = null;
 
   function render({ enter = false, focus = null } = {}) {
     // Fokus und Cursor über das Neuzeichnen hinweg halten.
@@ -124,10 +302,18 @@
     const activeKey = active && active.dataset ? active.dataset.key : null;
     const selection = active && "selectionStart" in active && typeof active.selectionStart === "number"
       ? [active.selectionStart, active.selectionEnd] : null;
+    const sameView = lastView === viewKey();
+    const before = sameView ? snapshotPositions() : null;
+
+    if (!state.doc.manual) {
+      state.doc.text = generateDocumentation();
+      state.doc.basis = basisKey();
+    }
 
     renderFlow();
-    stageEl.replaceChildren(renderStep());
+    stageEl.replaceChildren(state.view === "overview" ? renderOverview() : renderStep());
     stageEl.querySelectorAll("textarea").forEach(autosize);
+    lastView = viewKey();
 
     if (enter && !reduceMotion.matches) {
       stageEl.classList.remove("is-entering");
@@ -143,66 +329,550 @@
         try { target.setSelectionRange(selection[0], selection[1]); } catch (_) { /* nicht jedes Feld */ }
       }
     }
+
+    if (before) playMoves(before);
+    if (state.view === "overview") {
+      applyFocus();
+      markPreviewChanges();
+    } else {
+      lastPreview = null;
+    }
   }
 
-  function goTo(index) {
+  const viewKey = () => (state.view === "overview" ? "overview" : `step-${state.step}`);
+
+  // FLIP: Elemente, die durch eine Änderung ihren Platz wechseln (Einordnung,
+  // Plan, Prüfstatus), gleiten an die neue Stelle statt zu springen.
+  function snapshotPositions() {
+    const map = new Map();
+    stageEl.querySelectorAll("[data-flip]").forEach((el) => map.set(el.dataset.flip, el.getBoundingClientRect()));
+    return map;
+  }
+
+  function playMoves(before) {
+    if (reduceMotion.matches) return;
+    stageEl.querySelectorAll("[data-flip]").forEach((el) => {
+      const was = before.get(el.dataset.flip);
+      if (!was) {
+        el.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
+          { duration: 320, easing: "cubic-bezier(.23,1,.32,1)" });
+        return;
+      }
+      const now = el.getBoundingClientRect();
+      const dx = was.left - now.left;
+      const dy = was.top - now.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+      el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+        { duration: 360, easing: "cubic-bezier(.23,1,.32,1)" });
+    });
+  }
+
+  // Ein Ansichtswechsel beendet offene Rückgängig-Angebote.
+  function dismissToast() { clearTimeout(toastTimer); toastRegion.replaceChildren(); }
+
+  function goTo(index, { focus = null } = {}) {
     if (index < 0 || index >= C.steps.length) return;
+    dismissToast();
+    state.view = "detail";
     state.step = index;
     if (C.steps[index].id === "documentation") prepareDocumentation();
-    render({ enter: true, focus: "#step-title" });
-    window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
-  }
-
-  function flowValue(stepId) {
-    switch (stepId) {
-      case "status":
-        return `${filledStatus().length} von ${C.statusFields.length} ${T.threadStatus}`;
-      case "factors": {
-        const open = factorsIn("open").length;
-        return `${factorsIn("modifiable").length} ${T.threadFactors}` + (open ? ` · ${open} ${T.threadOpen}` : "");
-      }
-      case "problem":
-        return state.problem.confirmed ? T.confirmed : T.draft;
-      case "interventions": {
-        const u = undecided().length;
-        return `${planned().length} ${T.threadPlan}` + (u ? ` · ${u} ${T.undecided}` : "");
-      }
-      case "documentation":
-        return state.doc.manual ? "bearbeitet" : "aus Schritten";
-      default:
-        return "";
+    render({ enter: true, focus: focus || "#step-title" });
+    if (focus) {
+      const el = document.querySelector(focus);
+      if (el) el.scrollIntoView({ block: "center", behavior: "auto" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
   }
 
-  // Der Ablauf wird einmal gebaut und danach nur aktualisiert, damit die
-  // Markenlinie über dem aktiven Schritt sichtbar wandert.
+  function goOverview() {
+    dismissToast();
+    state.view = "overview";
+    state.ui.editingFactor = null; state.ui.addingFactor = null;
+    state.ui.editingStatement = null; state.ui.addingStatement = null;
+    state.ui.adjusting = null; state.ui.addingOwn = false;
+    if (state.ui.returnFocus && itemOf(state.ui.returnFocus.kind, state.ui.returnFocus.id)) state.ui.focus = state.ui.returnFocus;
+    state.ui.returnFocus = null;
+    const f = state.ui.focus;
+    render({ enter: true, focus: f ? `[data-key="node-${f.kind}-${f.id}"]` : "#overview-title" });
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  // Direkter Weg aus dem Überblick in den passenden Detail-Editor.
+  function openDetail(kind, id) {
+    state.ui.returnFocus = kind && id ? { kind, id } : state.ui.focus;
+    if (kind === "status") return goTo(stepIndex("status"), { focus: `#field-${id}` });
+    if (kind === "factor") { state.ui.editingFactor = id; return goTo(stepIndex("factors"), { focus: `[data-key="factor-${id}-input"]` }); }
+    if (kind === "statement") { state.ui.editingStatement = id; return goTo(stepIndex("problem"), { focus: `[data-key="st-${id}-input"]` }); }
+    if (kind === "intervention") { state.ui.adjusting = id; return goTo(stepIndex("interventions"), { focus: `#adjust-${id}-title` }); }
+    if (kind === "own") {
+      state.ui.addingOwn = true;
+      state.ui.ownDraft = { category: C.interventionCategories[0].id, title: "", rationale: "", dosage: "", factorIds: [] };
+      return goTo(stepIndex("interventions"), { focus: "#own-title" });
+    }
+    return goTo(stepIndex(kind));
+  }
+
+  // Der Ablauf oben: Überblick plus die fünf Detailschritte. Einmal gebaut
+  // und danach nur aktualisiert, damit die Markenlinie sichtbar wandert.
   function renderFlow() {
     if (!flowEl.children.length) {
-      flowEl.append(...C.steps.map((step, i) => h("li", { class: "flow__item" },
-        h("button", { type: "button", class: "flow__button", "data-key": `flow-${step.id}`, onClick: () => goTo(i) },
-          h("span", { class: "flow__num", "aria-hidden": "true" }, String(i + 1).padStart(2, "0")),
+      const items = [{ id: "overview", label: C.overview.label, num: null }, ...C.steps.map((s, i) => ({ id: s.id, label: s.label, num: i + 1 }))];
+      flowEl.append(...items.map((item) => h("li", { class: `flow__item${item.num ? "" : " flow__item--overview"}`, "data-flow-id": item.id },
+        h("button", {
+          type: "button", class: "flow__button", "data-key": `flow-${item.id}`,
+          onClick: () => (item.num ? goTo(item.num - 1) : goOverview()),
+        },
+          item.num ? h("span", { class: "flow__num", "aria-hidden": "true" }, String(item.num).padStart(2, "0")) : icon("overview"),
           h("span", { class: "flow__text" },
-            h("span", { class: "flow__label", text: step.label }),
-            h("span", { class: "flow__value" }))))));
+            h("span", { class: "flow__label", text: item.label }),
+            h("span", { class: "flow__badge", "data-flow-badge": item.id }))))));
     }
-    [...flowEl.children].forEach((li, i) => {
-      li.classList.toggle("is-current", i === state.step);
-      li.classList.toggle("is-past", i < state.step);
+    const current = state.view === "overview" ? "overview" : C.steps[state.step].id;
+    [...flowEl.children].forEach((li) => {
+      const isCurrent = li.dataset.flowId === current;
+      li.classList.toggle("is-current", isCurrent);
       const button = li.firstElementChild;
-      if (i === state.step) button.setAttribute("aria-current", "step");
+      if (isCurrent) button.setAttribute("aria-current", "page");
       else button.removeAttribute("aria-current");
     });
     refreshFlowValues();
-    flowCaption.textContent = `Schritt ${state.step + 1} von ${C.steps.length} · ${C.steps[state.step].label}`;
+    flowCaption.textContent = state.view === "overview"
+      ? C.overview.label
+      : `Schritt ${state.step + 1} von ${C.steps.length} · ${C.steps[state.step].label}`;
   }
 
   function refreshFlowValues() {
-    flowEl.querySelectorAll(".flow__value").forEach((el, i) => {
-      const id = C.steps[i].id;
-      el.textContent = flowValue(id);
-      el.classList.toggle("is-confirmed", id === "problem" && state.problem.confirmed);
+    const confirmed = flowEl.querySelector('[data-flow-badge="problem"]');
+    if (confirmed) {
+      // Sichtbar als Häkchen, für Screenreader als Wort.
+      confirmed.replaceChildren(...(state.problem.confirmed ? [icon("check"), h("span", { class: "visually-hidden", text: T.confirmed })] : []));
+      confirmed.classList.toggle("is-confirmed", state.problem.confirmed);
+      confirmed.classList.toggle("is-review", problemNeedsReview());
+    }
+    const review = flowEl.querySelector('[data-flow-badge="overview"]');
+    if (review) {
+      const n = reviewQueue().length;
+      review.textContent = n ? String(n) : "";
+      review.classList.toggle("is-review", n > 0);
+      review.title = n ? `${n} ${T.reviewCount}` : "";
+    }
+  }
+
+  /* --- Überblick ---------------------------------------------------------- */
+
+  function zoneHead(stepId, count) {
+    const i = stepIndex(stepId);
+    const step = C.steps[i];
+    return h("header", { class: "zone__head" },
+      h("span", { class: "zone__num", "aria-hidden": "true" }, String(i + 1).padStart(2, "0")),
+      h("h3", { class: "zone__title", id: `zone-${stepId}` }, step.zone || step.label),
+      count != null ? h("span", { class: "count", text: String(count) }) : null,
+      h("button", {
+        type: "button", class: "zone__open", "data-key": `open-${stepId}`,
+        "aria-label": `${step.zone || step.label}: ${T.openDetail}`,
+        onClick: () => openDetail(stepId),
+      }, h("span", { text: T.openDetail }), icon("arrow")));
+  }
+
+  function renderOverview() {
+    const queue = reviewQueue();
+    const caseFields = C.statusFields.filter((f) => f.overview === "case" && (state.status[f.id] || "").trim());
+    const casebar = h("section", { class: "casebar", "aria-labelledby": "overview-title" },
+      h("div", { class: "casebar__id" },
+        h("p", { class: "casebar__eyebrow" },
+          h("span", { text: C.meta.caseLabel }),
+          h("span", { class: "casebar__demo", text: C.meta.demoBadge })),
+        h("h2", { class: "casebar__title display", id: "overview-title", tabindex: "-1", text: C.meta.caseSummary }),
+        caseFields.map((f) => h("p", { class: "casebar__ref" },
+          h("span", { class: "casebar__reflabel", text: `${f.label}` }),
+          h("span", { text: firstSentence(state.status[f.id]) })))),
+      h("div", { class: "casebar__side" },
+        h("div", { class: "casebar__actions" },
+          queue.length
+            ? h("button", {
+              type: "button", class: "review-chip", "data-key": "review-next",
+              onClick: () => focusNextReview(),
+            }, icon("review"), h("span", { text: `${queue.length} ${T.reviewCount}` }))
+            : h("span", { class: "review-chip review-chip--none" }, icon("check"), h("span", { text: T.reviewNone })),
+          h("button", {
+            type: "button", class: `text-button casebar__clear${state.ui.focus ? "" : " is-hidden"}`, "data-key": "clear-focus",
+            "aria-hidden": state.ui.focus ? null : "true", tabindex: state.ui.focus ? null : "-1",
+            text: T.clearFocus, onClick: () => setFocus(null),
+          })),
+        h("p", { class: "casebar__hint", "aria-live": "polite", "data-relation-summary": true },
+          state.ui.focus ? relationSummary(state.ui.focus) : C.overview.hint)));
+
+    const surface = h("div", {
+      class: `surface${state.ui.focus ? " has-focus" : ""}`, "data-surface": true,
+      onClick: (e) => {
+        if (state.ui.focus && !e.target.closest(".node, button, textarea, input, select, a")) setFocus(null);
+      },
+    },
+      zoneStatus(), zoneFactors(), zoneProblem(),
+      h("div", { class: "zone-stack" }, zonePlan(), zoneDocumentation()),
+      svgEl("svg", { class: "relations", "aria-hidden": "true", focusable: "false" }));
+
+    return h("div", { class: "overview" }, casebar, surface);
+  }
+
+  function svgEl(tag, attrs = {}) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  }
+
+  function firstSentence(text) {
+    const clean = (text || "").trim().replace(/\s+/g, " ");
+    const match = clean.match(/^(.+?[.!?])(\s|$)/);
+    return match ? match[1] : clean;
+  }
+
+  // Ein auswählbares Element im Überblick. Die Hauptfläche ist ein Button
+  // (aria-pressed = gewählt); Aktionen erscheinen nur am gewählten Element.
+  function node({ kind, id, label, text, classes = "", meta = null, aside = null, tools = null, reasons = [] }) {
+    const isFocus = state.ui.focus && state.ui.focus.kind === kind && state.ui.focus.id === id;
+    const reviewText = reasons.length ? reasons.join(" · ") : "";
+    return h("li", {
+      class: `node node--${kind}${classes ? ` ${classes}` : ""}${reasons.length ? " needs-review" : ""}${isFocus ? " is-focus" : ""}`,
+      "data-node": `${kind}:${id}`, "data-flip": `${kind}:${id}`,
+    },
+      h("div", { class: "node__row" },
+        h("button", {
+          type: "button", class: "node__main", "data-key": `node-${kind}-${id}`,
+          "aria-pressed": String(Boolean(isFocus)),
+          onClick: () => setFocus(isFocus ? null : { kind, id }),
+        },
+          label ? h("span", { class: "node__label" }, label) : null,
+          h("span", { class: "node__text", text }),
+          reasons.length ? h("span", { class: "node__flag", title: reviewText }, icon("review"), h("span", { text: T.basisChanged })) : null,
+          meta,
+          h("span", { class: "visually-hidden node__sr", "data-sr-related": true })),
+        aside),
+      isFocus && tools ? h("div", { class: "node__tools" },
+        reasons.length ? h("p", { class: "node__reason", text: reviewText }) : null,
+        tools) : null);
+  }
+
+  function reviewButton(kind, item, key) {
+    return h("button", {
+      type: "button", class: "button button--small button--accept", "data-key": key,
+      onClick: () => { markReviewed(kind, item); render(); },
+    }, icon("check"), h("span", { text: T.markReviewed }));
+  }
+
+  function detailButton(kind, id) {
+    return h("button", {
+      type: "button", class: "button button--small button--ghost", "data-key": `node-${kind}-${id}-detail`,
+      onClick: () => openDetail(kind, id),
+    }, h("span", { text: kind === "intervention" ? T.adjust : T.edit }), icon("arrow"));
+  }
+
+  function zoneStatus() {
+    const fields = C.statusFields.filter((f) => (f.overview || "signal") === "signal");
+    return h("section", { class: "zone zone--status", "aria-labelledby": "zone-status" },
+      zoneHead("status", fields.filter((f) => (state.status[f.id] || "").trim()).length),
+      h("ul", { class: "nodes", role: "list" }, fields.map((f) => {
+        const derived = state.factors.filter((fa) => fa.sources.includes(f.id)).length;
+        const value = (state.status[f.id] || "").trim();
+        return node({
+          kind: "status", id: f.id,
+          label: [f.label, statusTouched(f.id) ? h("span", { class: "node__changed", text: " · geändert" }) : null],
+          text: value ? (isFocused("status", f.id) ? value : firstSentence(value)) : "–",
+          classes: `${statusTouched(f.id) ? "is-touched" : ""}${value ? "" : " is-empty"}`,
+          meta: derived ? h("span", { class: "node__links", "aria-hidden": "true", text: `→ ${derived}` }) : null,
+          tools: [detailButton("status", f.id)],
+        });
+      })));
+  }
+
+  const isFocused = (kind, id) => state.ui.focus && state.ui.focus.kind === kind && state.ui.focus.id === id;
+
+  function zoneFactors() {
+    return h("section", { class: "zone zone--factors", "aria-labelledby": "zone-factors" },
+      zoneHead("factors", state.factors.length),
+      C.factorCategories.map((cat) => {
+        const items = factorsIn(cat.id);
+        return h("div", { class: `fgroup fgroup--${cat.id}` },
+          h("p", { class: "fgroup__title" }, h("span", { text: cat.label }), h("span", { class: "fgroup__count", text: String(items.length) })),
+          items.length ? h("ul", { class: "nodes", role: "list" }, items.map((f) => node({
+            kind: "factor", id: f.id, text: f.text,
+            classes: f.origin === "own" ? "is-own" : "",
+            reasons: factorReasons(f),
+            tools: [
+              h("div", { class: "segmented", role: "group", "aria-label": `${T.classify}: ${f.text}` },
+                C.factorCategories.map((c) => h("button", {
+                  type: "button", class: "segmented__option", "aria-pressed": String(c.id === f.category),
+                  "data-key": `ov-factor-${f.id}-cat-${c.id}`, text: c.short,
+                  onClick: () => {
+                    if (c.id === f.category) return;
+                    f.category = c.id;
+                    render({ focus: `[data-key="ov-factor-${f.id}-cat-${c.id}"]` });
+                  },
+                }))),
+              h("div", { class: "node__actions" },
+                factorReasons(f).length ? reviewButton("factor", f, `ov-review-factor-${f.id}`) : null,
+                detailButton("factor", f.id),
+                h("button", {
+                  type: "button", class: "button button--small button--quiet", "data-key": `ov-factor-${f.id}-remove`, text: T.remove,
+                  onClick: () => removeFactor(f, { overview: true }),
+                })),
+            ],
+          }))) : h("p", { class: "empty", text: T.emptyCategory }));
+      }));
+  }
+
+  function zoneProblem() {
+    const p = state.problem;
+    const review = problemNeedsReview();
+    const pillText = review ? T.confirmedReview : p.confirmed ? T.confirmed : p.changedAfterConfirm ? T.draftChanged : T.draft;
+    return h("section", { class: `zone zone--problem${p.confirmed ? " is-confirmed" : ""}${review ? " needs-review" : ""}`, "aria-labelledby": "zone-problem" },
+      zoneHead("problem"),
+      h("div", { class: "synth", "data-flip": "synth" },
+        h("div", { class: "synth__head" },
+          h("label", { for: "ov-hypothesis", class: "synth__label", text: T.hypothesisLabel }),
+          h("span", { class: `pill${review ? " pill--review" : p.confirmed ? " pill--confirmed" : ""}` },
+            review ? icon("review") : p.confirmed ? icon("check") : null, h("span", { text: pillText }))),
+        h("textarea", {
+          id: "ov-hypothesis", class: "synth__input", rows: 3, "data-key": "ov-hypothesis", value: p.hypothesis,
+          onInput: (e) => {
+            p.hypothesis = e.target.value;
+            autosize(e.target);
+            if (problemChanged()) render();
+            else refreshLive();
+          },
+        }),
+        h("div", { class: "synth__foot" },
+          p.confirmed && !review
+            ? h("button", {
+              type: "button", class: "button button--small button--quiet", "data-key": "ov-reopen", text: T.reopen,
+              onClick: () => { p.confirmed = false; p.changedAfterConfirm = false; render({ focus: "#ov-hypothesis" }); },
+            })
+            : h("button", {
+              type: "button", class: "button button--small button--primary", "data-key": "ov-confirm",
+              onClick: () => { confirmProblem(); render({ focus: '[data-key="ov-reopen"]' }); pulse(".synth"); },
+            }, icon("check"), h("span", { text: review ? T.reconfirm : T.confirm })))),
+      C.statementTypes.map((type) => {
+        const items = p.statements.filter((s) => s.type === type.id);
+        if (!items.length) return null;
+        return h("div", { class: `sgroup sgroup--${type.id}` },
+          h("p", { class: "sgroup__title", text: type.plural }),
+          h("ul", { class: "nodes", role: "list" }, items.map((s) => node({
+            kind: "statement", id: s.id, text: s.text, reasons: itemReasons(s),
+            tools: [h("div", { class: "node__actions" },
+              itemReasons(s).length ? reviewButton("statement", s, `ov-review-statement-${s.id}`) : null,
+              detailButton("statement", s.id))],
+          }))));
+      }));
+  }
+
+  function zonePlan() {
+    const accepted = planned();
+    const open = undecided();
+    const removed = removedInterventions();
+    const row = (i) => {
+      const isAccepted = i.state === "accepted";
+      const markers = [i.origin === "own" ? C.documentation.ownMarker : null, i.adjusted ? T.adjusted : null].filter(Boolean);
+      return node({
+        kind: "intervention", id: i.id, text: i.title,
+        label: [categoryLabel(i.category), markers.length ? h("span", { class: "node__marker", text: ` · ${markers.join(" · ")}` }) : null],
+        classes: `${isAccepted ? "is-accepted" : ""}${i.origin === "own" ? " is-own" : ""}`,
+        reasons: itemReasons(i),
+        meta: i.dosage ? h("span", { class: "node__dosage", text: i.dosage }) : null,
+        aside: h("button", {
+          type: "button", class: `plan-toggle${isAccepted ? " is-on" : ""}`, "data-key": `ov-i-${i.id}-accept`,
+          "aria-pressed": String(isAccepted), "aria-label": `${isAccepted ? T.accepted : T.accept}: ${i.title}`,
+          title: isAccepted ? T.withdraw : T.accept,
+          onClick: () => {
+            i.state = isAccepted ? "candidate" : "accepted";
+            if (!isAccepted) snapshotItem(i);
+            render({ focus: `[data-key="ov-i-${i.id}-accept"]` });
+          },
+        }, icon("check")),
+        tools: [h("div", { class: "node__actions" },
+          itemReasons(i).length ? reviewButton("intervention", i, `ov-review-intervention-${i.id}`) : null,
+          detailButton("intervention", i.id),
+          h("button", {
+            type: "button", class: "button button--small button--quiet", "data-key": `ov-i-${i.id}-remove`, text: T.remove,
+            onClick: () => removeIntervention(i, { overview: true }),
+          }))],
+      });
+    };
+    return h("section", { class: "zone zone--plan", "aria-labelledby": "zone-interventions" },
+      zoneHead("interventions", accepted.length),
+      h("div", { class: "pgroup pgroup--accepted" },
+        h("p", { class: "pgroup__title" },
+          h("span", { text: T.inPlan }), h("span", { class: "fgroup__count", text: String(accepted.length) }),
+          accepted.length ? null : h("span", { class: "pgroup__empty", text: C.documentation.emptyPlan })),
+        accepted.length ? h("ul", { class: "nodes", role: "list" }, accepted.map(row)) : null),
+      h("div", { class: "pgroup" },
+        h("p", { class: "pgroup__title" },
+          h("span", { text: T.candidates }), h("span", { class: "fgroup__count", text: String(open.length) }),
+          h("span", { class: "pgroup__tools" },
+            removed.length ? h("button", {
+              type: "button", class: "text-button text-button--muted", "data-key": "ov-removed",
+              onClick: () => openDetail("interventions"), text: `${removed.length} ${T.removedShort}`,
+            }) : null,
+            h("button", {
+              type: "button", class: "text-button", "data-key": "ov-add-own", "aria-label": T.addOwn,
+              onClick: () => openDetail("own"),
+            }, icon("plus"), h("span", { text: T.ownShort })))),
+        open.length ? h("ul", { class: "nodes", role: "list" }, open.map(row)) : null));
+  }
+
+  function docPreviewLines() {
+    const D = C.documentation;
+    const lines = state.doc.text.split("\n");
+    const start = lines.findIndex((l) => l.trim() === D.headings.problem);
+    const picked = [];
+    const from = start === -1 ? 0 : start;
+    let inPlan = false;
+    for (let n = from; n < lines.length; n++) {
+      const line = lines[n];
+      if (!line.trim()) continue;
+      if (line.trim() === D.headings.plan) inPlan = true;
+      // Kurzfassung: Problemkopf, Hypothese, dann der Plan ohne Begründungen.
+      if (!inPlan && n > from + 2) continue;
+      if (inPlan && /^\s{2,}/.test(line)) continue;
+      picked.push(line.trim());
+    }
+    return picked.slice(0, C.overview.docPreviewLines || 9);
+  }
+
+  function zoneDocumentation() {
+    const stale = state.doc.manual && state.doc.basis !== basisKey();
+    const stateText = stale ? T.docOutdated : state.doc.manual ? T.docEdited : T.docLive;
+    const headings = new Set(Object.values(C.documentation.headings));
+    return h("section", { class: `zone zone--doc${stale ? " needs-review" : ""}`, "aria-labelledby": "zone-documentation" },
+      zoneHead("documentation"),
+      h("p", { class: `docstate${stale ? " docstate--stale" : ""}`, "data-docstate": true }, stale ? icon("review") : h("span", { class: "docstate__dot", "aria-hidden": "true" }), h("span", { text: stateText })),
+      h("div", { class: "docprev", "data-docprev": true },
+        docPreviewLines().map((line) => h("p", { class: `docprev__line${headings.has(line) ? " is-heading" : ""}`, "data-line": line, text: line }))),
+      h("div", { class: "docprev__actions" },
+        h("button", { type: "button", class: "button button--small button--ghost", "data-key": "ov-doc-open", onClick: () => openDetail("documentation") },
+          h("span", { text: T.docOpen }), icon("arrow")),
+        h("button", { type: "button", class: "button button--small button--quiet", "data-key": "ov-doc-copy", onClick: copyDocumentation, text: T.copy })));
+  }
+
+  // Die Vorschau zeigt, welche Zeilen sich durch die letzte Handlung geändert
+  // haben: die Dokumentation entsteht sichtbar aus dem aktuellen Stand.
+  function markPreviewChanges() {
+    const lines = [...stageEl.querySelectorAll("[data-docprev] .docprev__line")];
+    const previous = lastPreview;
+    lastPreview = new Set(lines.map((l) => l.dataset.line));
+    if (!previous) return;
+    for (const line of lines) {
+      if (!previous.has(line.dataset.line)) {
+        line.classList.add("is-new");
+        if (!reduceMotion.matches) line.animate([{ backgroundColor: "rgba(76,197,131,.28)" }, { backgroundColor: "rgba(76,197,131,0)" }], { duration: 1400, easing: "ease-out" });
+      }
+    }
+  }
+
+  // Für Eingaben ohne Neuzeichnen (Hypothese tippen): nur Zähler, Vorschau
+  // und Prüfstatus nachziehen.
+  function refreshLive() {
+    if (!state.doc.manual) { state.doc.text = generateDocumentation(); state.doc.basis = basisKey(); }
+    refreshFlowValues();
+    const prev = stageEl.querySelector("[data-docprev]");
+    if (prev) {
+      const headings = new Set(Object.values(C.documentation.headings));
+      prev.replaceChildren(...docPreviewLines().map((line) => h("p", { class: `docprev__line${headings.has(line) ? " is-heading" : ""}`, "data-line": line, text: line })));
+      lastPreview = new Set(docPreviewLines());
+    }
+  }
+
+  /* --- Fokus und Zusammenhänge im Überblick ----------------------------- */
+
+  function setFocus(focus) {
+    state.ui.focus = focus;
+    render({ focus: focus ? `[data-key="node-${focus.kind}-${focus.id}"]` : null });
+  }
+
+  function focusNextReview() {
+    const queue = reviewQueue();
+    if (!queue.length) return;
+    const current = state.ui.focus;
+    const at = current ? queue.findIndex((q) => q.kind === current.kind && q.id === current.id) : -1;
+    const next = queue[(at + 1) % queue.length];
+    if (next.kind === "problem") {
+      state.ui.focus = null;
+      render({ focus: "#ov-hypothesis" });
+      $("#ov-hypothesis").scrollIntoView({ block: "center" });
+      return;
+    }
+    state.ui.focus = { kind: next.kind, id: next.id };
+    render({ focus: `[data-key="node-${next.kind}-${next.id}"]` });
+    const el = document.querySelector(`[data-key="node-${next.kind}-${next.id}"]`);
+    if (el) el.scrollIntoView({ block: "nearest" });
+  }
+
+  function applyFocus() {
+    const surface = stageEl.querySelector("[data-surface]");
+    if (!surface) return;
+    const focus = state.ui.focus && itemOf(state.ui.focus.kind, state.ui.focus.id) ? state.ui.focus : null;
+    if (!focus) state.ui.focus = null;
+    const rel = related(focus);
+    surface.querySelectorAll("[data-node]").forEach((el) => {
+      const [kind, id] = el.dataset.node.split(":");
+      const isRelated = Boolean(focus) && rel[kind] && rel[kind].has(id) && !(kind === focus.kind && id === focus.id);
+      el.classList.toggle("is-related", isRelated);
+      const sr = el.querySelector("[data-sr-related]");
+      if (sr) sr.textContent = isRelated ? ` (${T.connected})` : "";
+    });
+    drawRelations(surface, focus, rel);
+  }
+
+  function drawRelations(surface, focus, rel) {
+    const svg = surface.querySelector(".relations");
+    svg.replaceChildren();
+    if (!focus || !wideLayout.matches) return;
+    const box = surface.getBoundingClientRect();
+    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    const defs = svgEl("defs");
+    const grad = svgEl("linearGradient", { id: "rel-grad", x1: "0", x2: "1", y1: "0", y2: "0" });
+    grad.append(svgEl("stop", { offset: "0", "stop-color": "#17c6bd" }), svgEl("stop", { offset: "1", "stop-color": "#4cc583" }));
+    defs.append(grad);
+    svg.append(defs);
+    const anchor = (key) => {
+      const el = surface.querySelector(`[data-node="${CSS.escape(key)}"] .node__row`);
+      return el ? el.getBoundingClientRect() : null;
+    };
+    for (const [a, b] of relationPairs(focus, rel)) {
+      const ra = anchor(a);
+      const rb = anchor(b);
+      if (!ra || !rb) continue;
+      const x1 = ra.right - box.left;
+      const y1 = ra.top - box.top + Math.min(ra.height / 2, 20);
+      const x2 = rb.left - box.left;
+      const y2 = rb.top - box.top + Math.min(rb.height / 2, 20);
+      if (x2 <= x1) continue;
+      const mid = (x2 - x1) / 2;
+      const path = svgEl("path", { d: `M${x1},${y1} C${x1 + mid},${y1} ${x2 - mid},${y2} ${x2},${y2}`, class: "relations__line", stroke: "url(#rel-grad)" });
+      svg.append(path,
+        svgEl("circle", { cx: x1, cy: y1, r: 2.6, class: "relations__dot" }),
+        svgEl("circle", { cx: x2, cy: y2, r: 2.6, class: "relations__dot" }));
+      if (!reduceMotion.matches) {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = `${length}`;
+        path.animate([{ strokeDashoffset: length }, { strokeDashoffset: 0 }], { duration: 420, easing: "cubic-bezier(.23,1,.32,1)" });
+      }
+    }
+  }
+
+  let redrawFrame = 0;
+  function scheduleRedraw() {
+    cancelAnimationFrame(redrawFrame);
+    redrawFrame = requestAnimationFrame(() => {
+      stageEl.querySelectorAll("textarea").forEach(autosize);
+      if (state.view === "overview") {
+        const surface = stageEl.querySelector("[data-surface]");
+        if (surface) drawRelations(surface, state.ui.focus, related(state.ui.focus));
+      }
     });
   }
+
+  /* --- Detailansicht -------------------------------------------------- */
 
   function renderStep() {
     const id = C.steps[state.step].id;
@@ -218,7 +888,11 @@
 
   function stepHead() {
     const step = C.steps[state.step];
+    const queue = reviewQueue().length;
     return h("header", { class: "step-head" },
+      h("button", { type: "button", class: "back-link", "data-key": "nav-overview", onClick: goOverview },
+        icon("back"), h("span", { text: T.backToOverview }),
+        queue ? h("span", { class: "back-link__review", text: `${queue} ${T.reviewCount}` }) : null),
       h("p", { class: "eyebrow" },
         h("span", { text: `Schritt ${state.step + 1} von ${C.steps.length}` }),
         h("span", { class: "eyebrow__case", text: `${C.meta.caseLabel} · ${C.meta.caseSummary}` })),
@@ -230,10 +904,21 @@
     const prev = C.steps[state.step - 1];
     const next = C.steps[state.step + 1];
     return h("nav", { class: "step-nav", "aria-label": "Schritte" },
-      prev ? h("button", { type: "button", class: "button button--ghost", "data-key": "nav-back", onClick: () => goTo(state.step - 1) },
-        icon("back"), h("span", { text: `${T.back}` })) : h("span"),
-      next ? h("button", { type: "button", class: "button button--primary", "data-key": "nav-next", onClick: () => goTo(state.step + 1) },
-        h("span", { text: `${T.next}: ${next.label}` }), icon("arrow")) : null);
+      prev
+        ? h("button", { type: "button", class: "button button--ghost", "data-key": "nav-back", onClick: () => goTo(state.step - 1) },
+          icon("back"), h("span", { text: `${T.back}` }))
+        : h("button", { type: "button", class: "button button--ghost", "data-key": "nav-back", onClick: goOverview },
+          icon("back"), h("span", { text: T.backToOverview })),
+      next
+        ? h("button", { type: "button", class: "button button--primary", "data-key": "nav-next", onClick: () => goTo(state.step + 1) },
+          h("span", { text: `${T.next}: ${next.label}` }), icon("arrow"))
+        : h("button", { type: "button", class: "button button--primary", "data-key": "nav-next", onClick: goOverview },
+          h("span", { text: T.backToOverview }), icon("arrow")));
+  }
+
+  function reviewFlag(reasons) {
+    if (!reasons.length) return null;
+    return h("span", { class: "flag flag--review", title: reasons.join(" · ") }, icon("review"), h("span", { text: T.basisChanged }));
   }
 
   /* --- Inline-Editor --------------------------------------------------- */
@@ -245,7 +930,7 @@
       onInput: (e) => autosize(e.target),
       onKeydown: (e) => {
         if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); save(); }
-        if (e.key === "Escape") { e.preventDefault(); onCancel(); }
+        if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); onCancel(); }
       },
     });
     function save() {
@@ -268,17 +953,18 @@
         return h("fieldset", { class: `status-group status-group--${group.id}` },
           h("legend", { class: "group-label", text: group.label }),
           group.note ? h("p", { class: "group-note", text: group.note }) : null,
-          h("div", { class: "field-grid", style: null, "data-columns": group.columns || 2 }, fields.map(statusField)));
+          h("div", { class: "field-grid", "data-columns": group.columns || 2 }, fields.map(statusField)));
       }));
   }
 
   function statusField(field) {
     const id = `field-${field.id}`;
     const hintId = field.hint ? `${id}-hint` : null;
+    const derived = state.factors.filter((f) => f.sources.includes(field.id)).length;
     const wrap = h("div", { class: `field field--${field.size}${statusTouched(field.id) ? " is-touched" : ""}` },
       h("div", { class: "field__top" },
         h("label", { for: id, class: "field__label", text: field.label }),
-        h("span", { class: "field__flag", text: "geändert" })),
+        h("span", { class: "field__flag", text: derived ? `geändert · ${derived} ${T.relCounts.factor[derived === 1 ? 0 : 1]} prüfen` : "geändert" })),
       field.hint ? h("p", { class: "field__hint", id: hintId, text: field.hint }) : null,
       h("textarea", {
         id, class: "field__input", rows: field.size === "long" ? 3 : 1,
@@ -287,7 +973,7 @@
           state.status[field.id] = e.target.value;
           autosize(e.target);
           wrap.classList.toggle("is-touched", statusTouched(field.id));
-          refreshFlowValues();
+          refreshLive();
         },
       }));
     return wrap;
@@ -314,26 +1000,29 @@
 
   function factorCard(f) {
     const editing = state.ui.editingFactor === f.id;
-    const source = f.source ? byId(C.statusFields, f.source) : null;
-    const stale = source && f.origin === "suggested" && statusTouched(source.id);
-    return h("li", { class: `factor${stale ? " is-stale" : ""}${f.origin === "own" ? " is-own" : ""}`, "data-factor": f.id },
+    const sources = f.sources.map((sid) => byId(C.statusFields, sid)).filter(Boolean);
+    const reasons = factorReasons(f);
+    return h("li", { class: `factor${reasons.length ? " is-stale" : ""}${f.origin === "own" ? " is-own" : ""}`, "data-factor": f.id, "data-flip": `dfactor:${f.id}` },
       editing
         ? inlineEditor({
           value: f.text, label: "Faktor bearbeiten", key: `factor-${f.id}-input`,
-          onSave: (text) => { f.text = text; state.ui.editingFactor = null; render({ focus: `[data-key="factor-${f.id}-edit"]` }); },
+          onSave: (text) => { f.text = text; snapshotFactor(f); state.ui.editingFactor = null; render({ focus: `[data-key="factor-${f.id}-edit"]` }); },
           onCancel: () => { state.ui.editingFactor = null; render({ focus: `[data-key="factor-${f.id}-edit"]` }); },
         })
         : h("p", { class: "factor__text", text: f.text }),
       editing ? null : h("div", { class: "factor__meta" },
         h("span", { class: "factor__source" },
-          source ? `${T.fromStatus} ${source.label}` : f.origin === "own" ? T.ownEntry : "",
-          stale ? h("span", { class: "flag", text: T.statusChanged }) : null),
+          sources.length ? `${T.fromStatus} ${sources.map((s) => s.label).join(", ")}` : f.origin === "own" ? T.ownEntry : "",
+          reviewFlag(reasons)),
         h("span", { class: "factor__tools" },
           iconButton("edit", `${T.edit}: ${f.text}`, `factor-${f.id}-edit`, () => {
             state.ui.editingFactor = f.id; state.ui.addingFactor = null;
             render({ focus: `[data-key="factor-${f.id}-input"]` });
           }),
           iconButton("remove", `${T.remove}: ${f.text}`, `factor-${f.id}-remove`, () => removeFactor(f)))),
+      editing || !reasons.length ? null : h("div", { class: "review-row" },
+        h("span", { class: "review-row__reason", text: reasons.join(" · ") }),
+        reviewButton("factor", f, `review-factor-${f.id}`)),
       editing ? null : h("div", { class: "segmented", role: "group", "aria-label": `${T.classify}: ${f.text}` },
         C.factorCategories.map((cat) => h("button", {
           type: "button", class: "segmented__option", "aria-pressed": String(cat.id === f.category),
@@ -342,7 +1031,6 @@
             if (cat.id === f.category) return;
             f.category = cat.id;
             render({ focus: `[data-key="factor-${f.id}-cat-${cat.id}"]` });
-            flash(`[data-factor="${f.id}"]`);
           },
         }))));
   }
@@ -353,10 +1041,11 @@
         label: `${T.addFactor}: ${cat.label}`, key: `add-factor-${cat.id}-input`, placeholder: T.addFactorPlaceholder,
         onSave: (text) => {
           const id = newId("f");
-          state.factors.push({ id, category: cat.id, source: "", origin: "own", text });
+          const f = { id, category: cat.id, sources: [], origin: "own", text };
+          snapshotFactor(f);
+          state.factors.push(f);
           state.ui.addingFactor = null;
           render({ focus: `[data-key="add-factor-${cat.id}"]` });
-          flash(`[data-factor="${id}"]`);
         },
         onCancel: () => { state.ui.addingFactor = null; render({ focus: `[data-key="add-factor-${cat.id}"]` }); },
       }));
@@ -367,14 +1056,15 @@
     }, icon("plus"), h("span", { text: T.addFactor }));
   }
 
-  function removeFactor(f) {
+  function removeFactor(f, { overview = false } = {}) {
     const index = state.factors.indexOf(f);
     state.factors.splice(index, 1);
-    render({ focus: `[data-key="add-factor-${f.category}"]` });
+    if (overview && isFocused("factor", f.id)) state.ui.focus = null;
+    render({ focus: overview ? "#overview-title" : `[data-key="add-factor-${f.category}"]` });
     toast(T.factorRemoved, () => {
       state.factors.splice(Math.min(index, state.factors.length), 0, f);
-      render({ focus: `[data-key="factor-${f.id}-edit"]` });
-      flash(`[data-factor="${f.id}"]`);
+      if (overview) state.ui.focus = { kind: "factor", id: f.id };
+      render({ focus: overview ? `[data-key="node-factor-${f.id}"]` : `[data-key="factor-${f.id}-edit"]` });
     });
   }
 
@@ -400,21 +1090,23 @@
 
   function renderProblem() {
     const p = state.problem;
-    const statusLabel = p.confirmed ? T.confirmed : p.changedAfterConfirm ? T.draftChanged : T.draft;
+    const review = problemNeedsReview();
+    const statusLabel = review ? T.confirmedReview : p.confirmed ? T.confirmed : p.changedAfterConfirm ? T.draftChanged : T.draft;
     const hypothesis = h("textarea", {
       id: "hypothesis", class: "hypothesis__input", rows: 3, "data-key": "hypothesis", value: p.hypothesis,
       onInput: (e) => {
         p.hypothesis = e.target.value;
         autosize(e.target);
         if (problemChanged()) render();
+        else refreshLive();
       },
     });
     return h("div", { class: "problem" },
-      h("section", { class: `hypothesis${p.confirmed ? " is-confirmed" : ""}`, "aria-labelledby": "hypothesis-label" },
+      h("section", { class: `hypothesis${p.confirmed ? " is-confirmed" : ""}${review ? " needs-review" : ""}`, "aria-labelledby": "hypothesis-label" },
         h("div", { class: "hypothesis__head" },
           h("label", { id: "hypothesis-label", for: "hypothesis", class: "hypothesis__label", text: T.hypothesisLabel }),
-          h("span", { class: `pill${p.confirmed ? " pill--confirmed" : ""}` },
-            p.confirmed ? icon("check") : null, h("span", { text: statusLabel }))),
+          h("span", { class: `pill${review ? " pill--review" : p.confirmed ? " pill--confirmed" : ""}` },
+            review ? icon("review") : p.confirmed ? icon("check") : null, h("span", { text: statusLabel }))),
         hypothesis,
         h("div", { class: "hypothesis__foot" },
           p.confirmed
@@ -423,10 +1115,13 @@
               onClick: () => { p.confirmed = false; p.changedAfterConfirm = false; render({ focus: "#hypothesis" }); },
               text: T.reopen,
             })
-            : h("button", {
+            : null,
+          !p.confirmed || review
+            ? h("button", {
               type: "button", class: "button button--primary", "data-key": "confirm",
-              onClick: () => { p.confirmed = true; p.changedAfterConfirm = false; render({ focus: '[data-key="reopen"]' }); flash(".hypothesis"); },
-            }, icon("check"), h("span", { text: T.confirm })))),
+              onClick: () => { confirmProblem(); render({ focus: '[data-key="reopen"]' }); pulse(".hypothesis"); },
+            }, icon("check"), h("span", { text: review ? T.reconfirm : T.confirm }))
+            : null)),
       h("div", { class: "statement-board" },
         C.statementTypes.map((type) => {
           const items = p.statements.filter((s) => s.type === type.id);
@@ -440,21 +1135,25 @@
 
   function statementItem(s) {
     const editing = state.ui.editingStatement === s.id;
-    return h("li", { class: "statement", "data-statement": s.id },
+    const reasons = itemReasons(s);
+    return h("li", { class: `statement${reasons.length ? " is-stale" : ""}`, "data-statement": s.id, "data-flip": `dstatement:${s.id}` },
       editing
         ? inlineEditor({
           value: s.text, label: "Eintrag bearbeiten", key: `st-${s.id}-input`,
-          onSave: (text) => { s.text = text; problemChanged(); state.ui.editingStatement = null; render({ focus: `[data-key="st-${s.id}-edit"]` }); },
+          onSave: (text) => { s.text = text; snapshotItem(s); problemChanged(); state.ui.editingStatement = null; render({ focus: `[data-key="st-${s.id}-edit"]` }); },
           onCancel: () => { state.ui.editingStatement = null; render({ focus: `[data-key="st-${s.id}-edit"]` }); },
         })
         : h("p", { class: "statement__text", text: s.text }),
       editing ? null : relationChips(s.factorIds),
+      editing || !reasons.length ? null : h("div", { class: "review-row" },
+        reviewFlag(reasons),
+        reviewButton("statement", s, `review-statement-${s.id}`)),
       editing ? null : h("div", { class: "statement__tools" },
         h("label", { class: "select-inline" },
           h("span", { class: "visually-hidden", text: "Art des Eintrags" }),
           h("select", {
             "data-key": `st-${s.id}-type`,
-            onChange: (e) => { s.type = e.target.value; problemChanged(); render({ focus: `[data-key="st-${s.id}-type"]` }); flash(`[data-statement="${s.id}"]`); },
+            onChange: (e) => { s.type = e.target.value; problemChanged(); render({ focus: `[data-key="st-${s.id}-type"]` }); },
           }, C.statementTypes.map((t) => h("option", { value: t.id, selected: t.id === s.type, text: t.label })))),
         iconButton("edit", `${T.edit}: ${s.text}`, `st-${s.id}-edit`, () => {
           state.ui.editingStatement = s.id; state.ui.addingStatement = null;
@@ -471,7 +1170,6 @@
             list.splice(Math.min(index, list.length), 0, s);
             if (wasConfirmed) { state.problem.confirmed = true; state.problem.changedAfterConfirm = false; }
             render({ focus: `[data-key="st-${s.id}-edit"]` });
-            flash(`[data-statement="${s.id}"]`);
           });
         })));
   }
@@ -482,11 +1180,12 @@
         label: `${T.addStatement}: ${type.label}`, key: `add-st-${type.id}-input`, placeholder: T.addStatementPlaceholder,
         onSave: (text) => {
           const id = newId("s");
-          state.problem.statements.push({ id, type: type.id, text, factorIds: [] });
+          const s = { id, type: type.id, text, factorIds: [] };
+          snapshotItem(s);
+          state.problem.statements.push(s);
           problemChanged();
           state.ui.addingStatement = null;
           render({ focus: `[data-key="add-st-${type.id}"]` });
-          flash(`[data-statement="${id}"]`);
         },
         onCancel: () => { state.ui.addingStatement = null; render({ focus: `[data-key="add-st-${type.id}"]` }); },
       }));
@@ -499,8 +1198,20 @@
 
   /* --- Schritt 4 · Interventionen ------------------------------------- */
 
+  function removeIntervention(i, { overview = false } = {}) {
+    const previous = i.state;
+    i.state = "removed";
+    if (overview && isFocused("intervention", i.id)) state.ui.focus = null;
+    render({ focus: overview ? '[data-key="ov-add-own"]' : '[data-key="add-own"]' });
+    toast(T.interventionRemoved, () => {
+      i.state = previous;
+      if (overview) state.ui.focus = { kind: "intervention", id: i.id };
+      render({ focus: overview ? `[data-key="ov-i-${i.id}-accept"]` : `[data-key="i-${i.id}-accept"]` });
+    });
+  }
+
   function renderInterventions() {
-    const visible = state.interventions.filter((i) => i.state !== "removed");
+    const visible = liveInterventions();
     const removed = removedInterventions();
     return h("div", { class: "interventions" },
       h("p", { class: "plan-bar", "aria-live": "polite" },
@@ -510,19 +1221,19 @@
         h("span", { text: `${undecided().length} ${T.undecided}` }),
         state.problem.confirmed ? null : h("button", {
           type: "button", class: "text-button", "data-key": "plan-to-problem",
-          onClick: () => goTo(C.steps.findIndex((s) => s.id === "problem")),
+          onClick: () => goTo(stepIndex("problem")),
           text: T.docUnconfirmed,
         })),
       h("div", { class: "card-grid" },
         visible.map(interventionCard),
         ownInterventionCard()),
-      removed.length ? h("details", { class: "removed-list" },
+      removed.length ? h("details", { class: "removed-list", open: true },
         h("summary", { "data-key": "removed-summary" }, `${T.removedList} (${removed.length})`),
         h("ul", { role: "list" }, removed.map((i) => h("li", null,
           h("span", { class: "removed-list__title", text: `${i.title} · ${categoryLabel(i.category)}` }),
           h("button", {
             type: "button", class: "text-button", "data-key": `i-${i.id}-restore`, text: T.restore,
-            onClick: () => { i.state = "candidate"; render({ focus: `[data-key="i-${i.id}-accept"]` }); flash(`[data-intervention="${i.id}"]`); },
+            onClick: () => { i.state = "candidate"; render({ focus: `[data-key="i-${i.id}-accept"]` }); },
           }))))) : null);
   }
 
@@ -531,13 +1242,14 @@
     const accepted = i.state === "accepted";
     const liveFactors = i.factorIds.filter((id) => byId(state.factors, id));
     const orphan = i.factorIds.length > 0 && liveFactors.length === 0;
+    const reasons = itemReasons(i);
     const markers = [
       i.origin === "own" ? C.documentation.ownMarker : null,
       i.adjusted ? T.adjusted : null,
     ].filter(Boolean);
     return h("article", {
-      class: `icard${accepted ? " is-accepted" : ""}${orphan ? " is-orphan" : ""}${i.origin === "own" ? " is-own" : ""}`,
-      "data-intervention": i.id, "aria-labelledby": `i-${i.id}-title`,
+      class: `icard${accepted ? " is-accepted" : ""}${orphan ? " is-orphan" : ""}${i.origin === "own" ? " is-own" : ""}${reasons.length ? " is-stale" : ""}`,
+      "data-intervention": i.id, "aria-labelledby": `i-${i.id}-title`, "data-flip": `dint:${i.id}`,
     },
       h("p", { class: "icard__eyebrow" },
         h("span", { text: categoryLabel(i.category) }),
@@ -547,6 +1259,7 @@
       i.rationale ? h("p", { class: "icard__rationale", text: i.rationale }) : null,
       i.dosage ? h("p", { class: "icard__dosage" }, h("span", { text: `${C.documentation.dosageLabel}: ` }), i.dosage) : null,
       relationChips(i.factorIds),
+      reasons.length ? h("div", { class: "review-row" }, reviewFlag(reasons), reviewButton("intervention", i, `review-intervention-${i.id}`)) : null,
       h("div", { class: "icard__actions" },
         accepted
           ? h("button", {
@@ -555,7 +1268,7 @@
           })
           : h("button", {
             type: "button", class: "button button--small button--accept", "data-key": `i-${i.id}-accept`,
-            onClick: () => { i.state = "accepted"; render(); flash(`[data-intervention="${i.id}"]`); },
+            onClick: () => { i.state = "accepted"; snapshotItem(i); render(); pulse(`[data-intervention="${i.id}"]`); },
           }, icon("check"), h("span", { text: T.accept })),
         h("button", {
           type: "button", class: "button button--small button--ghost", "data-key": `i-${i.id}-adjust`, text: T.adjust,
@@ -563,12 +1276,7 @@
         }),
         h("button", {
           type: "button", class: "button button--small button--quiet", "data-key": `i-${i.id}-remove`, text: T.remove,
-          onClick: () => {
-            const previous = i.state;
-            i.state = "removed";
-            render({ focus: '[data-key="add-own"]' });
-            toast(T.interventionRemoved, () => { i.state = previous; render({ focus: `[data-key="i-${i.id}-accept"]` }); flash(`[data-intervention="${i.id}"]`); });
-          },
+          onClick: () => removeIntervention(i),
         })));
   }
 
@@ -602,11 +1310,11 @@
         const changed = ["category", "title", "rationale", "dosage"].some((k) => v[k] !== i[k]);
         Object.assign(i, v);
         if (changed && i.origin === "suggested") i.adjusted = true;
+        snapshotItem(i);
         state.ui.adjusting = null;
         render({ focus: `[data-key="i-${i.id}-adjust"]` });
-        flash(`[data-intervention="${i.id}"]`);
       },
-      onKeydown: (e) => { if (e.key === "Escape") { e.preventDefault(); cancel(); } },
+      onKeydown: (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); cancel(); } },
     },
       h("p", { class: "icard__eyebrow", text: T.adjust }),
       fields.grid,
@@ -637,12 +1345,14 @@
         const v = fields.read();
         if (!v.title) { fields.title.focus(); return; }
         const id = newId("i");
-        state.interventions.push({ id, ...v, factorIds: draft.factorIds.slice(), state: "accepted", origin: "own", adjusted: false });
+        const item = { id, ...v, factorIds: draft.factorIds.slice(), state: "accepted", origin: "own", adjusted: false };
+        snapshotItem(item);
+        state.interventions.push(item);
         state.ui.addingOwn = false; state.ui.ownDraft = null;
+        state.ui.returnFocus = { kind: "intervention", id };
         render({ focus: '[data-key="add-own"]' });
-        flash(`[data-intervention="${id}"]`);
       },
-      onKeydown: (e) => { if (e.key === "Escape") { e.preventDefault(); cancel(); } },
+      onKeydown: (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); cancel(); } },
     },
       h("p", { class: "icard__eyebrow", text: T.addOwn }),
       fields.grid,
@@ -671,7 +1381,7 @@
     return JSON.stringify([
       state.status,
       state.factors.map((f) => [f.id, f.category, f.text]),
-      state.problem.hypothesis, state.problem.confirmed,
+      state.problem.hypothesis, state.problem.confirmed, problemNeedsReview(),
       state.problem.statements.map((s) => [s.type, s.text]),
       state.interventions.map((i) => [i.id, i.state, i.category, i.title, i.rationale, i.dosage]),
     ]);
@@ -708,7 +1418,7 @@
     }
 
     blank(); lines.push(D.headings.problem);
-    lines.push(state.problem.confirmed ? D.hypothesisConfirmed : D.hypothesisDraft);
+    lines.push(problemNeedsReview() ? D.hypothesisReview : state.problem.confirmed ? D.hypothesisConfirmed : D.hypothesisDraft);
     lines.push(state.problem.hypothesis.trim());
     for (const type of C.statementTypes) {
       const items = state.problem.statements.filter((s) => s.type === type.id);
@@ -767,14 +1477,14 @@
   function notice(text, action, key, stepId) {
     return h("p", { class: "notice" },
       h("span", { text }),
-      h("button", { type: "button", class: "text-button", "data-key": key, text: action, onClick: () => goTo(C.steps.findIndex((s) => s.id === stepId)) }));
+      h("button", { type: "button", class: "text-button", "data-key": key, text: action, onClick: () => goTo(stepIndex(stepId)) }));
   }
 
   function regenerate() {
     state.doc.manual = false;
     prepareDocumentation();
     render({ focus: "#doc-text" });
-    flash(".doc__paper");
+    pulse(".doc__paper");
   }
 
   async function copyDocumentation() {
@@ -784,10 +1494,12 @@
       if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); ok = true; }
     } catch (_) { ok = false; }
     if (!ok) {
-      const area = $("#doc-text");
+      // Rückfall ohne Clipboard-API: unsichtbares Feld mit dem Text markieren.
+      const area = h("textarea", { class: "visually-hidden", "aria-hidden": "true", tabindex: "-1", value: text });
+      document.body.append(area);
       area.select();
       try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
-      area.setSelectionRange(0, 0);
+      area.remove();
     }
     toast(ok ? T.copied : "Kopieren nicht möglich. Text markieren und kopieren.");
   }
@@ -804,9 +1516,6 @@
 
   /* --- Rückmeldungen -------------------------------------------------- */
 
-  const toastRegion = $("[data-toast-region]");
-  let toastTimer = null;
-
   function toast(message, undo) {
     clearTimeout(toastTimer);
     const el = h("div", { class: "toast" },
@@ -819,17 +1528,17 @@
     toastTimer = setTimeout(() => toastRegion.replaceChildren(), undo ? 7000 : 3200);
   }
 
-  function flash(selector) {
+  // Kurzer Lichtimpuls nach einer Bestätigung: hier hat sich etwas entschieden.
+  function pulse(selector) {
     if (reduceMotion.matches) return;
     const el = document.querySelector(selector);
     if (!el) return;
-    el.classList.remove("is-flash");
-    void el.offsetWidth;
-    el.classList.add("is-flash");
+    el.animate([{ boxShadow: "0 0 0 0 rgba(23,198,189,0)" }, { boxShadow: "0 0 0 5px rgba(23,198,189,.22)" }, { boxShadow: "0 0 0 0 rgba(23,198,189,0)" }],
+      { duration: 900, easing: "cubic-bezier(.23,1,.32,1)" });
   }
 
   function autosize(el) {
-    if (!el || el.tagName !== "TEXTAREA") return;
+    if (!el || el.tagName !== "TEXTAREA" || el.classList.contains("visually-hidden")) return;
     // Auf 0 setzen, damit "rows" die Messung nicht nach oben verfälscht.
     const y = window.scrollY;
     el.style.height = "0px";
@@ -850,9 +1559,10 @@
       return;
     }
     disarmReset();
-    state = initialState();
+    initialState();
     toastRegion.replaceChildren();
-    render({ enter: true, focus: "#step-title" });
+    lastPreview = null;
+    render({ enter: true, focus: "#overview-title" });
     window.scrollTo({ top: 0 });
     toast(T.resetDone);
   });
@@ -868,12 +1578,19 @@
     document.querySelectorAll(`[data-slot="${slot}"]`).forEach((el) => { el.textContent = value; });
   }
   document.title = `${C.meta.title} · ${C.meta.practice}`;
-  window.addEventListener("resize", () => stageEl.querySelectorAll("textarea").forEach(autosize));
+  window.addEventListener("resize", scheduleRedraw);
+  // Escape hebt im Überblick die Auswahl auf (nicht beim Schreiben).
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || state.view !== "overview" || !state.ui.focus) return;
+    if (e.target.closest && e.target.closest("textarea, input, select")) return;
+    const f = state.ui.focus;
+    setFocus(null);
+    const back = document.querySelector(`[data-key="node-${f.kind}-${f.id}"]`);
+    if (back) back.focus();
+  });
 
-  state = initialState();
+  initialState();
   render();
-  // Höhe der Textfelder erst mit geladener Schrift endgültig messen.
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => stageEl.querySelectorAll("textarea").forEach(autosize));
-  }
+  // Höhen und Linien erst mit geladener Schrift endgültig messen.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleRedraw);
 })();

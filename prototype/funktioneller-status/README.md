@@ -5,6 +5,27 @@ werden kann, bevor Sarah fachlich entscheidet:
 
 `STATUS → RELEVANTE FAKTOREN → FUNKTIONELLES PROBLEM → INTERVENTIONSKANDIDATEN → SARAH BESTÄTIGT → DOKUMENTATION`
 
+## V2: Überblick als Arbeitsfläche
+
+Der Prototyp öffnet im **Überblick**: Fall, Statussignale, Faktoren (veränderbar /
+Kontext / offen), Arbeitshypothese mit Bestätigung, Plan und Vorschläge sowie
+eine laufend erzeugte Dokumentationsvorschau auf einer Fläche. Die Bereiche
+stehen in der Denkrichtung von links nach rechts.
+
+- **Zusammenhänge:** Ein gewähltes Element (Klick, Enter/Leertaste) zeigt, was
+  über Faktoren damit verbunden ist: Verbundenes bekommt Fläche, der Rest tritt
+  zurück, auf breiten Bildschirmen verbinden feine Linien die Nachbarbereiche.
+  Eine Zeile oben nennt die Verbindungen auch für Screenreader. Escape hebt auf.
+- **Prüfbedarf:** Jeder Faktor merkt sich seine Statusfelder, jeder Eintrag und
+  jede Intervention ihre Faktoren. Ändert sich eine Grundlage, steht dort
+  „Grundlage geändert · prüfen“; nichts wird gelöscht oder umgeschrieben.
+  „Geprüft“, Bearbeiten, Übernehmen oder Bestätigen setzt die Grundlage neu.
+  Eine bestätigte Arbeitshypothese bleibt bestätigt, wird aber bei geänderter
+  Grundlage als „Bestätigt · Grundlage geändert“ gekennzeichnet.
+- **Detail:** Die fünf Schritte aus V1 bleiben vollständig erhalten. Jedes
+  Element führt direkt in seinen Editor; „Zum Überblick“ kehrt mit erhaltener
+  Auswahl zurück.
+
 Präsentationsmaterial, **nicht** Teil der Praxis-Website: Er liegt außerhalb
 von `src/`, wird weder von `npm run build` noch von `npm run export` erfasst
 und kann deshalb nie mit der Website veröffentlicht werden.
@@ -16,8 +37,9 @@ Fast alles steht in **`config.js`**. Die Oberfläche (`app.js`) liest nur von do
 | Was | Wo in `config.js` |
 | --- | --- |
 | Titel, Demo-Hinweis, Fallbezeichnung | `meta` |
-| Die fünf Schritte, Überschriften, Einleitungen | `steps` |
-| Statusfelder: Name, Reihenfolge, Hinweis, Größe, Gruppe | `statusFields`, `statusGroups` |
+| Überblick: Hinweistext, Länge der Doku-Vorschau | `overview` |
+| Die fünf Schritte, Überschriften, Einleitungen, Bereichstitel im Überblick | `steps` (`zone`) |
+| Statusfelder: Name, Reihenfolge, Hinweis, Größe, Gruppe, Platz im Überblick | `statusFields` (`overview`), `statusGroups` |
 | Faktor-Kategorien (veränderbar / Kontext / offen) | `factorCategories` |
 | Arten im funktionellen Problem | `statementTypes` |
 | Interventionskategorien | `interventionCategories` |
@@ -27,11 +49,12 @@ Fast alles steht in **`config.js`**. Die Oberfläche (`app.js`) liest nur von do
 
 Regeln: Reihenfolge in einer Liste ist Reihenfolge in der Oberfläche. `id`
 ist ein technischer Schlüssel; Labels sind frei. Verweise laufen über ids:
-ein Faktor nennt mit `source` sein Statusfeld, Einträge und Kandidaten nennen
+ein Faktor nennt mit `sources` seine Statusfelder, Einträge und Kandidaten nennen
 mit `factorIds` ihre Faktoren. Nur synthetische Inhalte.
 
-Wird ein Statusfeld geändert, markiert der Prototyp die daraus abgeleiteten
-Faktoren mit „Status geändert · prüfen“. Wird ein Faktor entfernt oder
+Aus diesen Verweisen entstehen die Zusammenhänge im Überblick und der
+Prüfbedarf: Wird ein Statusfeld geändert, zeigen die daraus abgeleiteten
+Faktoren und alles, was auf ihnen beruht, „Grundlage geändert · prüfen“. Wird ein Faktor entfernt oder
 umgeordnet, zeigen die Bezug-Chips in Problem und Interventionen das an. Jede
 Änderung am bestätigten Problem setzt es zurück auf Entwurf.
 
@@ -59,6 +82,21 @@ damit die einzige Quelle der Markenelemente.
 - `noindex,nofollow,noarchive`.
 - Vorschläge sind vorformuliert (Demo-Fall), nicht berechnet. Die fachliche
   Entscheidung bleibt bei Sarah: übernehmen, anpassen, entfernen, ergänzen.
+
+## Nachweis (V2, 2026-10-04)
+
+`npm run prototype:check`: 325 Prüfungen. Überblick-Geschichte und
+Detail-Geschichte jeweils über den Offline-Server und über `file://`;
+Überblick zuerst, alle Kernelemente bei 1440×900 ohne Scrollen sichtbar;
+Zusammenhänge für Status, Faktor, Eintrag, Intervention; Prüfbedarf nach
+Statusänderung, Faktoränderung, Umordnung und Entfernen; Bestätigung mit
+nachträglich geänderter Grundlage; Plan und Dokumentationsvorschau reagieren;
+Hin- und Rückweg zwischen Überblick und Detail; Zurücksetzen und Neuladen;
+1440/900/390 px ohne Überlauf oder abgeschnittene Bedienelemente;
+Tastatur, reduzierte Bewegung, WCAG AA; kein Netzwerk, kein Browser-Speicher.
+
+Website-Regression: `release/` aus sauberer Quelle am Website-Stand `4e2aa24`
+und aus diesem Branch sind byte-identisch (20 Dateien).
 
 ## Nachweis (V1, 2026-09-30)
 
