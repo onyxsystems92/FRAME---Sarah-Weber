@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Optional, host-independent publish path: uploads dist/ to a real web
+// Optional, host-independent publish path: uploads release/ to a real web
 // host over SFTP (the standard secure-copy protocol any professional host,
 // including Plesk, supports — nothing host-specific is assumed).
 //
@@ -10,10 +10,10 @@
 // --live refuses to run.
 //
 // Modes:
-//   --dry-run (default)  Builds dist/, lists exactly what would be
+//   --dry-run (default)  Builds release/, lists exactly what would be
 //                         uploaded and shows the sftp batch plan. Makes
 //                         NO network connection. Safe to run any time.
-//   --live                Builds dist/, then actually uploads over SFTP.
+//   --live                Builds release/, then actually uploads over SFTP.
 //                          Refuses unless: all required env vars are set,
 //                          the process is running in an interactive
 //                          terminal (not CI/automation), and the operator
@@ -103,12 +103,12 @@ function main() {
   build();
 
   if (!fs.existsSync(distDir)) {
-    console.error("[publish] dist/ wurde nicht erzeugt — Abbruch.");
+    console.error("[publish] release/ wurde nicht erzeugt — Abbruch.");
     process.exit(1);
   }
 
   const files = listFiles(distDir).sort();
-  console.log(`\n[publish] ${files.length} Dateien in dist/ bereit zum Hochladen:`);
+  console.log(`\n[publish] ${files.length} Dateien in release/ bereit zum Hochladen:`);
   files.forEach((f) => console.log("  " + f));
 
   const missing = REQUIRED.filter((key) => !process.env[key]);

@@ -2,10 +2,11 @@
 # späteres echtes Foto ohne Layoutumbau eingesetzt werden kann.
 #
 # src    leer  = ruhige Markenfläche im richtigen Format
-#        Die aktuell eingetragenen Fotos unter images/vorlaeufig/ stammen aus dem
-#        bisherigen öffentlichen Praxisauftritt und sind vorläufige Platzhalter.
-#        Aktualität, Bildrechte und Freigabe sind vor dem Livegang mit Sarah
-#        zu klären; danach durch freigegebene Aufnahmen ersetzen.
+#        Im technischen Review bleiben die Bildpfade bewusst leer. Vorläufige
+#        Fotos aus dem bisherigen öffentlichen Praxisauftritt liegen nur lokal
+#        im Design-Review und werden wegen offener Bildfreigaben nicht in das
+#        technische Review-Paket oder das öffentliche Repository übernommen.
+#        Nach Sarahs Freigabe können die Bildplätze im lokalen Editor befüllt werden.
 #        gefüllt = echtes Foto (Pfad relativ zur Website, z. B. images/praxis/raum.jpg)
 # alt    Bildbeschreibung für Screenreader. Pflicht, sobald src gesetzt ist.
 # focus  Bildausschnitt bei beschnittenen Formaten (CSS object-position),
@@ -13,55 +14,55 @@
 # note   Was dieses Bild zeigen soll. Steht im Platzhalter, nie im fertigen Bild.
 
 homeAtmosphere:
-  src: "images/vorlaeufig/room-one.jpg"
+  src: ""
   alt: "Behandlungsraum der Praxis Raum und Zeit im Tageslicht"
   focus: "center 55%"
   note: "Behandlungsraum im Tageslicht, weiter Ausschnitt"
 
 homePortrait:
-  src: "images/vorlaeufig/sarah-public.png"
+  src: ""
   alt: "Sarah Weber"
   focus: "center 30%"
   note: "Sarah Weber im Praxisraum, ruhige Arbeitssituation"
 
 arbeitsweiseHands:
-  src: "images/vorlaeufig/room-dsc40.jpg"
+  src: ""
   alt: "Detail aus einem Behandlungsraum der Praxis"
   focus: "center center"
   note: "Behandlung aus der Nähe, Hände und Bewegung"
 
 therapieRoom:
-  src: "images/vorlaeufig/room-three.jpg"
+  src: ""
   alt: "Behandlungsraum der Praxis Raum und Zeit"
   focus: "center 45%"
   note: "Behandlungssituation, Befund und Bewegung"
 
 teamHero:
-  src: "images/vorlaeufig/room-one.jpg"
+  src: ""
   alt: ""
   focus: "center 55%"
   note: "Hintergrund der Team-Überschrift, ruhiger Raum ohne Personen"
 
 teamGroup:
-  src: "images/vorlaeufig/group-room.jpg"
+  src: ""
   alt: "Bewegungsraum der Praxis Raum und Zeit"
   focus: "center 35%"
   note: "Team im Praxisraum, natürliche Situation"
 
 praxisEntrance:
-  src: "images/vorlaeufig/entrance.jpg"
+  src: ""
   alt: "Empfang der Praxis Raum und Zeit"
   focus: "center 50%"
   note: "Ankommen: Eingang oder Empfang"
 
 praxisRoom:
-  src: "images/vorlaeufig/room-one.jpg"
+  src: ""
   alt: "Behandlungsraum der Praxis Raum und Zeit"
   focus: "center 50%"
   note: "Praxisraum, Materialien und Licht"
 
 karriereWork:
-  src: "images/vorlaeufig/group-room.jpg"
+  src: ""
   alt: "Bewegungsraum der Praxis Raum und Zeit"
   focus: "center 45%"
   note: "Arbeiten in der Praxis, Austausch im Team"

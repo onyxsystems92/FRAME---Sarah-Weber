@@ -1,11 +1,11 @@
 # Raum & Zeit · Website
 
-**Stand: nahezu abnahmefertige, lokale Review-Version; nicht produktiv.**
-Die bestehende GitHub-Pages-Preview auf main bleibt bis zur ausdrücklichen
-Freigabe unverändert. Diese Umsetzung liegt auf feat/sarah-portable-ssg.
-Der gestalterische Ausbaustand liegt zusätzlich isoliert auf
-feat/sarah-design-review-v2 und wartet auf Franklyns visuelle Abnahme;
-Einzelheiten in DESIGN-REVIEW-V2.md.
+**Stand: einheitlicher technischer Review-Stand; nicht produktiv.**
+Dieser Review verbindet die portable Eleventy-Grundlage mit dem aktuellen
+Design-Review-V2-Stand. Die bestehende Version auf main bleibt bis zur
+ausdrücklichen Freigabe unverändert. Maßgeblich für die technische Prüfung
+sind dieser Branch, TECHNICAL-REVIEW.md und der daraus erzeugte Review-Build.
+Einzelheiten zum gestalterischen Stand stehen in DESIGN-REVIEW-V2.md.
 
 ## Lieferumfang und Architektur
 
@@ -19,8 +19,8 @@ Praxisangaben und Qualifikationen sind vor dem Livegang mit Sarah abzugleichen.
 Der statische Generator ist Eleventy. Die einzigen bearbeitbaren
 Inhaltsquellen liegen in src/: alle Seitentexte der sieben Seiten und der
 Fußzeile in src/_data/copy/<seite>.yaml, Praxisangaben in
-src/_data/site.yaml, die neun Praxis-Bildplätze in src/_data/images.yaml
-mit den Fotos in src/images/, Team und Aktuelles als Markdown. Alles davon
+src/_data/site.yaml, die neun Praxis-Bildplätze in src/_data/images.yaml, Team und Aktuelles als Markdown.
+Freigegebene Bilddateien werden erst nach Sarahs Bildfreigabe ergänzt. Alles davon
 ist im lokalen Editor pflegbar. Templates in src/*.njk und src/_includes
 enthalten nur Aufbau, keine Fließtexte; npm run content-check prüft das.
 Einzelheiten zur Trennung von Inhalt und Umsetzung: CONTENT.md.
@@ -32,7 +32,7 @@ und darf die führende Inhaltsquelle nicht ersetzen.
 
 ## Lokales Prüfen und Inhalte pflegen
 
-Node.js 20.11+ und npm sind einmalig auf Sarahs eigenem Rechner
+Node.js 22.x und npm sind einmalig auf Sarahs eigenem Rechner
 einzurichten. Im Projektverzeichnis:
 
 1. Einmalig: npm ci

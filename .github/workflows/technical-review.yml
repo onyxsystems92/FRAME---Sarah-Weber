@@ -1,0 +1,119 @@
+name: Technical review verification
+
+on:
+  push:
+    branches:
+      - "review/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout exact review commit
+        uses: actions/checkout@v4
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Chromium for browser smoke test
+        run: npx playwright install --with-deps chromium
+
+      - name: Build once and fingerprint output
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/build-1.sha256
+
+      - name: Rebuild from the same source and compare byte output
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          npm run build
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/build-2.sha256
+          diff -u /tmp/build-1.sha256 /tmp/build-2.sha256
+
+      - name: Verify editable content is separated from templates
+        run: npm run content-check
+
+      - name: Create public export and verify editor exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run export
+          test -f release/index.html
+          test ! -e release/admin
+
+      - name: Start local static server
+        shell: bash
+        run: |
+          python3 -m http.server 8099 --directory dist > /tmp/rz-http.log 2>&1 &
+          echo $! > /tmp/rz-http.pid
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8099/index.html > /dev/null; then
+              exit 0
+            fi
+            sleep 0.5
+          done
+          cat /tmp/rz-http.log
+          exit 1
+
+      - name: Run browser smoke test
+        run: node scripts/smoke-test.mjs --base-url http://127.0.0.1:8099
+
+      - name: Run WCAG AA contrast audit
+        run: node scripts/contrast-check.mjs --base-url http://127.0.0.1:8099
+
+      - name: Stage clean technical review package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf review-package
+          mkdir -p review-package/backups
+          cp .eleventy.js .gitignore package.json package-lock.json \
+            README.md EDITING.md DESIGN.md CONTENT.md TECHNICAL-REVIEW.md \
+            review-package/
+          cp -R src admin scripts review-package/
+          rm -rf review-package/admin/vendor
+          cp backups/RESTORE-TEST.md review-package/backups/
+
+      - name: Rebuild from clean review package and compare public export
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            cd review-package
+            npm ci
+            npm run export
+          )
+          diff -qr release review-package/release
+          test ! -e review-package/release/admin
+          (
+            cd review-package
+            npm run content-check
+          )
+          rm -rf review-package/node_modules review-package/dist review-package/release review-package/admin/vendor
+
+      - name: Upload exact reviewed source package
+        uses: actions/upload-artifact@v4
+        with:
+          name: raum-und-zeit-technical-review-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          include-hidden-files: true
+          path: review-package/
